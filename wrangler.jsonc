@@ -3,6 +3,10 @@
   // Assets-only Worker: no `main`, so no Worker script runs.
   // >= 2025-04-01 lets navigation requests be served straight from assets.
   "compatibility_date": "2025-04-01",
+  // `dist/` is gitignored, so the CI checkout has no build output until this runs.
+  "build": {
+    "command": "npm run build"
+  },
   "assets": {
     "directory": "./dist",
     // Client-side routes (/generative-ai/...) fall back to index.html with a 200.

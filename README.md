@@ -24,7 +24,7 @@ npm run preview
 
 Deploy the `dist/` folder to any static host — there is no backend, no database, and no environment variables.
 
-- **Cloudflare Workers**: `wrangler.jsonc` serves `dist/` as an assets-only Worker (no `main` script)
+- **Cloudflare Workers**: `wrangler.jsonc` serves `dist/` as an assets-only Worker (no `main` script). Its `build.command` runs `npm run build`, so `npx wrangler deploy` works from a fresh checkout where `dist/` doesn't exist yet.
 - **Cloudflare Pages**: build command `npm run build`, output directory `dist`
 - **Vercel / Netlify**: import the repo; build command `npm run build`, output `dist`
 - **GitHub Pages**: publish `dist` (set Vite `base` if serving from a subpath)
