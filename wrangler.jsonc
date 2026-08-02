@@ -1,0 +1,12 @@
+{
+  "name": "visual-ai-academy",
+  // Assets-only Worker: no `main`, so no Worker script runs.
+  // >= 2025-04-01 lets navigation requests be served straight from assets.
+  "compatibility_date": "2025-04-01",
+  "assets": {
+    "directory": "./dist",
+    // Client-side routes (/generative-ai/...) fall back to index.html with a 200.
+    // Workers rejects the equivalent `/* /index.html 200` rule in _redirects.
+    "not_found_handling": "single-page-application"
+  }
+}
