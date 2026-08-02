@@ -1,0 +1,506 @@
+{
+  "datasets": {
+    "title": "Datasets and the splits that keep you honest",
+    "description": "Where training data comes from, what gets thrown away, and why one slice must never be trained on.",
+    "steps": [
+      {
+        "id": "ds-1",
+        "kind": "blocks",
+        "heading": "A pretraining mixture",
+        "caption": "Collection — raw sources arrive at wildly different scales and quality levels."
+      },
+      {
+        "id": "ds-2",
+        "kind": "bars",
+        "heading": "What survives filtering, per 100 raw web documents",
+        "caption": "Filtering — most of the crawl is discarded. Quality heuristics, language detection and safety filters cut it hard."
+      },
+      {
+        "id": "ds-3",
+        "kind": "blocks",
+        "heading": "Three disjoint slices",
+        "caption": "Splitting — the surviving data is divided. Validation guides your decisions; test is touched once, at the end."
+      },
+      {
+        "id": "ds-4",
+        "kind": "chart",
+        "heading": "Reported accuracy with and without contamination",
+        "caption": "Leakage — if a test example also sits in training, the model recalls it instead of generalising and your metric becomes fiction."
+      },
+      {
+        "id": "ds-5",
+        "kind": "panels",
+        "heading": "Questions with no technical answer",
+        "caption": "Governance — licence, consent, PII and bias are properties of the dataset, so they become properties of the model."
+      }
+    ]
+  },
+  "preprocessing": {
+    "title": "Preprocessing: raw text to training records",
+    "description": "The concrete transformations applied to one document before it can be used as a training example.",
+    "steps": [
+      {
+        "id": "pp-1",
+        "kind": "panels",
+        "heading": "One crawled page",
+        "caption": "Raw scrape — HTML, navigation chrome and encoding noise surround the actual content."
+      },
+      {
+        "id": "pp-2",
+        "kind": "ranking",
+        "heading": "Line-by-line decisions",
+        "caption": "Cleaning — markup is stripped, entities decoded, and boilerplate removed so only content text remains."
+      },
+      {
+        "id": "pp-3",
+        "kind": "panels",
+        "heading": "PII redaction",
+        "caption": "Privacy filtering — pattern matching and classifiers remove personal data before it can be memorised."
+      },
+      {
+        "id": "pp-4",
+        "kind": "bars",
+        "heading": "Copies of the same paragraph across the corpus",
+        "caption": "Deduplication — near-identical copies are collapsed. Duplicates make the model over-weight whatever happens to be repeated."
+      },
+      {
+        "id": "pp-5",
+        "kind": "budget",
+        "heading": "Filling a 2,048-token training sequence",
+        "caption": "Packing — cleaned documents are tokenised and concatenated to fill the sequence length exactly, so no compute is spent on padding."
+      }
+    ]
+  },
+  "tokenization-training": {
+    "title": "Training a tokenizer (BPE merges)",
+    "description": "Where the vocabulary comes from: counting adjacent pairs and merging the most frequent one, over and over.",
+    "steps": [
+      {
+        "id": "tt-1",
+        "kind": "tokens",
+        "heading": "Corpus sample \"lower lowest slower\" at merge 0",
+        "caption": "Start from bytes — before any merges, the vocabulary is just the 256 byte values. Every word is spelled out one character at a time."
+      },
+      {
+        "id": "tt-2",
+        "kind": "bars",
+        "heading": "Adjacent pair frequencies in the training corpus",
+        "caption": "Count pairs — every adjacent pair in the corpus is tallied. The most frequent pair wins the next merge slot."
+      },
+      {
+        "id": "tt-3",
+        "kind": "tokens",
+        "heading": "After merge 1",
+        "caption": "Merge — \"l\"+\"o\" becomes the single token \"lo\" and is added to the vocabulary. The corpus is re-encoded and the count repeats."
+      },
+      {
+        "id": "tt-4",
+        "kind": "tokens",
+        "heading": "The finished tokenizer on new text",
+        "caption": "After 30,000 merges — frequent words are one token, rare words are still assembled from pieces. Nothing is ever out-of-vocabulary."
+      },
+      {
+        "id": "tt-5",
+        "kind": "bars",
+        "heading": "Tokens needed for the same sentence, English-fitted vocabulary",
+        "caption": "Domain fit — a vocabulary fitted on English web text over-fragments code and other languages, making them slower and more expensive."
+      }
+    ]
+  },
+  "loss-function": {
+    "title": "Cross-entropy loss",
+    "description": "The number training actually minimises, and how it responds to the probability placed on the correct token.",
+    "steps": [
+      {
+        "id": "ls-1",
+        "kind": "bars",
+        "heading": "p(next token | \"The cat sat on the\") before this update",
+        "caption": "The prediction — the model outputs a distribution over the vocabulary. The training text says the next token is \" mat\"."
+      },
+      {
+        "id": "ls-2",
+        "kind": "bars",
+        "heading": "How the loss responds to p(correct)",
+        "caption": "Score it — cross-entropy looks only at the probability on the correct token: L = −log(0.499) = 0.7 nats."
+      },
+      {
+        "id": "ls-3",
+        "kind": "bars",
+        "heading": "Same prompt, after the update (hatched = before)",
+        "caption": "After a gradient step — the probability on \" mat\" rose, so the loss fell from 0.7 to 0.09 nats."
+      },
+      {
+        "id": "ls-4",
+        "kind": "chart",
+        "heading": "Pretraining loss over a run",
+        "caption": "Averaged over everything — the reported training loss is this quantity averaged across every token in every batch."
+      },
+      {
+        "id": "ls-5",
+        "kind": "panels",
+        "heading": "What low loss does and does not buy",
+        "caption": "Loss is a proxy, not a goal — it measures likelihood of the observed text. It says nothing about truth, safety or usefulness."
+      }
+    ]
+  },
+  "gradient-descent": {
+    "title": "Gradient descent: taking the step",
+    "description": "Given gradients, how parameters actually move — and what the learning rate does to that movement. (Computing the gradients is backpropagation, the next concept.)",
+    "steps": [
+      {
+        "id": "gd-1",
+        "kind": "bars",
+        "heading": "Current state",
+        "caption": "Where we are — the parameter sits at w = −2. The gradient at that point is ∇L = 2(w−3) = −10: the slope points steeply downhill to the right."
+      },
+      {
+        "id": "gd-2",
+        "kind": "bars",
+        "heading": "Before and after one update with η = 0.3",
+        "caption": "The step — move against the gradient, scaled by the learning rate: w ← w − 0.3 × (−10) = 1.0. One step, a big improvement."
+      },
+      {
+        "id": "gd-3",
+        "kind": "chart",
+        "heading": "Loss over six updates, η = 0.3",
+        "caption": "Repeat — six steps at η = 0.3 land the parameter essentially on the optimum, with the loss flattening out at its minimum of 1."
+      },
+      {
+        "id": "gd-4",
+        "kind": "chart",
+        "heading": "Same loss surface, three learning rates",
+        "caption": "Learning rate is the whole game — too small crawls, too large overshoots so badly that the loss grows every step."
+      },
+      {
+        "id": "gd-5",
+        "kind": "chart",
+        "heading": "Full-batch versus mini-batch descent",
+        "caption": "Stochastic in practice — the true gradient over the full dataset is unaffordable, so each step uses a noisy estimate from one mini-batch."
+      }
+    ]
+  },
+  "backpropagation": {
+    "title": "Backpropagation: computing the gradients",
+    "description": "Before anything can be updated, every parameter needs to know how much it contributed to the loss. That is a backward pass, not an update.",
+    "steps": [
+      {
+        "id": "bp-1",
+        "kind": "network",
+        "heading": "Forward: compute activations and the loss",
+        "caption": "Forward pass — inputs flow through the layers and produce a prediction. Every intermediate activation is stored, because the backward pass will need it."
+      },
+      {
+        "id": "bp-2",
+        "kind": "network",
+        "heading": "Backward step 1: gradient at the output",
+        "caption": "Start at the loss — the first derivative is ∂L/∂a₃, how much the loss changes if the output changes. Everything else is derived from this."
+      },
+      {
+        "id": "bp-3",
+        "kind": "bars",
+        "heading": "The product being accumulated, layer by layer",
+        "caption": "Chain rule backwards — each layer multiplies the incoming gradient by its own local derivative and passes the result to the layer below."
+      },
+      {
+        "id": "bp-4",
+        "kind": "network",
+        "heading": "Backward complete: ∂L/∂w for every weight",
+        "caption": "Every parameter gets a number — the gradient tells each weight the direction and size of its contribution to the loss. Nothing has moved yet."
+      },
+      {
+        "id": "bp-5",
+        "kind": "flow",
+        "heading": "One training step, split by responsibility",
+        "caption": "Hand-off — backpropagation stops here. The optimizer takes these gradients and decides the actual parameter update."
+      }
+    ]
+  },
+  "optimizers": {
+    "title": "Optimizers: turning gradients into updates",
+    "description": "Same gradients, same loss surface — three different rules for deciding how far and in which direction to actually move.",
+    "steps": [
+      {
+        "id": "op-1",
+        "kind": "chart",
+        "heading": "SGD, η = 0.15",
+        "caption": "Plain SGD — step directly against the gradient, every time. Simple, and it has no memory of the previous steps."
+      },
+      {
+        "id": "op-2",
+        "kind": "chart",
+        "heading": "Momentum β = 0.9 versus plain SGD",
+        "caption": "Momentum — the update carries a velocity from previous steps, so consistent directions accelerate and noisy ones cancel out."
+      },
+      {
+        "id": "op-3",
+        "kind": "chart",
+        "heading": "All three on the same problem",
+        "caption": "Adam — per-parameter adaptive step sizes from running mean and variance of the gradient. Rare parameters get larger effective steps."
+      },
+      {
+        "id": "op-4",
+        "kind": "blocks",
+        "heading": "GPU memory for a 7B model in mixed precision",
+        "caption": "The memory cost — Adam stores two extra numbers per parameter, so optimizer state can be twice the size of the model itself."
+      },
+      {
+        "id": "op-5",
+        "kind": "bars",
+        "heading": "Effect of decoupled weight decay on parameter magnitude",
+        "caption": "Weight decay — AdamW additionally shrinks every weight slightly each step, discouraging large parameters and improving generalisation."
+      }
+    ]
+  },
+  "epochs-batches-lr": {
+    "title": "Epochs, batches and the learning-rate schedule",
+    "description": "The rhythm of a training run: how data is grouped and how the step size changes over time.",
+    "steps": [
+      {
+        "id": "eb-1",
+        "kind": "blocks",
+        "heading": "1,000,000 examples, batch size 256",
+        "caption": "Batch — a group of examples processed together to produce one gradient and one parameter update. Not one example, not the whole dataset."
+      },
+      {
+        "id": "eb-2",
+        "kind": "chart",
+        "heading": "Loss trajectory by batch size",
+        "caption": "Batch size trades noise against throughput — small batches give noisy gradients, large batches give smooth ones but need a matching learning rate."
+      },
+      {
+        "id": "eb-3",
+        "kind": "chart",
+        "heading": "Learning rate schedule (×10⁻⁴)",
+        "caption": "Warmup — the learning rate starts near zero and ramps up. Early full-size steps on a random initialisation frequently blow the run up."
+      },
+      {
+        "id": "eb-4",
+        "kind": "bars",
+        "heading": "Step size at three points in the run",
+        "caption": "Decay — the rate is annealed toward zero so late updates make small refinements instead of jumping out of the basin."
+      },
+      {
+        "id": "eb-5",
+        "kind": "panels",
+        "heading": "Which unit to quote",
+        "caption": "For LLMs, count tokens — pretraining usually makes a single pass or less over the corpus, so \"epochs\" stops being the useful unit."
+      }
+    ]
+  },
+  "pretraining-vs-finetuning": {
+    "title": "Pretraining vs fine-tuning",
+    "description": "Two stages that differ by three orders of magnitude in cost — and one risk that only appears in the second.",
+    "steps": [
+      {
+        "id": "pf-1",
+        "kind": "blocks",
+        "heading": "Scale comparison, log-ish",
+        "caption": "Pretraining — broad data, enormous scale, no particular task. The output is general capability with no manners."
+      },
+      {
+        "id": "pf-2",
+        "kind": "flow",
+        "heading": "Adapting a base model to clinical note summarisation",
+        "caption": "Fine-tuning — the same objective on narrow data. The weights start from the base rather than from random initialisation."
+      },
+      {
+        "id": "pf-3",
+        "kind": "chart",
+        "heading": "Two metrics during the same fine-tune",
+        "caption": "Catastrophic forgetting — push too hard on narrow data and the model gets better at your task while quietly losing general ability."
+      },
+      {
+        "id": "pf-4",
+        "kind": "ranking",
+        "heading": "What each approach can and cannot fix",
+        "caption": "Cheaper alternatives first — most \"we need to fine-tune\" problems are actually prompt or retrieval problems."
+      },
+      {
+        "id": "pf-5",
+        "kind": "blocks",
+        "heading": "What actually changes",
+        "caption": "Parameter-efficient methods — training a small adapter instead of all weights keeps the base intact and largely sidesteps forgetting."
+      }
+    ]
+  },
+  "sft": {
+    "title": "Supervised fine-tuning",
+    "description": "Teaching a completion engine to behave like an assistant, using demonstrations — and only scoring the part it should learn.",
+    "steps": [
+      {
+        "id": "sft-1",
+        "kind": "panels",
+        "heading": "Base model, same prompt",
+        "caption": "The starting point — a base model continues text rather than answering it, because that is exactly what pretraining rewarded."
+      },
+      {
+        "id": "sft-2",
+        "kind": "ranking",
+        "heading": "One training example",
+        "caption": "Demonstration data — curated pairs showing exactly the behaviour you want, in the chat format the model will see in production."
+      },
+      {
+        "id": "sft-3",
+        "kind": "tokens",
+        "heading": "Which positions contribute to the loss",
+        "caption": "Loss masking — cross-entropy is applied only to the response tokens. The prompt is context, not something to be predicted."
+      },
+      {
+        "id": "sft-4",
+        "kind": "chart",
+        "heading": "Human preference win-rate versus dataset size",
+        "caption": "Quality over quantity — a few thousand carefully reviewed demonstrations beat hundreds of thousands of scraped ones."
+      },
+      {
+        "id": "sft-5",
+        "kind": "panels",
+        "heading": "After SFT",
+        "caption": "What SFT does not fix — it teaches the shape of a good answer, not truthfulness, and offers no way to express \"this is better than that\"."
+      }
+    ]
+  },
+  "lora-qlora": {
+    "title": "LoRA and QLoRA",
+    "description": "Freeze the base, train a low-rank correction next to it, and watch the trainable parameter count collapse.",
+    "steps": [
+      {
+        "id": "lo-1",
+        "kind": "blocks",
+        "heading": "Full fine-tune of a 7B model in mixed precision",
+        "caption": "The problem — a full fine-tune updates every weight, so you need memory for the weights, their gradients and the optimizer state."
+      },
+      {
+        "id": "lo-2",
+        "kind": "blocks",
+        "heading": "One attention projection matrix, d = 4,096",
+        "caption": "Freeze the base — W stops receiving updates. It still participates in the forward pass; it just never changes."
+      },
+      {
+        "id": "lo-3",
+        "kind": "blocks",
+        "heading": "Trainable parameters for this one matrix",
+        "caption": "Inject a low-rank pair — A is 8×4096 and B is 4096×8. Their product has the same shape as W but only 65,536 parameters."
+      },
+      {
+        "id": "lo-4",
+        "kind": "flow",
+        "heading": "One adapted layer",
+        "caption": "Forward pass — the base output and the adapter output are added: h = Wx + B·A·x. At initialisation B = 0, so the model starts identical to the base."
+      },
+      {
+        "id": "lo-5",
+        "kind": "blocks",
+        "heading": "Peak memory for the same 7B fine-tune",
+        "caption": "QLoRA — additionally store the frozen base in 4-bit. Memory drops far enough that a 7B fine-tune fits on one consumer GPU."
+      }
+    ]
+  },
+  "rlhf": {
+    "title": "RLHF: reward model plus policy optimisation",
+    "description": "Three separate models and a training loop. Compare this carefully with DPO, which removes most of it.",
+    "steps": [
+      {
+        "id": "rl-1",
+        "kind": "ranking",
+        "heading": "One labelled comparison",
+        "caption": "Collect preferences — humans compare two model answers and pick one. They rank; they do not write the ideal answer."
+      },
+      {
+        "id": "rl-2",
+        "kind": "bars",
+        "heading": "Reward model outputs after training",
+        "caption": "Train a reward model — a separate network learns to output a scalar score that ranks chosen above rejected on the collected pairs."
+      },
+      {
+        "id": "rl-3",
+        "kind": "loop",
+        "heading": "One PPO iteration",
+        "caption": "The RL loop — the policy samples an answer, the reward model scores it, and PPO updates the policy to make higher-scoring answers likelier."
+      },
+      {
+        "id": "rl-4",
+        "kind": "chart",
+        "heading": "Reward-model score versus actual human preference",
+        "caption": "The KL leash — without a penalty for drifting from the reference model, the policy finds text that games the reward model rather than pleasing people."
+      },
+      {
+        "id": "rl-5",
+        "kind": "panels",
+        "heading": "What has to be running",
+        "caption": "The operational cost — RLHF needs a reward model, a policy, a frozen reference, and a stable RL loop. That is a lot of moving parts."
+      }
+    ]
+  },
+  "dpo": {
+    "title": "DPO: preference tuning without the RL loop",
+    "description": "Same preference data as RLHF, no reward model, no sampling loop — one supervised-style objective on the pairs directly.",
+    "steps": [
+      {
+        "id": "dp-1",
+        "kind": "ranking",
+        "heading": "A DPO training triple",
+        "caption": "Same input data — prompt, chosen response, rejected response. Nothing about the labelling changes from RLHF."
+      },
+      {
+        "id": "dp-2",
+        "kind": "bars",
+        "heading": "Log-probabilities before the update",
+        "caption": "No reward model — instead of scoring text with a second network, DPO reads the log-probabilities the policy already assigns to each response."
+      },
+      {
+        "id": "dp-3",
+        "kind": "bars",
+        "heading": "Implicit reward: β·(log π_θ − log π_ref)",
+        "caption": "The objective — raise the chosen response's probability relative to the reference, and lower the rejected one's, in a single loss."
+      },
+      {
+        "id": "dp-4",
+        "kind": "panels",
+        "heading": "Pipeline comparison",
+        "caption": "Side by side — DPO removes the reward model and the sampling loop. Two models in memory instead of three, and no PPO to stabilise."
+      },
+      {
+        "id": "dp-5",
+        "kind": "bars",
+        "heading": "Effect of annotator bias, either method",
+        "caption": "Shared limitation — both methods inherit whatever is in the preference data. Simpler machinery does not mean better judgement."
+      }
+    ]
+  },
+  "overfit-underfit": {
+    "title": "Underfitting and overfitting",
+    "description": "Three training runs on the same data, told apart by the gap between the training curve and the validation curve.",
+    "steps": [
+      {
+        "id": "of-1",
+        "kind": "chart",
+        "heading": "Linear model on a curved relationship",
+        "caption": "Underfitting — both curves stay high and close together. The model is too small or trained too briefly to capture the pattern."
+      },
+      {
+        "id": "of-2",
+        "kind": "chart",
+        "heading": "Right-sized model, diverse data",
+        "caption": "A good fit — both curves fall and stay close. The model learned the signal and stopped there."
+      },
+      {
+        "id": "of-3",
+        "kind": "chart",
+        "heading": "Large model on a small, repetitive dataset",
+        "caption": "Overfitting — training error keeps falling while validation error turns upward. The model is memorising examples, not learning the rule."
+      },
+      {
+        "id": "of-4",
+        "kind": "bars",
+        "heading": "Validation error after each intervention",
+        "caption": "Remedies — more and more diverse data, regularisation, or simply stopping earlier. All of them shrink the gap rather than the training error."
+      },
+      {
+        "id": "of-5",
+        "kind": "panels",
+        "heading": "Memorisation in large models",
+        "caption": "For LLMs it becomes a privacy issue — an overfitted model can reproduce training text verbatim, including data that should never leave."
+      }
+    ]
+  }
+}

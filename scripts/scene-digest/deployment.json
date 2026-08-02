@@ -1,0 +1,272 @@
+{
+  "llm-app-serving": {
+    "title": "Serving an LLM app",
+    "description": "Client → API → inference → post-process — where latency and failure land.",
+    "steps": [
+      {
+        "id": "sv-1",
+        "kind": "flow",
+        "heading": "Typical serve path",
+        "caption": "Request path — the browser never talks to the model vendor with your secret keys; your backend does."
+      },
+      {
+        "id": "sv-2",
+        "kind": "ranking",
+        "heading": "Pattern choice",
+        "caption": "Sync vs async — short completions can block an HTTP request; long jobs need queues and webhooks."
+      },
+      {
+        "id": "sv-3",
+        "kind": "bars",
+        "heading": "Queue depth under spike",
+        "caption": "Backpressure — when inference saturates, queue or shed load; do not unbounded-accept until OOM."
+      },
+      {
+        "id": "sv-4",
+        "kind": "ranking",
+        "heading": "Minimum production gates",
+        "caption": "Checklist — auth, timeouts, token caps, logging of prompt hashes / ids, and graceful vendor errors."
+      }
+    ]
+  },
+  "fastapi-role": {
+    "title": "FastAPI’s role",
+    "description": "A Python API layer for validation, auth, and orchestration — not the model itself.",
+    "steps": [
+      {
+        "id": "fa-1",
+        "kind": "flow",
+        "heading": "POST /v1/chat",
+        "caption": "Route — validate body, authenticate, then call a service that talks to the model."
+      },
+      {
+        "id": "fa-2",
+        "kind": "panels",
+        "heading": "Layering",
+        "caption": "Keep routes thin — business rules and prompts live in services/modules you can unit test without HTTP."
+      },
+      {
+        "id": "fa-3",
+        "kind": "timeline",
+        "heading": "SSE stream",
+        "caption": "Streaming — yield SSE/chunks from an async generator so clients see tokens early."
+      },
+      {
+        "id": "fa-4",
+        "kind": "ranking",
+        "heading": "Do / don’t",
+        "caption": "FastAPI is one good option among many — the pattern (typed API gateway) matters more than the brand."
+      }
+    ]
+  },
+  "docker": {
+    "title": "Docker for LLM apps",
+    "description": "Package API + workers with locked dependencies — same artifact from laptop to server.",
+    "steps": [
+      {
+        "id": "dk-1",
+        "kind": "flow",
+        "heading": "Build",
+        "caption": "Image — build a reproducible filesystem with your app and dependencies."
+      },
+      {
+        "id": "dk-2",
+        "kind": "panels",
+        "heading": "Runtime config",
+        "caption": "Run — container gets CPU/memory limits, env for API keys, and mounts for caches if needed."
+      },
+      {
+        "id": "dk-3",
+        "kind": "ranking",
+        "heading": "Compose services",
+        "caption": "Multi-service — API, worker, and maybe a local redis compose together for dev parity."
+      },
+      {
+        "id": "dk-4",
+        "kind": "bars",
+        "heading": "Image size (illustrative)",
+        "caption": "Models in images — shipping multi-GB weights bloats deploys; prefer pull-at-start or remote inference."
+      }
+    ]
+  },
+  "kubernetes-overview": {
+    "title": "Kubernetes overview for LLM apps",
+    "description": "Pods, services, and autoscaling — orchestration when one VM is no longer enough.",
+    "steps": [
+      {
+        "id": "k8-1",
+        "kind": "panels",
+        "heading": "Pools",
+        "caption": "Workload split — stateless API Deployment vs GPU worker Deployment on a separate node pool."
+      },
+      {
+        "id": "k8-2",
+        "kind": "flow",
+        "heading": "Traffic",
+        "caption": "Service discovery — ClusterIP/Ingress fronts the API; workers pull from a queue rather than taking public traffic."
+      },
+      {
+        "id": "k8-3",
+        "kind": "ranking",
+        "heading": "Probe pitfalls",
+        "caption": "Probes — liveness ≠ “can finish a 60s generation.” Use startup probes and separate readiness from long jobs."
+      },
+      {
+        "id": "k8-4",
+        "kind": "chart",
+        "heading": "Workers vs queue lag",
+        "caption": "Autoscaling signal — RPS for APIs; queue lag or GPU util for workers. Wrong signal → thrash or starvation."
+      }
+    ]
+  },
+  "bedrock": {
+    "title": "Amazon Bedrock (conceptual)",
+    "description": "Managed foundation models via AWS APIs — IAM, regions, and serverless invocation.",
+    "steps": [
+      {
+        "id": "bd-1",
+        "kind": "flow",
+        "heading": "InvokeModel / Converse",
+        "caption": "Invoke — your service calls Bedrock with IAM credentials; model id selects the backend foundation model."
+      },
+      {
+        "id": "bd-2",
+        "kind": "ranking",
+        "heading": "Enterprise levers",
+        "caption": "Controls — VPC endpoints, SCPs, and CloudTrail matter as much as prompt quality in enterprises."
+      },
+      {
+        "id": "bd-3",
+        "kind": "flow",
+        "heading": "Common pattern",
+        "caption": "RAG on AWS — often pair Bedrock with a vector store (OpenSearch, etc.) you operate or buy."
+      },
+      {
+        "id": "bd-4",
+        "kind": "panels",
+        "heading": "Abstraction",
+        "caption": "Portability — keep prompts/tools behind an interface so Bedrock is a provider, not your architecture."
+      }
+    ]
+  },
+  "vertex-ai": {
+    "title": "Vertex AI (conceptual)",
+    "description": "Google Cloud’s managed ML/LLM platform — endpoints, Model Garden, and Gemini APIs.",
+    "steps": [
+      {
+        "id": "vx-1",
+        "kind": "flow",
+        "heading": "GenerateContent-style path",
+        "caption": "Call path — app in GCP (or elsewhere) invokes a Vertex generative / prediction API with Google auth."
+      },
+      {
+        "id": "vx-2",
+        "kind": "panels",
+        "heading": "Managed vs deployed",
+        "caption": "Deployed endpoints — for custom/self-hosted models on Vertex, you manage machine type and autoscaling."
+      },
+      {
+        "id": "vx-3",
+        "kind": "flow",
+        "heading": "Grounded answer path",
+        "caption": "Data grounding — Vertex offers grounding/search integrations; still verify citations in your app layer."
+      },
+      {
+        "id": "vx-4",
+        "kind": "ranking",
+        "heading": "Own these",
+        "caption": "Same lesson as other clouds — wrap the SDK; own evals, budgets, and PII handling."
+      }
+    ]
+  },
+  "azure-ai": {
+    "title": "Azure AI (conceptual)",
+    "description": "Azure OpenAI / AI Studio patterns — resource deployment, keys/RBAC, and content filters.",
+    "steps": [
+      {
+        "id": "az-1",
+        "kind": "flow",
+        "heading": "Chat completions",
+        "caption": "Deployment model — you call a deployment name in a resource/region, not a raw open model slug alone."
+      },
+      {
+        "id": "az-2",
+        "kind": "bars",
+        "heading": "Hitting TPM",
+        "caption": "Capacity — TPM/RPM quotas are per deployment. Spikes need either higher quota or queueing."
+      },
+      {
+        "id": "az-3",
+        "kind": "ranking",
+        "heading": "Error classes",
+        "caption": "Content filtering — platform may block or modify outputs; log filter results separately from model errors."
+      },
+      {
+        "id": "az-4",
+        "kind": "panels",
+        "heading": "Auth posture",
+        "caption": "Enterprise networking — private endpoints and Managed Identity beat shipping keys in env files."
+      }
+    ]
+  },
+  "streaming": {
+    "title": "Streaming tokens",
+    "description": "Send partial tokens as they decode — better UX, harder cancellation and billing accounting.",
+    "steps": [
+      {
+        "id": "st-1",
+        "kind": "chart",
+        "heading": "Perceived progress",
+        "caption": "Buffered vs streamed — waiting for the full completion feels slower even when total time is equal."
+      },
+      {
+        "id": "st-2",
+        "kind": "tokens",
+        "heading": "SSE deltas",
+        "caption": "Protocol — often SSE or WebSocket; each event carries a delta string."
+      },
+      {
+        "id": "st-3",
+        "kind": "timeline",
+        "heading": "Disconnect handling",
+        "caption": "Cancel — if the user navigates away, abort the provider stream to stop burning tokens."
+      },
+      {
+        "id": "st-4",
+        "kind": "panels",
+        "heading": "Filter timing",
+        "caption": "Post-filters — some safety checks need the full text; others can scan incrementally. Design explicitly."
+      }
+    ]
+  },
+  "monitoring-basics": {
+    "title": "Monitoring basics for LLM apps",
+    "description": "RED/USE plus LLM-specific signals — latency, tokens, error classes, and quality samples.",
+    "steps": [
+      {
+        "id": "mb-1",
+        "kind": "chart",
+        "heading": "p95 latency",
+        "caption": "Classic API metrics still apply — if p95 latency explodes, users leave before “quality” matters."
+      },
+      {
+        "id": "mb-2",
+        "kind": "bars",
+        "heading": "Daily tokens by type",
+        "caption": "Token economics — input vs output tokens drive cost; alert on spend anomalies per tenant."
+      },
+      {
+        "id": "mb-3",
+        "kind": "ranking",
+        "heading": "Error budget burn",
+        "caption": "Error taxonomy — separate rate limits, timeouts, content filters, tool failures, and 5xx."
+      },
+      {
+        "id": "mb-4",
+        "kind": "flow",
+        "heading": "Feedback loop",
+        "caption": "Quality sampling — log traces (prompt id, retrieval ids) and score a sample daily."
+      }
+    ]
+  }
+}

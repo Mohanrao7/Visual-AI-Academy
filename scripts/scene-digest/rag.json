@@ -1,0 +1,338 @@
+{
+  "why-rag": {
+    "title": "Why RAG exists",
+    "description": "Parametric memory vs retrieved evidence — what RAG adds and what it does not magically fix.",
+    "steps": [
+      {
+        "id": "wr-1",
+        "kind": "panels",
+        "heading": "Question: “What is our refund window?”",
+        "caption": "Without RAG — the model answers from weights alone. Private or post-cutoff facts are simply not in those weights."
+      },
+      {
+        "id": "wr-2",
+        "kind": "flow",
+        "heading": "The RAG loop (high level)",
+        "caption": "Retrieve — look up company documents by similarity to the question, then put the passages into the prompt."
+      },
+      {
+        "id": "wr-3",
+        "kind": "panels",
+        "heading": "Prompt now includes retrieved text",
+        "caption": "With evidence — the same model can cite the handbook because the text is now in the context window."
+      },
+      {
+        "id": "wr-4",
+        "kind": "ranking",
+        "heading": "Failure classes RAG still allows",
+        "caption": "What RAG does not fix — bad chunking, wrong top-k, ignored context, and overconfident synthesis still produce wrong answers."
+      }
+    ]
+  },
+  "chunking": {
+    "title": "Chunking",
+    "description": "How you slice documents decides what retrieval can find — size, overlap, and boundary choice are the levers.",
+    "steps": [
+      {
+        "id": "ch-1",
+        "kind": "tokens",
+        "heading": "Source: refund policy (≈1,200 tokens)",
+        "caption": "Raw document — one long policy page. Retrieval needs smaller units so a query can match a local passage."
+      },
+      {
+        "id": "ch-2",
+        "kind": "panels",
+        "heading": "Fixed 200-token cuts ignoring structure",
+        "caption": "Bad cut — splitting mid-paragraph separates the 30-day rule from the “unused” condition that qualifies it."
+      },
+      {
+        "id": "ch-3",
+        "kind": "ranking",
+        "heading": "Section-aware chunks with 40-token overlap",
+        "caption": "Better cut — section-aware chunks keep a rule with its conditions. Add overlap so edge sentences are not orphans."
+      },
+      {
+        "id": "ch-4",
+        "kind": "bars",
+        "heading": "Illustrative recall@5 vs median chunk size",
+        "caption": "Trade-off — more chunks improve recall of tiny facts but raise index cost and duplicate near-matches at query time."
+      }
+    ]
+  },
+  "embeddings-for-retrieval": {
+    "title": "Embeddings for retrieval",
+    "description": "Queries and chunks become vectors in the same space so “near” means “likely relevant” — labeled as a 2D teaching projection.",
+    "steps": [
+      {
+        "id": "er-1",
+        "kind": "flow",
+        "heading": "Offline + online embedding",
+        "caption": "Embed the query and every chunk with the same model so they live in one comparable vector space."
+      },
+      {
+        "id": "er-2",
+        "kind": "scatter",
+        "heading": "Teaching projection (not the real d-dimensional space)",
+        "caption": "Projected space — refund-related chunks cluster near the query; password reset sits far away. Simplification: 2D projection of higher-d vectors."
+      },
+      {
+        "id": "er-3",
+        "kind": "bars",
+        "heading": "cos(query, chunk) on the demo vectors",
+        "caption": "Rank by cosine — same numbers the index would use. Higher cosine ⇒ closer angle ⇒ preferred retrieval."
+      },
+      {
+        "id": "er-4",
+        "kind": "panels",
+        "heading": "Same query, wrong semantic neighborhood",
+        "caption": "Domain mismatch — a general embedder may rank “window” as glass, not refund window. Choose or fine-tune for your corpus."
+      }
+    ]
+  },
+  "vector-db-concept": {
+    "title": "Vector database (concept)",
+    "description": "An index specialised for nearest-neighbour lookup over embeddings — not a replacement for your source of truth.",
+    "steps": [
+      {
+        "id": "vd-1",
+        "kind": "ranking",
+        "heading": "Index row (simplified)",
+        "caption": "What is stored — each row is an id, the embedding, and metadata. The original text usually lives in object storage or a doc store, referenced by id."
+      },
+      {
+        "id": "vd-2",
+        "kind": "flow",
+        "heading": "Online retrieval",
+        "caption": "Query path — embed the question, ANN search for top-k neighbours, optionally filter metadata, return ids for text fetch."
+      },
+      {
+        "id": "vd-3",
+        "kind": "bars",
+        "heading": "Illustrative latency vs recall@10",
+        "caption": "ANN vs exact — approximate indexes are why million-scale search is fast; evaluate recall against a brute-force baseline on a sample."
+      },
+      {
+        "id": "vd-4",
+        "kind": "timeline",
+        "heading": "Policy update without re-index",
+        "caption": "Not the source of truth — if the handbook changes, you must re-embed and upsert. Stale vectors are a silent RAG failure mode."
+      }
+    ]
+  },
+  "similarity-search": {
+    "title": "Similarity search",
+    "description": "Rank chunks by vector distance to the query, take top-k — the core mechanic behind dense retrieval.",
+    "steps": [
+      {
+        "id": "ss-1",
+        "kind": "bars",
+        "heading": "All candidates scored",
+        "caption": "Score every candidate — here cosine similarity between the refund query and five chunk vectors."
+      },
+      {
+        "id": "ss-2",
+        "kind": "bars",
+        "heading": "After top-k truncation (k=2)",
+        "caption": "Top-k = 2 — keep only the two highest scores. Everything else is discarded before the prompt is built."
+      },
+      {
+        "id": "ss-3",
+        "kind": "chart",
+        "heading": "Recall vs tokens in context as k grows",
+        "caption": "k is a product knob — larger k raises recall and token cost; smaller k is cheaper but misses supporting passages."
+      },
+      {
+        "id": "ss-4",
+        "kind": "panels",
+        "heading": "When cosine fails",
+        "caption": "Dense search alone misses exact identifiers — order numbers, SKUs, and rare proper nouns often need lexical match too."
+      }
+    ]
+  },
+  "hybrid-search": {
+    "title": "Hybrid search",
+    "description": "Fuse BM25 (keywords) with vector ranks — usually via Reciprocal Rank Fusion — so exact terms and semantics both vote.",
+    "steps": [
+      {
+        "id": "hs-1",
+        "kind": "ranking",
+        "heading": "Separate retrieval channels",
+        "caption": "Two ranked lists for the same query — BM25 loves exact tokens; vectors love paraphrase."
+      },
+      {
+        "id": "hs-2",
+        "kind": "bars",
+        "heading": "RRF(d) with k=60 (computed)",
+        "caption": "RRF score — each list contributes 1/(60 + rank). Docs that place well on both lists rise."
+      },
+      {
+        "id": "hs-3",
+        "kind": "ranking",
+        "heading": "After fusion (top of list)",
+        "caption": "Fused ranking — often better than either list alone on mixed keyword + paraphrase queries."
+      },
+      {
+        "id": "hs-4",
+        "kind": "panels",
+        "heading": "When hybrid still fails",
+        "caption": "Still not perfect — fusion cannot fix missing documents or a bad embedder. It only merges evidence from two imperfect lists."
+      }
+    ]
+  },
+  "re-ranking": {
+    "title": "Re-ranking",
+    "description": "A second model scores (query, passage) pairs on the shortlist — more accurate than bi-encoder cosine alone, more expensive.",
+    "steps": [
+      {
+        "id": "rr-1",
+        "kind": "ranking",
+        "heading": "Bi-encoder top-5 (simplified)",
+        "caption": "First stage — cheap retrieval returns a noisy top-20. Several near-misses sit above the best answer."
+      },
+      {
+        "id": "rr-2",
+        "kind": "bars",
+        "heading": "Cross-encoder relevance scores",
+        "caption": "Cross-encode — each shortlisted passage is scored together with the query. Relevance can leapfrog cosine order."
+      },
+      {
+        "id": "rr-3",
+        "kind": "ranking",
+        "heading": "Order after rerank",
+        "caption": "New order — the true policy chunk rises to #1. You typically keep only the top 3–5 for the prompt."
+      },
+      {
+        "id": "rr-4",
+        "kind": "flow",
+        "heading": "Where rerank sits",
+        "caption": "Cost — N cross-encoder forwards per query. Use it when first-stage noise hurts answer quality more than latency budget allows."
+      }
+    ]
+  },
+  "context-budget": {
+    "title": "Context budget",
+    "description": "The prompt window is finite — packing retrieved chunks is a packing problem with a hard token ceiling.",
+    "steps": [
+      {
+        "id": "cb-1",
+        "kind": "ranking",
+        "heading": "Candidates for an 8k-context model",
+        "caption": "Inventory — everything that wants a seat in the window, with token costs."
+      },
+      {
+        "id": "cb-2",
+        "kind": "budget",
+        "heading": "Packed window (capacity 4,000 for RAG portion)",
+        "caption": "Over budget — packing top-8 evidence exceeds B. Lowest-ranked or least novel chunks are dropped."
+      },
+      {
+        "id": "cb-3",
+        "kind": "flow",
+        "heading": "Typical packing order",
+        "caption": "Priority order matters — put the strongest evidence where the model attends reliably (often edges), and never starve the answer reserve."
+      },
+      {
+        "id": "cb-4",
+        "kind": "chart",
+        "heading": "Illustrative quality vs tokens of retrieved text",
+        "caption": "Bigger windows help but do not remove budgeting — lost-in-the-middle and cost still punish stuffing."
+      }
+    ]
+  },
+  "retrieval-pipeline": {
+    "title": "End-to-end retrieval pipeline",
+    "description": "Ingest → chunk → embed → index → retrieve → rerank → assemble → generate — each stage has a distinct job.",
+    "steps": [
+      {
+        "id": "rp-1",
+        "kind": "flow",
+        "heading": "Indexing path",
+        "caption": "Offline — ingest documents, chunk them, embed chunks, write vectors + metadata into the index."
+      },
+      {
+        "id": "rp-2",
+        "kind": "flow",
+        "heading": "Query path (retrieve)",
+        "caption": "Online retrieve — embed the question, hybrid or dense search for top-k ids, fetch text."
+      },
+      {
+        "id": "rp-3",
+        "kind": "flow",
+        "heading": "Query path (prepare prompt)",
+        "caption": "Rerank + assemble — reorder the shortlist, pack under the context budget with instructions and citations."
+      },
+      {
+        "id": "rp-4",
+        "kind": "panels",
+        "heading": "Final stage",
+        "caption": "Generate — the LLM produces an answer conditioned on the assembled context; ideally with citations to chunk ids."
+      },
+      {
+        "id": "rp-5",
+        "kind": "timeline",
+        "heading": "One production request",
+        "caption": "Whole pipeline at a glance — offline and online are different schedules sharing one index."
+      }
+    ]
+  },
+  "agentic-rag-intro": {
+    "title": "Agentic RAG (intro)",
+    "description": "The model may decide to retrieve again, rewrite the query, or stop — retrieval becomes a tool in a loop.",
+    "steps": [
+      {
+        "id": "ar-1",
+        "kind": "flow",
+        "heading": "Classic path",
+        "caption": "Single-shot RAG — one retrieve, then answer. Fails when the first query is underspecified."
+      },
+      {
+        "id": "ar-2",
+        "kind": "loop",
+        "heading": "Retrieve-as-a-tool loop",
+        "caption": "Agent decides evidence is incomplete — rewrites the query toward exceptions and calls retrieve again."
+      },
+      {
+        "id": "ar-3",
+        "kind": "timeline",
+        "heading": "Controlled agentic run",
+        "caption": "Stop when sufficient — final answer uses both rounds of evidence. Budgets cap iterations and tool calls."
+      },
+      {
+        "id": "ar-4",
+        "kind": "ranking",
+        "heading": "Extra risks vs single-shot RAG",
+        "caption": "New failure modes — query rewrite drift, redundant searches, and infinite “one more lookup” without a halt policy."
+      }
+    ]
+  },
+  "rag-failure-modes": {
+    "title": "RAG failure modes",
+    "description": "Separate retrieval failures from generation failures — they need different fixes.",
+    "steps": [
+      {
+        "id": "rf-1",
+        "kind": "panels",
+        "heading": "Retrieval miss",
+        "caption": "Miss — the right chunk never enters top-k. Symptom: answer invents or stays generic."
+      },
+      {
+        "id": "rf-2",
+        "kind": "ranking",
+        "heading": "Context present, behaviour wrong",
+        "caption": "Ignore — gold chunk is in the prompt but the model contradicts it. Symptom: citation-looking answers that disagree with context."
+      },
+      {
+        "id": "rf-3",
+        "kind": "timeline",
+        "heading": "Freshness failure",
+        "caption": "Stale index — retrieval “succeeds” on outdated text. Symptom: confident answers that match old policy."
+      },
+      {
+        "id": "rf-4",
+        "kind": "ranking",
+        "heading": "Fault → fix",
+        "caption": "Mitigations map to the fault — do not “add temperature” to fix a miss, and do not “rebuild the index” to fix ignore."
+      }
+    ]
+  }
+}

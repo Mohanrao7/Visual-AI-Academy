@@ -1,0 +1,35 @@
+:root {
+  --font-display: 'Fraunces', Georgia, serif;
+  --font-body: 'Sora', 'Segoe UI', sans-serif;
+  --font-mono: 'IBM Plex Mono', ui-monospace, monospace;
+
+  --bg-deep: #0b1f2a;
+  --bg: #f3f7f4;
+  --bg-elevated: #ffffff;
+  --ink: #13232c;
+  --ink-soft: #3d5561;
+  --muted: #6b818c;
+  --line: rgba(19, 35, 44, 0.12);
+  --accent: #0f8a6a;
+  --accent-2: #e8a317;
+  --accent-3: #1d6fbf;
+  --danger: #c23b3b;
+  --success: #1f8a4c;
+  --shadow: 0 18px 50px rgba(11, 31, 42, 0.12);
+
+  --radius-sm: 10px;
+  --radius: 16px;
+  --radius-lg: 28px;
+  --max: 1120px;
+  --nav-h: 72px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}

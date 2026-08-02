@@ -1,0 +1,242 @@
+{
+  "langchain": {
+    "title": "LangChain (mental model)",
+    "description": "Chains, tools, and runnable composition — glue for LLM apps, not a model provider.",
+    "steps": [
+      {
+        "id": "lc-1",
+        "kind": "flow",
+        "heading": "LCEL-style chain",
+        "caption": "Runnable pipeline — input flows through prompt → model → output parser as composable steps."
+      },
+      {
+        "id": "lc-2",
+        "kind": "flow",
+        "heading": "retrieve | prompt | model",
+        "caption": "Retrieval chain — retriever augments the prompt before the model call (classic RAG wiring)."
+      },
+      {
+        "id": "lc-3",
+        "kind": "loop",
+        "heading": "Agent executor",
+        "caption": "Agents in LangChain — tool catalogue + agent executor loop. Same Plan/Act/Observe idea with library helpers."
+      },
+      {
+        "id": "lc-4",
+        "kind": "panels",
+        "heading": "What LangChain is / is not",
+        "caption": "Use it for speed of composition; still own prompts, evals, and production concerns yourself."
+      }
+    ]
+  },
+  "langgraph": {
+    "title": "LangGraph",
+    "description": "Explicit graphs of nodes and edges with durable state — cycles, branches, and checkpoints.",
+    "steps": [
+      {
+        "id": "lg-1",
+        "kind": "flow",
+        "heading": "Simple graph",
+        "caption": "Graph — nodes are functions on state; edges declare control flow including loops."
+      },
+      {
+        "id": "lg-2",
+        "kind": "timeline",
+        "heading": "State transitions",
+        "caption": "Shared state — each node reads/writes typed fields instead of burying everything in chat messages."
+      },
+      {
+        "id": "lg-3",
+        "kind": "flow",
+        "heading": "Durable execution",
+        "caption": "Checkpoint — after each node, persist state so you can pause for a human or resume after failure."
+      },
+      {
+        "id": "lg-4",
+        "kind": "panels",
+        "heading": "Fit",
+        "caption": "Why not a linear chain — when you need cycles, branching, and durable pause, a graph is the honest model."
+      }
+    ]
+  },
+  "llamaindex": {
+    "title": "LlamaIndex",
+    "description": "Data framework centred on indexes, retrievers, and query engines over your documents.",
+    "steps": [
+      {
+        "id": "li-1",
+        "kind": "flow",
+        "heading": "Index build",
+        "caption": "Ingest — load files, parse into nodes (chunks), attach metadata."
+      },
+      {
+        "id": "li-2",
+        "kind": "flow",
+        "heading": "Online query",
+        "caption": "Query engine — retrieves nodes and synthesises an answer with a chosen response mode."
+      },
+      {
+        "id": "li-3",
+        "kind": "ranking",
+        "heading": "Index choice (simplified)",
+        "caption": "Index types — vector, keyword, knowledge graph, etc. Choose based on query patterns."
+      },
+      {
+        "id": "li-4",
+        "kind": "panels",
+        "heading": "Sweet spot",
+        "caption": "Positioning — strongest when your product is document Q&A / RAG; pair with other libs for complex multi-agent ops."
+      }
+    ]
+  },
+  "crewai": {
+    "title": "CrewAI",
+    "description": "Role-playing crews — agents with jobs, tools, and a process that coordinates tasks.",
+    "steps": [
+      {
+        "id": "cr-1",
+        "kind": "panels",
+        "heading": "Crew members",
+        "caption": "Define agents — each has a role, goal, backstory, and optional tools."
+      },
+      {
+        "id": "cr-2",
+        "kind": "flow",
+        "heading": "Sequential process",
+        "caption": "Tasks — describe expected output; assign to an agent; chain via context from prior tasks."
+      },
+      {
+        "id": "cr-3",
+        "kind": "flow",
+        "heading": "Hierarchical",
+        "caption": "Hierarchical process — a manager agent delegates and reviews, similar to a supervisor pattern."
+      },
+      {
+        "id": "cr-4",
+        "kind": "bars",
+        "heading": "Illustrative call counts",
+        "caption": "Watch coordination cost — crews multiply calls. Measure quality vs a single agent baseline."
+      }
+    ]
+  },
+  "autogen": {
+    "title": "AutoGen",
+    "description": "Conversational multi-agent patterns — agents messaging each other under group-chat rules.",
+    "steps": [
+      {
+        "id": "au-1",
+        "kind": "timeline",
+        "heading": "Assistant ↔ UserProxy",
+        "caption": "Two-agent chat — assistant proposes; user proxy may execute code or tools and return results."
+      },
+      {
+        "id": "au-2",
+        "kind": "flow",
+        "heading": "Speaker selection",
+        "caption": "Group chat — a manager selects the next speaker based on messages and roles."
+      },
+      {
+        "id": "au-3",
+        "kind": "bars",
+        "heading": "Without vs with max_rounds",
+        "caption": "Termination — max rounds, explicit TERMINATE, or human stop. Without this, chats thrash."
+      },
+      {
+        "id": "au-4",
+        "kind": "panels",
+        "heading": "Takeaway",
+        "caption": "Fit — excellent for research-style collaborative chats; production systems often move to explicit graphs later."
+      }
+    ]
+  },
+  "google-adk": {
+    "title": "Google ADK (conceptual)",
+    "description": "Agent Development Kit patterns — structured agents, tools, and runners aimed at Google’s ecosystem.",
+    "steps": [
+      {
+        "id": "adk-1",
+        "kind": "panels",
+        "heading": "Agent spec",
+        "caption": "Agent definition — instructions + tools + optional sub-agents as a declarative unit."
+      },
+      {
+        "id": "adk-2",
+        "kind": "flow",
+        "heading": "Execution",
+        "caption": "Runner — executes the agent loop, manages session state, and applies callbacks/hooks."
+      },
+      {
+        "id": "adk-3",
+        "kind": "flow",
+        "heading": "Sub-agent call",
+        "caption": "Delegation — parent agent routes to a sub-agent with a narrower tool set (supervisor-like)."
+      },
+      {
+        "id": "adk-4",
+        "kind": "ranking",
+        "heading": "Practical advice",
+        "caption": "Portability — kits speed integration with a cloud; keep business logic and policies cloud-agnostic where you can."
+      }
+    ]
+  },
+  "litellm": {
+    "title": "LiteLLM",
+    "description": "One OpenAI-compatible interface over many providers — routing, fallbacks, and spend tracking.",
+    "steps": [
+      {
+        "id": "ll-1",
+        "kind": "panels",
+        "heading": "N SDKs",
+        "caption": "Without a router — every provider SDK is a separate code path and failure mode."
+      },
+      {
+        "id": "ll-2",
+        "kind": "flow",
+        "heading": "Unified call",
+        "caption": "With LiteLLM — one client shape; model string selects the backend."
+      },
+      {
+        "id": "ll-3",
+        "kind": "timeline",
+        "heading": "Fallback chain",
+        "caption": "Fallbacks — if primary 429s/5xx, try the next model in the list. Latency rises; availability rises."
+      },
+      {
+        "id": "ll-4",
+        "kind": "ranking",
+        "heading": "Common knobs",
+        "caption": "Ops features — budgets, logging callbacks, virtual keys. Still verify provider-specific limits yourself."
+      }
+    ]
+  },
+  "framework-comparison": {
+    "title": "Framework comparison",
+    "description": "Choose by primary abstraction: chains, graphs, indexes, crews, or provider routers.",
+    "steps": [
+      {
+        "id": "fc-1",
+        "kind": "ranking",
+        "heading": "Job → abstraction",
+        "caption": "Map problems to abstractions — start from the job, not the GitHub stars."
+      },
+      {
+        "id": "fc-2",
+        "kind": "panels",
+        "heading": "Center of gravity",
+        "caption": "Overlap is real — LangChain can do RAG; LlamaIndex can do agents. Prefer the library whose defaults match your center of gravity."
+      },
+      {
+        "id": "fc-3",
+        "kind": "bars",
+        "heading": "Portability effort (illustrative)",
+        "caption": "Cost of switching — prompts and evals should be portable; deep framework lock-in should not hold your policies."
+      },
+      {
+        "id": "fc-4",
+        "kind": "flow",
+        "heading": "Sane path",
+        "caption": "Decision rule — prototype in the friendliest fit, productionise with clear state, guardrails, and evals regardless of brand."
+      }
+    ]
+  }
+}

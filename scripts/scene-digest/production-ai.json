@@ -1,0 +1,272 @@
+{
+  "evaluation": {
+    "title": "Evaluation",
+    "description": "Offline sets, online metrics, and judge models — measure before you ship prompt vibes.",
+    "steps": [
+      {
+        "id": "ev-1",
+        "kind": "ranking",
+        "heading": "Eval case",
+        "caption": "Gold set — freeze examples that encode what “good” means for your product."
+      },
+      {
+        "id": "ev-2",
+        "kind": "bars",
+        "heading": "Slice scores on vNext prompt",
+        "caption": "Score — automatic checks where possible; rubric/judge where language varies."
+      },
+      {
+        "id": "ev-3",
+        "kind": "chart",
+        "heading": "Baseline vs candidate (policy correctness)",
+        "caption": "Compare — never look at a single prompt in isolation; diff against the current production baseline."
+      },
+      {
+        "id": "ev-4",
+        "kind": "flow",
+        "heading": "Release gate",
+        "caption": "Gate deploys — ship only if the candidate wins on critical slices and does not regress safety."
+      }
+    ]
+  },
+  "observability": {
+    "title": "Observability",
+    "description": "Traces that reconstruct a generation: prompts, retrieval, tools, tokens, and outcomes.",
+    "steps": [
+      {
+        "id": "ob-1",
+        "kind": "timeline",
+        "heading": "Trace",
+        "caption": "One request, many spans — API, retrieve, rerank, generate, tools each get timing and attributes."
+      },
+      {
+        "id": "ob-2",
+        "kind": "ranking",
+        "heading": "Trace attributes",
+        "caption": "Link evidence — store retrieved chunk ids so you can see whether a wrong answer was a miss or an ignore."
+      },
+      {
+        "id": "ob-3",
+        "kind": "panels",
+        "heading": "Data handling",
+        "caption": "Privacy — raw prompts may contain PII. Hash, redact, or sample under policy."
+      },
+      {
+        "id": "ob-4",
+        "kind": "flow",
+        "heading": "Loop",
+        "caption": "From traces to action — aggregate failure tags weekly; feed new cases into the eval set."
+      }
+    ]
+  },
+  "security-privacy": {
+    "title": "Security and privacy",
+    "description": "Prompt injection, data exfiltration via tools, and PII in logs — threat model the LLM boundary.",
+    "steps": [
+      {
+        "id": "se-1",
+        "kind": "panels",
+        "heading": "Indirect injection",
+        "caption": "Prompt injection — hostile content in a document tries to override instructions when retrieved."
+      },
+      {
+        "id": "se-2",
+        "kind": "flow",
+        "heading": "Hardening",
+        "caption": "Controls — separate untrusted content, strip tool-triggering instructions, and require human approval for sensitive tools."
+      },
+      {
+        "id": "se-3",
+        "kind": "bars",
+        "heading": "Where PII leaks (illustrative incidents)",
+        "caption": "PII — minimise what enters prompts and logs; encrypt stores; honour retention."
+      },
+      {
+        "id": "se-4",
+        "kind": "ranking",
+        "heading": "Egress scan hits",
+        "caption": "Secrets — models invent looking-like keys; scanners should catch both real and accidental disclosures outbound."
+      }
+    ]
+  },
+  "hallucination-mitigation": {
+    "title": "Hallucination mitigation",
+    "description": "Reduce unsupported claims with grounding, abstention, and verification — not wishful temperature settings alone.",
+    "steps": [
+      {
+        "id": "hm-1",
+        "kind": "panels",
+        "heading": "Ungrounded claim",
+        "caption": "Symptom — fluent answer with no supporting passage in context."
+      },
+      {
+        "id": "hm-2",
+        "kind": "ranking",
+        "heading": "Policy",
+        "caption": "Cite-or-abstain — require chunk ids; if none apply, say you do not know."
+      },
+      {
+        "id": "hm-3",
+        "kind": "flow",
+        "heading": "Verify loop",
+        "caption": "Verify — for numbers and statuses, call a tool of record instead of believing the prose."
+      },
+      {
+        "id": "hm-4",
+        "kind": "chart",
+        "heading": "Unsupported claim rate",
+        "caption": "Measure — hallucination rate on a labeled set; track online “unsupported citation” tags."
+      }
+    ]
+  },
+  "production-guardrails": {
+    "title": "Production guardrails",
+    "description": "Layered filters in the live path — input, tool, and output — with metrics on blocks.",
+    "steps": [
+      {
+        "id": "pg-1",
+        "kind": "flow",
+        "heading": "Live path",
+        "caption": "Pipeline placement — gates surround the model, not only live inside the system prompt."
+      },
+      {
+        "id": "pg-2",
+        "kind": "bars",
+        "heading": "Blocks / day",
+        "caption": "Block reasons — taxonomy lets you tune false positives without disabling everything."
+      },
+      {
+        "id": "pg-3",
+        "kind": "panels",
+        "heading": "Policy",
+        "caption": "Fail modes — fail closed on payments/exfil; fail open carefully on low-risk UX with monitoring."
+      },
+      {
+        "id": "pg-4",
+        "kind": "timeline",
+        "heading": "Rule deploy",
+        "caption": "Change management — guardrail rules are code; review, version, and eval them like prompts."
+      }
+    ]
+  },
+  "cost-optimization": {
+    "title": "Cost optimization",
+    "description": "Tokens, model tiering, caching, and retrieval size — cut spend without blind quality loss.",
+    "steps": [
+      {
+        "id": "co-1",
+        "kind": "bars",
+        "heading": "Weekly spend split (illustrative)",
+        "caption": "Bill shape — output tokens often cost more per token; long digressions are expensive."
+      },
+      {
+        "id": "co-2",
+        "kind": "flow",
+        "heading": "Model router",
+        "caption": "Tiering — classifier/router sends easy asks to a small model; hard asks to a large one."
+      },
+      {
+        "id": "co-3",
+        "kind": "bars",
+        "heading": "Cache hit rate vs spend",
+        "caption": "Cache — identical system prompts and hot retrieved docs can be cached at HTTP or prompt-prefix layers when the provider supports it."
+      },
+      {
+        "id": "co-4",
+        "kind": "chart",
+        "heading": "Quality vs $ per 1k requests",
+        "caption": "Context diet — fewer chunks and tighter instructions often save more than shaving 5°C of temperature."
+      }
+    ]
+  },
+  "latency-scaling": {
+    "title": "Latency and scaling",
+    "description": "TTFT, tokens/sec, batching, and horizontal scale — what actually moves p95.",
+    "steps": [
+      {
+        "id": "ls-1",
+        "kind": "bars",
+        "heading": "p95 breakdown",
+        "caption": "Break down latency — find whether you are waiting on queue, prefill, or decode."
+      },
+      {
+        "id": "ls-2",
+        "kind": "chart",
+        "heading": "TTFT vs input tokens",
+        "caption": "Input length hurts prefill — RAG stuffing can dominate TTFT before the first token streams."
+      },
+      {
+        "id": "ls-3",
+        "kind": "panels",
+        "heading": "What scaling fixes",
+        "caption": "Scale out — more replicas cut queue time; they do not speed a single decode chain."
+      },
+      {
+        "id": "ls-4",
+        "kind": "ranking",
+        "heading": "Latency toolkit",
+        "caption": "Knobs — smaller models, fewer input tokens, speculative decoding / provider features, streaming for perceived speed."
+      }
+    ]
+  },
+  "reliability": {
+    "title": "Reliability",
+    "description": "Retries, idempotency, deadlines, and degraded modes when providers wobble.",
+    "steps": [
+      {
+        "id": "rl-1",
+        "kind": "ranking",
+        "heading": "Retry policy",
+        "caption": "Transient errors — 429/5xx may deserve retry; 400/auth errors do not."
+      },
+      {
+        "id": "rl-2",
+        "kind": "timeline",
+        "heading": "Refund with key",
+        "caption": "Idempotency keys — tool side effects survive retries without duplication."
+      },
+      {
+        "id": "rl-3",
+        "kind": "bars",
+        "heading": "Time budget",
+        "caption": "Deadlines — a 30s client timeout with 3×20s retries is a lie; bound the whole tree."
+      },
+      {
+        "id": "rl-4",
+        "kind": "flow",
+        "heading": "Fallback",
+        "caption": "Degraded mode — serve a smaller model or partial RAG rather than hard 500s when the primary is down."
+      }
+    ]
+  },
+  "best-practices-checklist": {
+    "title": "Production best-practices checklist",
+    "description": "A compact operating checklist spanning evals, traces, safety, cost, and change control.",
+    "steps": [
+      {
+        "id": "bp-1",
+        "kind": "ranking",
+        "heading": "Quality bar",
+        "caption": "Quality — versioned prompts, golden sets, deploy gates."
+      },
+      {
+        "id": "bp-2",
+        "kind": "ranking",
+        "heading": "Safety bar",
+        "caption": "Safety — allowlists, HITL on irreversible tools, egress scanners."
+      },
+      {
+        "id": "bp-3",
+        "kind": "panels",
+        "heading": "Ops bar",
+        "caption": "Ops — traces, budgets, SLOs, incident runbooks for provider outages."
+      },
+      {
+        "id": "bp-4",
+        "kind": "bars",
+        "heading": "Example team scorecard",
+        "caption": "Score yourself honestly — ship the missing high-severity items before the next feature."
+      }
+    ]
+  }
+}

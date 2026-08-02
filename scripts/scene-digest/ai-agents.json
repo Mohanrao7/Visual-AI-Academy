@@ -1,0 +1,452 @@
+{
+  "ai-agent": {
+    "title": "What an AI agent is",
+    "description": "An LLM plus tools, state, and a control loop — not a chat box that “feels autonomous.”",
+    "steps": [
+      {
+        "id": "ag-1",
+        "kind": "flow",
+        "heading": "Plain chat",
+        "caption": "Chatbot — one request, one completion, no side effects. The world outside the API call is untouched."
+      },
+      {
+        "id": "ag-2",
+        "kind": "loop",
+        "heading": "Minimal agent runtime",
+        "caption": "Agent — the same LLM sits inside a loop that can call tools and update durable state before answering."
+      },
+      {
+        "id": "ag-3",
+        "kind": "panels",
+        "heading": "Required pieces",
+        "caption": "Three ingredients — policy (LLM), tools (APIs), state (what happened so far). Remove any one and you are back to a chatbot or a script."
+      },
+      {
+        "id": "ag-4",
+        "kind": "ranking",
+        "heading": "Runtime controls",
+        "caption": "Hard constraints live outside the model — budgets, allowlists, and human gates. Autonomy without them is an incident."
+      }
+    ]
+  },
+  "agentic-vs-chatbot": {
+    "title": "Agentic systems vs chatbots",
+    "description": "Side effects, multi-step control, and durable state — the practical differences that matter in production.",
+    "steps": [
+      {
+        "id": "av-1",
+        "kind": "panels",
+        "heading": "Chatbot",
+        "caption": "Chatbot boundary — text in, text out. Advice can be wrong, but it cannot refund money by itself."
+      },
+      {
+        "id": "av-2",
+        "kind": "flow",
+        "heading": "Agent with side effects",
+        "caption": "Agent boundary — tools can charge cards, send email, or delete rows. The blast radius is the tool surface."
+      },
+      {
+        "id": "av-3",
+        "kind": "timeline",
+        "heading": "One agent run vs one chat turn",
+        "caption": "Multi-step — agents chain observations across calls; chatbots usually reset or only append chat turns without tool results."
+      },
+      {
+        "id": "av-4",
+        "kind": "ranking",
+        "heading": "Fit check",
+        "caption": "Choose deliberately — if you only need wording help, a chatbot is simpler and safer. Agents earn their complexity when work requires tools."
+      }
+    ]
+  },
+  "plan-act-observe": {
+    "title": "Plan → Act → Observe",
+    "description": "The basic control cycle: propose what to do, do it, read the result, repeat until done.",
+    "steps": [
+      {
+        "id": "pa-1",
+        "kind": "panels",
+        "heading": "Planning step",
+        "caption": "Plan — given the goal and current state, choose the next action (often a tool name + arguments)."
+      },
+      {
+        "id": "pa-2",
+        "kind": "flow",
+        "heading": "Action execution",
+        "caption": "Act — the runtime executes the planned tool. The model does not run the tool; your code does."
+      },
+      {
+        "id": "pa-3",
+        "kind": "timeline",
+        "heading": "State after observation",
+        "caption": "Observe — append the tool result to state/context so the next plan sees reality, not a guess."
+      },
+      {
+        "id": "pa-4",
+        "kind": "loop",
+        "heading": "Cycle",
+        "caption": "Repeat or halt — either plan another act, or emit a final answer when the goal is met or the budget is exhausted."
+      }
+    ]
+  },
+  "agent-state": {
+    "title": "Agent state",
+    "description": "What the runtime remembers between steps — messages, scratchpad, tool results, and control flags.",
+    "steps": [
+      {
+        "id": "as-1",
+        "kind": "ranking",
+        "heading": "Example state keys",
+        "caption": "State schema — a typed object the runtime owns, not free-form “whatever the model said.”"
+      },
+      {
+        "id": "as-2",
+        "kind": "timeline",
+        "heading": "After tools.orders.get",
+        "caption": "Step updates — only some fields change. Highlighting diffs makes debugging possible."
+      },
+      {
+        "id": "as-3",
+        "kind": "budget",
+        "heading": "Projected into the model window",
+        "caption": "Context projection — you rarely dump the entire state into the prompt; you select a view the model needs now."
+      },
+      {
+        "id": "as-4",
+        "kind": "panels",
+        "heading": "Guard the write path",
+        "caption": "Corruption modes — invented tool results written into state, or status stuck on running forever."
+      }
+    ]
+  },
+  "planning": {
+    "title": "Planning",
+    "description": "Deciding a sequence of actions up front versus choosing one step at a time — and when each fails.",
+    "steps": [
+      {
+        "id": "pl-1",
+        "kind": "ranking",
+        "heading": "Up-front plan",
+        "caption": "Open-loop plan — list steps 1…n before acting. Fast to read, brittle if step 2’s observation invalidates step 3."
+      },
+      {
+        "id": "pl-2",
+        "kind": "timeline",
+        "heading": "Plan meets observation",
+        "caption": "World disagrees — order is already refunded. Steps 3–4 of the frozen plan are now harmful."
+      },
+      {
+        "id": "pl-3",
+        "kind": "loop",
+        "heading": "Re-plan each cycle",
+        "caption": "Closed-loop — re-plan after each observation. Slightly more model calls, far fewer irreversible mistakes."
+      },
+      {
+        "id": "pl-4",
+        "kind": "panels",
+        "heading": "Practical pattern",
+        "caption": "Hybrid — sketch a coarse plan for the user, execute step-wise with checkpoints on risky tools."
+      }
+    ]
+  },
+  "memory": {
+    "title": "Agent memory",
+    "description": "Working memory in the prompt vs long-term stores — different lifetimes, different failure modes.",
+    "steps": [
+      {
+        "id": "mm-1",
+        "kind": "budget",
+        "heading": "This request’s window",
+        "caption": "Working memory — recent messages and scratchpad inside the current run’s context."
+      },
+      {
+        "id": "mm-2",
+        "kind": "flow",
+        "heading": "Write then read across sessions",
+        "caption": "Long-term memory — write durable facts to a store; later runs retrieve them explicitly."
+      },
+      {
+        "id": "mm-3",
+        "kind": "panels",
+        "heading": "Memory kinds",
+        "caption": "Types of long-term memory — episodic (what happened), semantic (facts), procedural (how we do X)."
+      },
+      {
+        "id": "mm-4",
+        "kind": "ranking",
+        "heading": "Memory bugs",
+        "caption": "Failure modes — writing hallucinations into memory, or retrieving irrelevant memories that steer the agent wrong."
+      }
+    ]
+  },
+  "tools-tool-calling": {
+    "title": "Tools and tool calling",
+    "description": "Structured function calls — schemas in, validated arguments out — instead of hoping free text stays parseable.",
+    "steps": [
+      {
+        "id": "tt-1",
+        "kind": "panels",
+        "heading": "Tool schema",
+        "caption": "Declare tools — name, description, and JSON Schema for arguments. The model only sees this catalogue."
+      },
+      {
+        "id": "tt-2",
+        "kind": "ranking",
+        "heading": "Proposal vs validation",
+        "caption": "Model proposes a call — structured args, not prose. Invalid JSON or wrong types fail before execution."
+      },
+      {
+        "id": "tt-3",
+        "kind": "timeline",
+        "heading": "Tool round-trip",
+        "caption": "Execute and return — runtime calls the API, then appends a tool result message for the next model turn."
+      },
+      {
+        "id": "tt-4",
+        "kind": "bars",
+        "heading": "Calls gated in one day (illustrative)",
+        "caption": "Reject dangerous calls — unknown tools, out-of-policy amounts, or missing confirmation never reach the network."
+      }
+    ]
+  },
+  "react-agents": {
+    "title": "ReAct agents",
+    "description": "Thought → Action → Observation as a runtime loop with stop sequences, parsers, and budgets — not just a prompt style.",
+    "steps": [
+      {
+        "id": "ra-1",
+        "kind": "tokens",
+        "heading": "Trace fragment",
+        "caption": "Format — the model emits Thought and Action lines; Observation is reserved for the runtime."
+      },
+      {
+        "id": "ra-2",
+        "kind": "loop",
+        "heading": "ReAct cycle",
+        "caption": "Loop — each Action triggers a real tool; each Observation changes the next Thought."
+      },
+      {
+        "id": "ra-3",
+        "kind": "loop",
+        "heading": "ReAct cycle 2",
+        "caption": "Second cycle — policy uses the observation, then may act again or finish with Final Answer."
+      },
+      {
+        "id": "ra-4",
+        "kind": "ranking",
+        "heading": "Runtime checklist",
+        "caption": "Runtime responsibilities — parse, validate, budget, and never let the model invent Observation text."
+      }
+    ]
+  },
+  "multi-agent": {
+    "title": "Multi-agent systems",
+    "description": "Multiple specialised policies sharing a protocol — useful when roles diverge, costly when they thrash.",
+    "steps": [
+      {
+        "id": "ma-1",
+        "kind": "panels",
+        "heading": "Role split",
+        "caption": "Split roles — researcher gathers evidence; writer drafts; critic checks claims. Each has different tools."
+      },
+      {
+        "id": "ma-2",
+        "kind": "timeline",
+        "heading": "Handoff",
+        "caption": "Protocol — agents communicate via structured messages or a shared blackboard, not vibes in one mega-context."
+      },
+      {
+        "id": "ma-3",
+        "kind": "bars",
+        "heading": "Illustrative cost of ungoverned debate",
+        "caption": "Failure mode — agents debate forever or overwrite each other’s artifacts without a termination rule."
+      },
+      {
+        "id": "ma-4",
+        "kind": "ranking",
+        "heading": "When to split",
+        "caption": "Use when specialisation or parallel work pays for coordination. Otherwise one well-tooled agent is simpler."
+      }
+    ]
+  },
+  "supervisor-pattern": {
+    "title": "Supervisor pattern",
+    "description": "A router agent delegates to specialists and aggregates results — central control with clear ownership.",
+    "steps": [
+      {
+        "id": "sp-1",
+        "kind": "flow",
+        "heading": "Routing",
+        "caption": "Supervisor sees the goal and the catalogue of workers — it does not do all the work itself."
+      },
+      {
+        "id": "sp-2",
+        "kind": "panels",
+        "heading": "Scoped call",
+        "caption": "Delegation — worker runs with a scoped prompt and tools; returns a structured result, not a free chat dump."
+      },
+      {
+        "id": "sp-3",
+        "kind": "timeline",
+        "heading": "Two-worker run",
+        "caption": "Aggregate — supervisor may call another worker or answer the user. It owns the final response."
+      },
+      {
+        "id": "sp-4",
+        "kind": "bars",
+        "heading": "Route accuracy on a labeled set",
+        "caption": "Mis-routing — wrong worker selection is the characteristic bug. Log route decisions and test them."
+      }
+    ]
+  },
+  "guardrails": {
+    "title": "Agent guardrails",
+    "description": "Deterministic checks around a probabilistic policy — input, tool, and output gates.",
+    "steps": [
+      {
+        "id": "gd-1",
+        "kind": "flow",
+        "heading": "Ingress",
+        "caption": "Input gate — refuse or redact dangerous user content before it reaches the model or tools."
+      },
+      {
+        "id": "gd-2",
+        "kind": "ranking",
+        "heading": "refund.create checks",
+        "caption": "Tool gate — allowlist, argument bounds, and confirmation for irreversible actions."
+      },
+      {
+        "id": "gd-3",
+        "kind": "panels",
+        "heading": "Egress",
+        "caption": "Output gate — scan the final answer for secrets, disallowed topics, or missing citations before it ships."
+      },
+      {
+        "id": "gd-4",
+        "kind": "flow",
+        "heading": "Layers",
+        "caption": "Defence in depth — prompt policy + tool gate + output scanner. Any single layer can fail."
+      }
+    ]
+  },
+  "mcp-conceptual": {
+    "title": "MCP (conceptual)",
+    "description": "Model Context Protocol — a standard way for hosts to expose tools and resources to models.",
+    "steps": [
+      {
+        "id": "mcp-1",
+        "kind": "panels",
+        "heading": "Before",
+        "caption": "Problem — every tool integration reinvented its own schema and transport. Agents drowned in one-off adapters."
+      },
+      {
+        "id": "mcp-2",
+        "kind": "flow",
+        "heading": "Roles",
+        "caption": "MCP server — advertises tools/resources with schemas; host connects and calls them via the protocol."
+      },
+      {
+        "id": "mcp-3",
+        "kind": "timeline",
+        "heading": "Session sketch",
+        "caption": "Discover then call — list tools, show schemas to the model, execute selected tool through the host."
+      },
+      {
+        "id": "mcp-4",
+        "kind": "ranking",
+        "heading": "Host responsibilities",
+        "caption": "Still your threat model — a malicious or over-privileged MCP server is a tool-exfiltration risk."
+      }
+    ]
+  },
+  "hitl": {
+    "title": "Human-in-the-loop",
+    "description": "Pause the agent for approval on risky steps — resume with an explicit human decision recorded in state.",
+    "steps": [
+      {
+        "id": "ht-1",
+        "kind": "timeline",
+        "heading": "Pause point",
+        "caption": "Trigger — policy wants refund.create for $480. Guardrail requires a human because amount > threshold."
+      },
+      {
+        "id": "ht-2",
+        "kind": "panels",
+        "heading": "Approval card",
+        "caption": "Human UI — show the proposed call, evidence, and consequences. Approve, edit args, or reject."
+      },
+      {
+        "id": "ht-3",
+        "kind": "ranking",
+        "heading": "Outcomes",
+        "caption": "Resume — approval writes a signed decision into state; runtime executes; rejection ends or re-plans."
+      },
+      {
+        "id": "ht-4",
+        "kind": "flow",
+        "heading": "Async HITL",
+        "caption": "Design for latency — humans are slow. Persist checkpoints and notify; do not hold an HTTP request open for hours."
+      }
+    ]
+  },
+  "checkpointing": {
+    "title": "Checkpointing",
+    "description": "Persist run state so crashes, deploys, and HITL pauses do not lose the thread.",
+    "steps": [
+      {
+        "id": "cp-1",
+        "kind": "timeline",
+        "heading": "Crash",
+        "caption": "Without checkpoints — process dies after tool 2; restart either skips work or repeats side effects blindly."
+      },
+      {
+        "id": "cp-2",
+        "kind": "flow",
+        "heading": "Write cadence",
+        "caption": "Checkpoint after each durable step — write state + last completed node to storage before the next risk."
+      },
+      {
+        "id": "cp-3",
+        "kind": "timeline",
+        "heading": "Recovery",
+        "caption": "Resume — load snapshot, skip completed idempotent tools, continue from the cursor."
+      },
+      {
+        "id": "cp-4",
+        "kind": "ranking",
+        "heading": "Snapshot contents",
+        "caption": "What to store — enough to rebuild the prompt and avoid duplicate side effects; not necessarily full HTTP traces forever."
+      }
+    ]
+  },
+  "agent-failure-modes": {
+    "title": "Agent failure modes",
+    "description": "Loops, tool misuse, hallucinated observations, and goal drift — each needs a different control.",
+    "steps": [
+      {
+        "id": "af-1",
+        "kind": "bars",
+        "heading": "Repeated tool signature detector",
+        "caption": "Infinite loop — the same Action with the same args repeats until timeout."
+      },
+      {
+        "id": "af-2",
+        "kind": "panels",
+        "heading": "Schema-valid, policy-invalid",
+        "caption": "Tool misuse — wrong tool or args that pass schema but violate business rules."
+      },
+      {
+        "id": "af-3",
+        "kind": "ranking",
+        "heading": "Authenticity",
+        "caption": "Hallucinated observation — model writes what it wished the tool returned. Only the runtime may author Observation."
+      },
+      {
+        "id": "af-4",
+        "kind": "timeline",
+        "heading": "Drift example",
+        "caption": "Goal drift — after many steps the agent optimises a side quest. Keep the goal string pinned in state and prompts."
+      }
+    ]
+  }
+}

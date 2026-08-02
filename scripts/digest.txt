@@ -1,0 +1,1441 @@
+### ai-agent | ai-agents | AI Agent — A model that acts toward goals with tools | beginner
+SUMMARY: An AI agent is a system that uses a model to pursue a goal by planning, calling tools, observing results, and updating state until it finishes or stops. It is more than a single reply; it is a loop with side effects.
+ANALOGY: An intern with a checklist and phone access: think, call someone, update the checklist, repeat.
+EXPL: Goal-directed behavior. || Tools create real-world effects. || State tracks progress. || Needs limits and supervision.
+TERMS: Agent=Goal-seeking loop with actions || Tool=External capability the agent can invoke || Side effect=Change outside the chat text
+VIZ(stepped): Receive a goal. >> Plan first action. >> Call a tool. >> Observe result. >> Continue or finish.
+MATH: (none)
+INTERACTIVE(generic-toggle): Try the idea :: {"options":["Single FAQ reply","Multi-step tool loop","Random button clicking"],"insights":{"Single FAQ reply":"Chatbot style.","Multi-step tool loop":"Agent style.","Random button clicking":"Unsafe chaos."},"selected":"Single FAQ reply"}
+CODE: (none)
+REAL: Travel booking helper :: Agent searches flights, compares, then drafts an itinerary. :: Actions make it an agent.
+Q: An agent typically… | opts: o0:Acts in a loop with tools toward a goal ; o1:Only styles CSS ; o2:Only stores vectors ; o3:Only trains GPUs | correct=o0 | why: Goal loop.
+Q: Tools enable… | opts: o0:Side effects and lookups ; o1:Nothing ; o2:Font bolding only ; o3:HDMI | correct=o0 | why: Capabilities.
+Q: Agents need… | opts: o0:Limits and supervision ; o1:Infinite rights always ; o2:No logging ; o3:No goals | correct=o0 | why: Control.
+
+### agentic-vs-chatbot | ai-agents | Agentic AI vs chatbot — Reply once versus act over time | beginner
+SUMMARY: A chatbot mainly returns a next message. An agentic system can take multi-step actions, maintain state, and use tools across turns. Many products are hybrids: chat UI with optional agent modes for harder jobs.
+ANALOGY: Answering a question at a help desk versus actually filing the ticket, checking status, and emailing you.
+EXPL: Chatbot: conversational response. || Agent: plans and acts. || Risk and cost rise with actions. || Pick the simplest mode that works.
+TERMS: Chatbot=Conversational interface mostly without side effects || Agentic system=Multi-step tool-using autonomy || Human handoff=Escalate to a person
+VIZ(stepped): User asks a simple definition. >> Chat reply suffices. >> User asks to book and email. >> Agent mode engages tools. >> Confirm before irreversible acts.
+MATH: (none)
+INTERACTIVE(generic-toggle): Try the idea :: {"options":["Define HTTP","Book travel and email itinerary","Delete production DB"],"insights":{"Define HTTP":"Chat is enough.","Book travel and email itinerary":"Agentic candidate.","Delete production DB":"Danger—needs hard blocks."},"selected":"Define HTTP"}
+CODE: (none)
+REAL: Banking assistant :: Balances answered in chat; transfers require agentic flows plus approvals. :: Match autonomy to risk.
+Q: Chatbots mainly… | opts: o0:Return conversational replies ; o1:Always file taxes ; o2:Manage Kubernetes by default ; o3:Train diffusion | correct=o0 | why: Conversation.
+Q: Agentic systems… | opts: o0:Take multi-step actions ; o1:Never use tools ; o2:Forbid state ; o3:Only render CSS | correct=o0 | why: Actions.
+Q: Prefer… | opts: o0:Simplest mode that works ; o1:Max autonomy always ; o2:No UX ; o3:No logs | correct=o0 | why: Right-size autonomy.
+
+### plan-act-observe | ai-agents | Plan-Act-Observe loop — The heartbeat of agent behavior | beginner
+SUMMARY: Most agents iterate: plan what to do, act via a tool or message, observe the outcome, then replan. This loop turns a static model into an interactive problem solver—and can loop forever without caps.
+ANALOGY: Cooking while tasting: plan spice, act with a pinch, observe taste, adjust.
+EXPL: Plan proposes next step. || Act executes. || Observe captures result. || Update state and repeat. || Stop conditions are mandatory.
+TERMS: Plan=Decide next action || Act=Execute tool/action || Observe=Read the result
+VIZ(stepped): Goal set. >> Plan an action. >> Act. >> Observe. >> Replan or finish.
+MATH: (none)
+INTERACTIVE(agent-loop): Try the idea :: {"goal":"Find tomorrow’s weather in Pune and suggest an outfit.","steps":[{"thought":"I need a weather lookup tool.","action":"weather_api(city=\"Pune\", day=\"tomorrow\")","observation":"32°C, sunny"},{"thought":"Hot and sunny—recommend light clothes.","action":"final_answer","observation":"Wear breathable cotton; sunglasses optional."}]}
+CODE: (none)
+REAL: Data cleanup agent :: Plans column fixes, runs scripts, observes errors, replans. :: Loop drives progress.
+Q: The core loop is… | opts: o0:Plan, act, observe ; o1:Compile, link, only ; o2:Margin, padding, border ; o3:Ping, traceroute, only | correct=o0 | why: PAO.
+Q: Without stop conditions agents may… | opts: o0:Loop forever ; o1:Become perfectly safe ; o2:Cool the room ; o3:Fix DNS forever | correct=o0 | why: Caps needed.
+Q: Observe feeds… | opts: o0:The next plan ; o1:Only CSS ; o2:Only fonts ; o3:Only HDMI | correct=o0 | why: Feedback.
+
+### agent-state | ai-agents | State — What the agent remembers between steps | intermediate
+SUMMARY: State is structured memory the agent updates: goals, scratchpads, tool results, file pointers, and status flags. Good state design makes agents debuggable; stuffing everything into chat text alone becomes fragile.
+ANALOGY: A pilot checklist and instrument panel—not only remembered conversation vibes.
+EXPL: Separate chat transcript from structured state. || Persist key fields. || Keep secrets out of prompts when possible. || Schema state enables recovery.
+TERMS: State=Structured variables across steps || Scratchpad=Working notes || Checkpoint=Saved state snapshot
+VIZ(stepped): Initialize state. >> After each tool, update fields. >> Next plan reads state. >> Persist checkpoint. >> Resume after failure.
+MATH: (none)
+INTERACTIVE(generic-toggle): Try the idea :: {"options":["Only chat log","Typed state object","Global mutable everything"],"insights":{"Only chat log":"Fragile.","Typed state object":"Debuggable.","Global mutable everything":"Hard to audit."},"selected":"Only chat log"}
+CODE: (none)
+REAL: Research agent folders :: State tracks which sources were read and remaining questions. :: Structure beats vibes.
+Q: Agent state should be… | opts: o0:Structured and updated each step ; o1:Only random prose always ; o2:Deleted every token ; o3:Stored in CSS | correct=o0 | why: Structured.
+Q: Checkpoints help… | opts: o0:Resume after failures ; o1:Heat GPUs ; o2:Bold fonts ; o3:Route packets | correct=o0 | why: Recovery.
+Q: Secrets in prompts are… | opts: o0:Risky ; o1:Required always ; o2:Impossible ; o3:A vector metric | correct=o0 | why: Minimize exposure.
+
+### planning | ai-agents | Planning — Decide the sequence before thrashing tools | intermediate
+SUMMARY: Planning decomposes a goal into steps before or between actions. Plans can be implicit in thoughts or explicit checklists. Overplanning wastes tokens; underplanning causes tool thrash.
+ANALOGY: Writing grocery sections before wandering every aisle at random.
+EXPL: Clarify goal and constraints. || Decompose into steps. || Replan when observations invalidate assumptions. || Keep plans short and testable. || Share plan with users for trust.
+TERMS: Plan=Ordered intended steps || Replan=Update plan after new info || Constraint=Hard limit on actions
+VIZ(stepped): Goal arrives. >> Draft a short plan. >> Execute step 1. >> Observation changes assumptions. >> Replan remaining steps.
+MATH: (none)
+INTERACTIVE(generic-toggle): Try the idea :: {"options":["No plan, spam tools","Short checklist plan","100-page plan before hello world"],"insights":{"No plan, spam tools":"Thrash.","Short checklist plan":"Healthy.","100-page plan before hello world":"Overplanning."},"selected":"No plan, spam tools"}
+CODE: (none)
+REAL: Migration agents :: Plan schema changes before running migrations. :: Look-ahead prevents disasters.
+Q: Planning helps agents… | opts: o0:Avoid random tool thrash ; o1:Delete evals ; o2:Ignore observations ; o3:Ban state | correct=o0 | why: Structure.
+Q: Replanning happens when… | opts: o0:Observations invalidate assumptions ; o1:Fonts change ; o2:CSS hot-reloads ; o3:HDMI flickers | correct=o0 | why: New info.
+Q: Plans should be… | opts: o0:Short and testable ; o1:Infinite novels ; o2:Secret from logs ; o3:Written only in emojis | correct=o0 | why: Practical.
+
+### memory | ai-agents | Memory — Persist useful information beyond one prompt | intermediate
+SUMMARY: Agent memory stores information across steps or sessions: conversation summaries, user preferences, retrieved facts, and episode logs. Memory systems must handle freshness, privacy, and relevance—or they become cluttered noise.
+ANALOGY: Sticky notes, a diary, and a filing cabinet—not expecting perfect photographic recall every second.
+EXPL: Short-term: working context. || Long-term: stored notes/vectors. || Summarize to compress. || Forget stale or private items. || Retrieve memory like RAG.
+TERMS: Short-term memory=Current working context || Long-term memory=Persisted knowledge store || Memory retrieval=Pull relevant notes into context
+VIZ(stepped): Conversation grows. >> Summarize older turns. >> Store key preferences. >> Later query retrieves memory. >> Personalization with control.
+MATH: (none)
+INTERACTIVE(generic-toggle): Try the idea :: {"options":["No memory","Summaries + preference store","Store every raw token forever"],"insights":{"No memory":"Stateless.","Summaries + preference store":"Practical.","Store every raw token forever":"Cost and privacy risk."},"selected":"No memory"}
+CODE: (none)
+REAL: Personal tutor memory :: Remembers a student struggles with recursion and adapts examples. :: Useful memory needs consent and controls.
+Q: Memory helps agents… | opts: o0:Use info beyond one prompt ; o1:Avoid all tools ; o2:Delete logs ; o3:Ban users | correct=o0 | why: Persistence.
+Q: Stale memory can… | opts: o0:Mislead decisions ; o1:Only help ; o2:Cool GPUs ; o3:Fix CSS | correct=o0 | why: Freshness matters.
+Q: Memory retrieval is similar to… | opts: o0:RAG over notes ; o1:HDMI negotiation ; o2:Font subsetting ; o3:DHCP only | correct=o0 | why: Retrieve notes.
+
+### tools-tool-calling | ai-agents | Tools / Tool-calling — Let models invoke functions safely | intermediate
+SUMMARY: Tool-calling lets a model emit structured function calls that your runtime executes. Schemas describe arguments; the app returns observations. This is how models browse, calculate, or update systems—under your permission model.
+ANALOGY: A voice assistant that can dial APIs the way you dial apps—only the ones you installed and allowed.
+EXPL: Declare tools with schemas. || Model selects and fills arguments. || Runtime executes and returns results. || Validate args and authenticate. || Never expose unconstrained shell by default.
+TERMS: Tool schema=Name, description, parameters || Function call=Structured invocation || Allowlist=Permitted tools only
+VIZ(stepped): User asks for weather. >> Model calls weather tool. >> Runtime fetches data. >> Observation returns. >> Model answers with facts.
+MATH: (none)
+INTERACTIVE(generic-toggle): Try the idea :: {"options":["No tools","Allowlisted tools with auth","Root shell tool for everyone"],"insights":{"No tools":"Language only.","Allowlisted tools with auth":"Production pattern.","Root shell tool for everyone":"Incident waiting."},"selected":"No tools"}
+CODE: Tool schema sketch
+REAL: Calendar assistants :: Create-event tool with OAuth scopes. :: Permissions make tools safe enough to ship.
+Q: Tool-calling emits… | opts: o0:Structured function calls ; o1:Random poetry only ; o2:CSS only ; o3:GPU microcode | correct=o0 | why: Functions.
+Q: Schemas define… | opts: o0:Parameters and types ; o1:Ocean salinity ; o2:Fan curves ; o3:Mouse LOD | correct=o0 | why: Contracts.
+Q: Unconstrained shell access is… | opts: o0:Dangerous by default ; o1:Always required ; o2:A vector DB ; o3:A font | correct=o0 | why: Avoid.
+
+### react-agents | ai-agents | ReAct agents — Agents that think and act in text traces | intermediate
+SUMMARY: ReAct agents operationalize the Thought-Action-Observation pattern as a runtime loop with tools. Traces make debugging easier, but verbose thoughts can leak private reasoning and cost tokens.
+ANALOGY: A detective notebook: hypothesize, check a clue, write what was found, hypothesize again.
+EXPL: Emit thought. || Emit action. || Runtime provides observation. || Repeat with budgets. || Parse carefully; models drift from format.
+TERMS: Trace=Visible thought/action log || Budget=Max steps/tokens/tools || Parser=Extract actions reliably
+VIZ(flagship): Goal: weather-based outfit. >> Thought needs weather. >> Action calls API. >> Observation: 32C sunny. >> Final recommendation.
+MATH: (none)
+INTERACTIVE(agent-loop): Walk a ReAct loop :: {"goal":"Find tomorrow’s weather in Pune and suggest an outfit.","steps":[{"thought":"I need a weather lookup tool.","action":"weather_api(city=\"Pune\", day=\"tomorrow\")","observation":"32°C, sunny"},{"thought":"Hot and sunny—recommend light clothes.","action":"final_answer","observation":"Wear breathable cotton; sunglasses optional."}]}
+CODE: (none)
+REAL: Ops runbooks :: Agents follow ReAct to query metrics then suggest mitigations. :: Traces aid incident review.
+Q: ReAct agents interleave… | opts: o0:Thoughts and tool actions ; o1:Only embeddings ; o2:Only CSS ; o3:Only epochs | correct=o0 | why: TAO.
+Q: Budgets prevent… | opts: o0:Runaway loops ; o1:All learning ; o2:Tokenization ; o3:JSON | correct=o0 | why: Caps.
+Q: Traces help… | opts: o0:Debugging ; o1:Overheating intentionally ; o2:Deleting indexes ; o3:Hiding audits | correct=o0 | why: Visibility.
+
+### multi-agent | ai-agents | Multi-agent — Several specialized agents collaborating | advanced
+SUMMARY: Multi-agent systems assign roles to multiple agents—researcher, coder, critic—that communicate. Specialization can improve quality, but coordination overhead, cost, and failure modes grow quickly.
+ANALOGY: A small studio: writer, editor, and fact-checker instead of one exhausted generalist.
+EXPL: Split roles clearly. || Define communication protocols. || Avoid infinite debate loops. || Centralize shared state carefully. || Measure if multi-agent beats a single strong agent.
+TERMS: Role=Specialized agent responsibility || Protocol=How agents message || Orchestration=Who speaks when
+VIZ(stepped): Manager assigns roles. >> Researcher gathers. >> Writer drafts. >> Critic reviews. >> Merge final output.
+MATH: (none)
+INTERACTIVE(generic-toggle): Try the idea :: {"options":["One general agent","Researcher + writer + critic","Ten agents arguing forever"],"insights":{"One general agent":"Simple baseline.","Researcher + writer + critic":"Common pattern.","Ten agents arguing forever":"Failure mode."},"selected":"One general agent"}
+CODE: (none)
+REAL: Software PR agents :: One agent writes tests, another reviews security. :: Specialization mirrors teams.
+Q: Multi-agent means… | opts: o0:Multiple specialized collaborating agents ; o1:Multiple GPUs only ; o2:Multiple CSS files ; o3:Multiple DNS servers only | correct=o0 | why: Roles.
+Q: A risk is… | opts: o0:Coordination overhead and loops ; o1:Guaranteed cheaper always ; o2:No need for evals ; o3:Perfect safety | correct=o0 | why: Overhead.
+Q: You should check… | opts: o0:Whether one agent suffices ; o1:That debate never ends ; o2:That logs are off ; o3:That tools are root | correct=o0 | why: Justify complexity.
+
+### supervisor-pattern | ai-agents | Supervisor pattern — A manager agent routes work | advanced
+SUMMARY: In the supervisor pattern, a central agent routes subtasks to worker agents, aggregates results, and decides next steps. It simplifies control flow compared with fully peer-to-peer swarms.
+ANALOGY: A shift manager assigning tickets to specialists and combining their results.
+EXPL: Supervisor plans and routes. || Workers execute narrow skills. || Supervisor merges outputs. || Clear ownership of stop/fail. || Good fit for tool-specialist farms.
+TERMS: Supervisor=Orchestrating agent || Worker=Specialized agent || Handoff=Passing a subtask
+VIZ(stepped): User goal to supervisor. >> Route to retrieval worker. >> Route to drafting worker. >> Supervisor reviews. >> Final response.
+MATH: (none)
+INTERACTIVE(generic-toggle): Try the idea :: {"options":["Peer swarm with no owner","Supervisor + workers","Everyone can call everyone with no limits"],"insights":{"Peer swarm with no owner":"Harder to control.","Supervisor + workers":"Clearer orchestration.","Everyone can call everyone with no limits":"Chaos."},"selected":"Peer swarm with no owner"}
+CODE: (none)
+REAL: Customer ops suites :: Supervisor sends billing questions to billing tools agent. :: Routing clarifies ownership.
+Q: Supervisor pattern uses… | opts: o0:A central router agent ; o1:No orchestration ; o2:Only peer chaos ; o3:Only CSS | correct=o0 | why: Central control.
+Q: Workers should be… | opts: o0:Specialized ; o1:Omnipotent root shells ; o2:Silent forever ; o3:Unlogged | correct=o0 | why: Narrow skills.
+Q: Supervisor owns… | opts: o0:Stop/fail decisions often ; o1:Nothing ; o2:Only fonts ; o3:Only HDMI | correct=o0 | why: Control plane.
+
+### guardrails | ai-agents | Guardrails — Hard rails around soft models | intermediate
+SUMMARY: Guardrails are checks that constrain inputs, tools, and outputs: allowlists, policy classifiers, regex validators, rate limits, and human approvals. They acknowledge that prompts alone are soft.
+ANALOGY: Guardrails on a mountain road: the driver still steers, but barriers prevent falling off cliffs.
+EXPL: Validate inputs. || Constrain tools. || Filter outputs. || Fail closed on high risk. || Log violations for review.
+TERMS: Allowlist=Only permitted operations || Policy filter=Blocks disallowed content || Fail closed=Deny when unsure on high risk
+VIZ(stepped): User input arrives. >> Input guard runs. >> Agent acts within tool allowlist. >> Output filter checks. >> Safe response ships.
+MATH: (none)
+INTERACTIVE(generic-toggle): Try the idea :: {"options":["Prompt-only safety","Allowlists + validators + logs","No logging of violations"],"insights":{"Prompt-only safety":"Soft.","Allowlists + validators + logs":"Stronger.","No logging of violations":"Cannot improve."},"selected":"Prompt-only safety"}
+CODE: (none)
+REAL: PII redaction filters :: Outputs scrub account numbers before chat display. :: Defense in depth.
+Q: Guardrails are… | opts: o0:Hard checks around model behavior ; o1:Only system prompt poetry ; o2:GPU fans ; o3:CSS variables | correct=o0 | why: Hard checks.
+Q: Fail closed means… | opts: o0:Deny when unsure on high risk ; o1:Allow everything ; o2:Delete logs ; o3:Raise temperature | correct=o0 | why: Safe default.
+Q: Tool allowlists… | opts: o0:Limit capabilities ; o1:Grant root always ; o2:Remove auth ; o3:Ban schemas | correct=o0 | why: Least privilege.
+
+### mcp-conceptual | ai-agents | MCP (conceptual) — A standard way to plug tools and context | intermediate
+SUMMARY: Model Context Protocol (MCP) is a conceptual standard for exposing tools, resources, and prompts to models through a consistent interface. The idea is portable capabilities: connect an IDE, docs server, or database gateway without bespoke glue each time.
+ANALOGY: USB for AI tools: a common plug so many accessories work with many hosts.
+EXPL: Hosts connect to MCP servers. || Servers expose tools/resources. || Models call tools via the host. || Permissions still belong to your app. || Standards reduce integration sprawl.
+TERMS: MCP host=App that connects to servers || MCP server=Exposes tools/resources || Resource=Readable context object
+VIZ(stepped): Host starts. >> Connects to a docs MCP server. >> Lists tools/resources. >> Model invokes read/search. >> Observation returns.
+MATH: (none)
+INTERACTIVE(generic-toggle): Try the idea :: {"options":["Custom one-off tool glue each time","Shared protocol for tools","Give model raw cloud root keys"],"insights":{"Custom one-off tool glue each time":"Sprawl.","Shared protocol for tools":"MCP-style portability.","Give model raw cloud root keys":"Unsafe."},"selected":"Custom one-off tool glue each time"}
+CODE: (none)
+REAL: IDE copilots :: A repo tools server exposes test runners and file readers via a shared protocol. :: Portable tool ecosystems emerge.
+Q: MCP is conceptually… | opts: o0:A standard interface for tools/context ; o1:A GPU brand ; o2:A CSS framework ; o3:A loss function | correct=o0 | why: Protocol idea.
+Q: Permissions still… | opts: o0:Belong to your application ; o1:Disappear ; o2:Belong to temperature ; o3:Belong to cosine | correct=o0 | why: App owns authz.
+Q: Servers expose… | opts: o0:Tools and resources ; o1:Only wallpapers ; o2:Only HDMI ; o3:Only fan curves | correct=o0 | why: Capabilities.
+
+### hitl | ai-agents | HITL — Human-in-the-loop approvals | beginner
+SUMMARY: Human-in-the-loop (HITL) inserts people at critical steps: approve spends, edit drafts, confirm deletions. Autonomy handles draft work; humans own irreversible or regulated actions.
+ANALOGY: Autopilot can fly, but a pilot takes over for landing in a storm.
+EXPL: Identify high-risk actions. || Pause for approval. || Show evidence and diffs. || Record who approved. || Tune which steps need humans.
+TERMS: Approval gate=Pause for human decision || Escalation=Route to an expert || Audit trail=Who did what when
+VIZ(stepped): Agent drafts a money transfer. >> HITL gate pauses. >> Human reviews. >> Approve or reject. >> Continue safely.
+MATH: (none)
+INTERACTIVE(generic-toggle): Try the idea :: {"options":["Auto-send all emails","Approve outbound customer emails","Human types every token"],"insights":{"Auto-send all emails":"Risky.","Approve outbound customer emails":"Practical HITL.","Human types every token":"No leverage."},"selected":"Auto-send all emails"}
+CODE: (none)
+REAL: Refund agents :: Auto-approve tiny refunds; humans approve large ones. :: Risk-based autonomy.
+Q: HITL means… | opts: o0:Humans approve critical steps ; o1:Humans never involved ; o2:Only models approve ; o3:No logs | correct=o0 | why: Human gates.
+Q: Use HITL especially for… | opts: o0:Irreversible or high-risk actions ; o1:Changing font size ; o2:Ping latency ; o3:CSS hover color | correct=o0 | why: Risk.
+Q: Audit trails record… | opts: o0:Approvals and actions ; o1:Nothing ; o2:Only GPU temps ; o3:Only wallpapers | correct=o0 | why: Accountability.
+
+### checkpointing | ai-agents | Checkpointing — Save progress to recover and audit | intermediate
+SUMMARY: Checkpointing snapshots agent state after steps so runs can resume, branch, or audit. It is essential for long jobs and for replaying failures without redoing expensive tool calls.
+ANALOGY: Video game save points before boss fights.
+EXPL: Snapshot state and outputs. || Resume from last good point. || Support time-travel debugging. || Store securely with retention policies. || Combine with idempotent tools.
+TERMS: Checkpoint=Saved snapshot || Resume=Continue from snapshot || Idempotent tool=Safe to retry
+VIZ(stepped): Start long research. >> Checkpoint after each source. >> Crash occurs. >> Resume from last checkpoint. >> Finish without full redo.
+MATH: (none)
+INTERACTIVE(generic-toggle): Try the idea :: {"options":["No saves","Checkpoint each major step","Checkpoint every keystroke to public S3"],"insights":{"No saves":"Fragile long jobs.","Checkpoint each major step":"Practical.","Checkpoint every keystroke to public S3":"Privacy disaster."},"selected":"No saves"}
+CODE: (none)
+REAL: ETL agent jobs :: Nightly agents checkpoint after each table migration step. :: Recovery beats reruns.
+Q: Checkpointing enables… | opts: o0:Resume and audit ; o1:Hotter GPUs ; o2:Bolder fonts ; o3:Faster light | correct=o0 | why: Recovery.
+Q: Idempotent tools help because… | opts: o0:Retries are safer ; o1:Retries are impossible ; o2:Logs are banned ; o3:Schemas vanish | correct=o0 | why: Safe retry.
+Q: Checkpoints should be… | opts: o0:Stored with security/retention in mind ; o1:Posted publicly always ; o2:Deleted every millisecond ; o3:Written in CSS only | correct=o0 | why: Govern them.
+
+### agent-failure-modes | ai-agents | Agent failure modes — How autonomy breaks | intermediate
+SUMMARY: Agents fail via loops, tool misuse, prompt injection from tool outputs, goal misinterpretation, cost explosions, and silent partial completion. Design budgets, validators, and evaluations for agent traces—not only final answers.
+ANALOGY: A well-meaning intern endlessly emailing the wrong distribution list because nobody set a stop rule.
+EXPL: Unbounded retries. || Trusting malicious tool text as instructions. || Wrong success criteria. || Missing HITL on irreversible acts. || Trace evals catch patterns.
+TERMS: Prompt injection=Malicious instructions in data/tools || Looping=Repeating actions without progress || Partial completion=Stops mid-goal unnoticed
+VIZ(stepped): Agent reads a web page. >> Page says ignore policies. >> Without guards, agent complies. >> Injection succeeds. >> Sanitize and isolate tool text.
+MATH: (none)
+INTERACTIVE(generic-toggle): Try the idea :: {"options":["Trust all web text as system","Isolate tool text + budgets","Infinite retries"],"insights":{"Trust all web text as system":"Injection bait.","Isolate tool text + budgets":"Hardening.","Infinite retries":"Cost bomb."},"selected":"Trust all web text as system"}
+CODE: (none)
+REAL: Web-using agents :: Untrusted pages attempted to override system rules. :: Treat tool outputs as untrusted data.
+Q: Tool outputs should be treated as… | opts: o0:Untrusted data ; o1:Root commands ; o2:Always safe system prompts ; o3:CSS variables | correct=o0 | why: Untrusted.
+Q: Budgets mitigate… | opts: o0:Cost and loop explosions ; o1:All hallucinations forever ; o2:Need for auth ; o3:Need for tests | correct=o0 | why: Caps.
+Q: Evaluate… | opts: o0:Traces and outcomes ; o1:Only final marketing copy ; o2:Only GPU stickers ; o3:Only fonts | correct=o0 | why: Agent evals.
+
+### langchain | ai-frameworks | LangChain — Composable chains and tool wrappers | beginner
+SUMMARY: LangChain is a popular framework for composing prompts, retrievers, tools, and memory into LLM applications. Conceptually it standardizes building blocks so you can assemble RAG and agents faster—while still owning evaluation and architecture choices.
+ANALOGY: A box of LEGO adapters for LLM apps: useful accelerators, not a substitute for design.
+EXPL: Chains compose steps. || Integrations wrap many vendors. || Abstractions can hide costs/complexity. || Great for prototypes; mind lock-in and opacity.
+TERMS: Chain=Pipeline of LLM steps || Integration=Connector to a vendor/tool || Runnable=Composable unit of work
+VIZ(stepped): Define a prompt. >> Add a retriever. >> Call an LLM. >> Parse output. >> Ship a thin app.
+MATH: (none)
+INTERACTIVE(generic-toggle): Try the idea :: {"options":["Raw SDK only","LangChain-style composition","Framework with zero observability"],"insights":{"Raw SDK only":"More control.","LangChain-style composition":"Faster assembly.","Framework with zero observability":"Hard to debug."},"selected":"Raw SDK only"}
+CODE: (none)
+REAL: Weekend RAG demo :: Students wire PDF loader → split → vectorstore → QA chain quickly. :: Speed for learning and spikes.
+Q: LangChain is mainly… | opts: o0:A composition framework for LLM apps ; o1:A GPU ; o2:A CSS engine ; o3:A vector metric | correct=o0 | why: Framework.
+Q: A risk of heavy abstraction is… | opts: o0:Hidden complexity and cost ; o1:Guaranteed correctness ; o2:Free hosting ; o3:No need for evals | correct=o0 | why: Opacity.
+Q: It often helps… | opts: o0:Prototype RAG/agents faster ; o1:Replace all databases ; o2:Ban Python ; o3:Delete prompts | correct=o0 | why: Speed.
+
+### langgraph | ai-frameworks | LangGraph — Graph-based agent control flow | intermediate
+SUMMARY: LangGraph models agent workflows as graphs with nodes, edges, and explicit state—useful for durable, branching, human-in-the-loop agent systems beyond linear chains.
+ANALOGY: A flowchart you can execute: boxes are steps, arrows are decisions, and sticky notes are state.
+EXPL: State is first-class. || Graphs support cycles and branches. || Good for durable agents. || More structure than free-form loops.
+TERMS: Node=A computation step || Edge=Transition between steps || Durable execution=Resume-friendly runs
+VIZ(stepped): Define state schema. >> Add nodes for retrieve/act/approve. >> Connect edges. >> Compile graph. >> Run with checkpoints.
+MATH: (none)
+INTERACTIVE(generic-toggle): Try the idea :: {"options":["Linear chain only","Stateful graph with HITL node","Spaghetti callbacks"],"insights":{"Linear chain only":"Simple paths.","Stateful graph with HITL node":"LangGraph sweet spot.","Spaghetti callbacks":"Hard to reason."},"selected":"Linear chain only"}
+CODE: (none)
+REAL: Approval-heavy ops bots :: Graph pauses on HITL nodes then resumes. :: Control flow matches business process.
+Q: LangGraph emphasizes… | opts: o0:Graph control flow and state ; o1:Only CSS grids ; o2:Only cosine ; o3:Only HDMI | correct=o0 | why: Graphs.
+Q: Cycles in graphs enable… | opts: o0:Agent loops ; o1:Perfect truth ; o2:Free GPUs ; o3:No state | correct=o0 | why: Loops.
+Q: Durable execution helps… | opts: o0:Resume long runs ; o1:Delete logs ; o2:Ban approvals ; o3:Avoid schemas | correct=o0 | why: Recovery.
+
+### llamaindex | ai-frameworks | LlamaIndex — Data framework for LLM retrieval apps | beginner
+SUMMARY: LlamaIndex focuses on connecting LLMs to data: indexes, query engines, and retrieval abstractions. Conceptually reach for it when your core problem is document QA and structured data access patterns.
+ANALOGY: A librarian toolkit specialized for getting the right pages into the model’s hands.
+EXPL: Indexes over documents and more. || Query engines encapsulate retrieval+synthesis. || Strong fit for RAG-centric apps. || Still needs evals for faithfulness.
+TERMS: Index=Data structure for retrieval || Query engine=Retrieval plus answer interface || Node parser=Chunking component
+VIZ(stepped): Load documents. >> Build an index. >> Create a query engine. >> Ask questions. >> Return grounded answers.
+MATH: (none)
+INTERACTIVE(generic-toggle): Try the idea :: {"options":["Chat with no docs","Index docs + query engine","Fine-tune for every FAQ edit"],"insights":{"Chat with no docs":"Ungrounded.","Index docs + query engine":"LlamaIndex-style.","Fine-tune for every FAQ edit":"Heavy-handed."},"selected":"Chat with no docs"}
+CODE: (none)
+REAL: Course material tutors :: Index lecture PDFs for student questions. :: Data-first framework fit.
+Q: LlamaIndex is especially known for… | opts: o0:Data/RAG indexing patterns ; o1:Painting icons ; o2:Training GPUs from CSS ; o3:DHCP | correct=o0 | why: Data framework.
+Q: A query engine typically… | opts: o0:Retrieves and synthesizes answers ; o1:Only trains diffusion ; o2:Only styles buttons ; o3:Only pings hosts | correct=o0 | why: RAG interface.
+Q: You still need… | opts: o0:Evaluation of groundedness ; o1:Zero tests ; o2:No chunking ; o3:No metadata | correct=o0 | why: Evals remain.
+
+### crewai | ai-frameworks | CrewAI — Role-playing multi-agent crews | intermediate
+SUMMARY: CrewAI popularizes multi-agent “crews” with roles, tasks, and collaboration patterns. Conceptually it is an orchestration layer for role-based agent teams, with the usual multi-agent tradeoffs.
+ANALOGY: Assigning producer, writer, and editor roles on a small film set.
+EXPL: Define agents with roles. || Assign tasks. || Orchestrate collaboration. || Watch cost and loops. || Validate outputs per role.
+TERMS: Crew=Team of agents || Task=Unit of work || Role=Persona and responsibilities
+VIZ(stepped): Create researcher agent. >> Create writer agent. >> Assign tasks to crew. >> Collaborate. >> Emit final deliverable.
+MATH: (none)
+INTERACTIVE(generic-toggle): Try the idea :: {"options":["Single agent draft","Crew with researcher+writer","Twenty agents rewrite forever"],"insights":{"Single agent draft":"Simple.","Crew with researcher+writer":"Crew-style.","Twenty agents rewrite forever":"Waste."},"selected":"Single agent draft"}
+CODE: (none)
+REAL: Content pipelines :: Researcher gathers sources; writer drafts; editor polishes. :: Roles mirror human teams.
+Q: CrewAI centers on… | opts: o0:Role-based multi-agent teams ; o1:Only vector math ; o2:Only Kubernetes ; o3:Only CSS | correct=o0 | why: Crews.
+Q: A key tradeoff is… | opts: o0:Coordination cost ; o1:Guaranteed cheaper answers ; o2:No need for tools ; o3:Perfect safety | correct=o0 | why: Overhead.
+Q: Tasks should be… | opts: o0:Clear per role ; o1:Infinite and vague ; o2:Secret from logs ; o3:Unowned | correct=o0 | why: Clarity.
+
+### autogen | ai-frameworks | AutoGen — Multi-agent conversation frameworks | intermediate
+SUMMARY: AutoGen (and similar systems) structure multi-agent applications as conversations between agents—including user proxies and tool-using assistants. The conversation metaphor makes patterns easy to sketch and easy to overcomplicate.
+ANALOGY: A group chat where each participant has a job and can call tools when needed.
+EXPL: Agents message each other. || User proxy can represent humans/tools. || Conversation policies control turns. || Needs termination conditions.
+TERMS: User proxy=Agent representing user/side effects || Assistant agent=LLM-backed participant || Termination=When chat stops
+VIZ(stepped): User proxy posts a goal. >> Assistant proposes a plan. >> Tool calls execute. >> Agents discuss results. >> Terminate with answer.
+MATH: (none)
+INTERACTIVE(generic-toggle): Try the idea :: {"options":["Solo LLM call","Multi-agent conversation with termination","Infinite agent debate"],"insights":{"Solo LLM call":"Minimal.","Multi-agent conversation with termination":"AutoGen-like.","Infinite agent debate":"Failure."},"selected":"Solo LLM call"}
+CODE: (none)
+REAL: Coding helper groups :: One agent writes code; another runs tests via tools. :: Conversation drives iteration.
+Q: AutoGen-style systems often model… | opts: o0:Agents as conversing participants ; o1:Only CSS grids ; o2:Only cosine distance ; o3:Only HDMI | correct=o0 | why: Conversations.
+Q: Termination conditions… | opts: o0:Stop runaway chats ; o1:Invite infinite loops ; o2:Delete tools ; o3:Ban state | correct=o0 | why: Stops.
+Q: User proxies can… | opts: o0:Represent humans or tool sides ; o1:Replace electricity ; o2:Paint SVGs ; o3:Set DNS | correct=o0 | why: Bridge roles.
+
+### google-adk | ai-frameworks | Google ADK — Agent development kit mindset | intermediate
+SUMMARY: Agent Development Kits (such as Google’s ADK conceptually) package patterns for building, evaluating, and deploying agents with cloud-native integrations. Think batteries-included tooling around orchestration, tools, and ops—not a new model architecture.
+ANALOGY: A robotics starter kit: motors, sensors, and manuals so you build a robot faster than inventing parts.
+EXPL: Opinionated agent scaffolding. || Cloud integrations nearby. || Emphasis on tooling and lifecycle. || Portability varies by kit.
+TERMS: ADK=Agent development kit || Scaffolding=Starter structure || Lifecycle=Build, eval, deploy, monitor
+VIZ(stepped): Scaffold an agent project. >> Wire tools. >> Add eval harness. >> Deploy to cloud runtime. >> Monitor traces.
+MATH: (none)
+INTERACTIVE(generic-toggle): Try the idea :: {"options":["From-scratch agent runtime","ADK-style scaffold","Copy a random notebook forever"],"insights":{"From-scratch agent runtime":"Max control.","ADK-style scaffold":"Faster standards.","Copy a random notebook forever":"Fragile."},"selected":"From-scratch agent runtime"}
+CODE: (none)
+REAL: Enterprise agent platforms :: Kits standardize how teams ship internal agents. :: Shared scaffolding beats one-offs.
+Q: An ADK is mainly… | opts: o0:Scaffolding and tools for building agents ; o1:A tokenizer ; o2:A loss curve ; o3:A font | correct=o0 | why: Dev kit.
+Q: Kits often include… | opts: o0:Lifecycle and integration helpers ; o1:Guaranteed AGI ; o2:Free unlimited tokens ; o3:No need for auth | correct=o0 | why: Lifecycle.
+Q: Portability… | opts: o0:May vary by vendor kit ; o1:Is always perfect ; o2:Is irrelevant ; o3:Means no logs | correct=o0 | why: Mind lock-in.
+
+### litellm | ai-frameworks | LiteLLM — One interface across many model APIs | beginner
+SUMMARY: LiteLLM provides a unified API layer to call many LLM vendors with similar request shapes. Conceptually it reduces glue code when you want provider failover, routing, or simpler swaps—while you still handle prompts and safety.
+ANALOGY: A universal remote that speaks many TV brands’ dialects.
+EXPL: Normalize chat completion calls. || Route across providers. || Helpful for failover and cost routing. || Does not solve evaluation by itself.
+TERMS: Provider=Model vendor/API || Routing=Choose which model/endpoint || Failover=Switch on errors
+VIZ(stepped): App calls unified API. >> LiteLLM-style router selects provider. >> Request translated. >> Response normalized. >> App continues.
+MATH: (none)
+INTERACTIVE(generic-toggle): Try the idea :: {"options":["Hardcode one vendor SDK","Unified router across vendors","Call every vendor for every token blindly"],"insights":{"Hardcode one vendor SDK":"Simple, less portable.","Unified router across vendors":"LiteLLM-like.","Call every vendor for every token blindly":"Wasteful."},"selected":"Hardcode one vendor SDK"}
+CODE: (none)
+REAL: Multi-cloud copilots :: Teams fail over when one vendor rate-limits. :: Indirection buys resilience.
+Q: LiteLLM-style layers… | opts: o0:Unify many model APIs ; o1:Train diffusion ; o2:Replace vector DBs ; o3:Compile CSS | correct=o0 | why: Unified API.
+Q: Useful for… | opts: o0:Routing and failover ; o1:Guaranteeing truth ; o2:Deleting prompts ; o3:Removing auth | correct=o0 | why: Ops flexibility.
+Q: You still must… | opts: o0:Design prompts and safety ; o1:Do nothing ; o2:Ban logging ; o3:Ignore costs | correct=o0 | why: App logic remains.
+
+### framework-comparison | ai-frameworks | When to use what — Choose tools by job, not hype | intermediate
+SUMMARY: Pick frameworks by your bottleneck: raw SDK for control, LangChain for composable prototypes, LangGraph for durable agent graphs, LlamaIndex for data/RAG-centric apps, multi-agent kits for role workflows, LiteLLM for provider portability. The winning choice is the thinnest stack you can operate.
+ANALOGY: Choosing kitchen tools: a chef’s knife covers most jobs; buy a pasta machine only if you make pasta weekly.
+EXPL: Start from the problem. || Prefer thin wrappers early. || Add orchestration when state gets hard. || Standardize observability regardless of framework. || Re-evaluate when requirements change.
+TERMS: Thin stack=Fewer abstractions || Bottleneck=What actually slows delivery || Operability=Can your team run it?
+VIZ(stepped): Define the job. >> Map to framework strengths. >> Spike two options. >> Compare debuggability. >> Choose and document.
+MATH: (none)
+INTERACTIVE(generic-toggle): Try the idea :: {"options":["RAG FAQ bot","Durable HITL agent","Multi-provider routing"],"insights":{"RAG FAQ bot":"Data/RAG-focused tools.","Durable HITL agent":"Graph/stateful orchestration.","Multi-provider routing":"Unified API layer."},"selected":"RAG FAQ bot"}
+CODE: (none)
+REAL: Student capstone choices :: RAG FAQ → LlamaIndex/light RAG; HITL agent → graph; multi-provider → LiteLLM. :: Match tool to task.
+Q: Choose frameworks by… | opts: o0:Job and operability ; o1:Only Twitter hype ; o2:GPU sticker color ; o3:Font fashion | correct=o0 | why: Fit.
+Q: Thin stacks help… | opts: o0:Early clarity and control ; o1:Guaranteed scale forever ; o2:Skip evals ; o3:Skip auth | correct=o0 | why: Simplicity.
+Q: Observability should be… | opts: o0:Present regardless of framework ; o1:Optional forever ; o2:Replaced by vibes ; o3:Banned | correct=o0 | why: Always.
+
+### what-is-ai | ai-fundamentals | What is AI? — Machines doing judgment-like tasks | beginner
+SUMMARY: Artificial Intelligence (AI) is software that performs tasks associated with human judgment: recognizing patterns, predicting outcomes, understanding language, or generating content. It is not a digital mind—it is data, algorithms, and compute packaged into useful tools. Today’s popular “AI” usually means machine-learning systems trained for specific jobs, even when the chat interface feels general.
+ANALOGY: Like a fast apprentice who studied millions of examples: great at patterns, still needing goals and oversight.
+EXPL: AI is an umbrella covering rule systems and learning systems. || Modern hype mostly points at machine learning and neural nets. || Mental model: Input → Model → Output, with parameters learned from data. || Useful AI is evaluated in a workflow with clear success metrics.
+TERMS: Artificial Intelligence=Software performing tasks linked to human intelligence || Model=Learned function mapping inputs to outputs || Narrow AI=AI specialized for particular tasks
+VIZ(stepped): A human task appears (e.g., spam detection). >> Examples and metrics define success. >> A model learns patterns from data. >> New inputs get predictions. >> Humans monitor errors and decide trust boundaries.
+MATH: (none)
+INTERACTIVE(generic-toggle): Try the idea :: {"options":["Sort tickets by topic","Prove a brand-new theorem with guarantees","Find cracks in factory photos"],"insights":{"Sort tickets by topic":"Good ML fit: messy language + labels.","Prove a brand-new theorem with guarantees":"Needs formal methods; pure statistical AI is a weak primary tool.","Find cracks in factory photos":"Good vision ML fit."},"selected":"Sort tickets by topic"}
+CODE: (none)
+REAL: Campus FAQ assistant :: A college wraps AI around library FAQs for midnight answers. :: AI helps when the task is clear and measurable.
+Q: AI is best described as… | opts: o0:A human-identical mind ; o1:Software for judgment-like tasks using data/algorithms ; o2:Any chat widget ; o3:Only humanoid robots | correct=o1 | why: AI is engineering, not mystical consciousness.
+Q: Most production AI is… | opts: o0:Fully general human cognition ; o1:Specialized for tasks ; o2:Impossible ; o3:Only hardware | correct=o1 | why: Narrow specialization is the norm.
+Q: In one line, What is AI? is mainly about… | opts: o0:Artificial Intelligence (AI) is software that performs tasks associated with human judgment: recognizing patterns, predicting outcomes, understanding language, or generating content ; o1:Replacing all databases with CSS ; o2:Turning off networking permanently ; o3:Only hardware manufacturing | correct=o0 | why: Focus on the core teaching point of this concept.
+
+### machine-learning | ai-fundamentals | Machine Learning — Learn from examples, not only hand-written rules | beginner
+SUMMARY: Machine Learning (ML) builds software by learning patterns from data instead of coding every rule. You supply examples and an objective; an algorithm adjusts a model to improve predictions. ML handles messy reality well, but it can also absorb bias and fail outside its training distribution.
+ANALOGY: Classic code is a recipe you write. ML is flashcard teaching: enough examples, and the system invents internal rules.
+EXPL: Supervised learning uses labeled pairs (x → y). || Unsupervised learning finds structure without labels. || Reinforcement learning learns via rewards for actions. || Generalization—to unseen data—is the real goal.
+TERMS: Supervised learning=Learning from labeled examples || Training=Updating parameters to reduce error || Generalization=Doing well on new examples
+VIZ(stepped): Hand-written keyword rules fail on clever spam. >> Collect labeled emails instead. >> Train a model on statistical patterns. >> Evaluate on held-out messages. >> Deploy with monitoring for drift.
+MATH: (none)
+INTERACTIVE(generic-toggle): Try the idea :: {"options":["Predict house prices","Cluster shoppers","Learn maze with rewards"],"insights":{"Predict house prices":"Supervised regression.","Cluster shoppers":"Unsupervised structure finding.","Learn maze with rewards":"Reinforcement learning."},"selected":"Predict house prices"}
+CODE: Supervised loop
+REAL: Fraud alerts :: Banks score transactions with models trained on historical fraud labels. :: ML fits high-volume pattern recognition with feedback.
+Q: Supervised learning needs… | opts: o0:No data ; o1:Input–label pairs ; o2:Only GPUs ; o3:CSS files | correct=o1 | why: Labels provide the teaching signal.
+Q: Generalization means… | opts: o0:Memorizing training data ; o1:Performing well on unseen examples ; o2:Training forever ; o3:Bigger fonts | correct=o1 | why: Held-out performance matters.
+Q: In one line, Machine Learning is mainly about… | opts: o0:Machine Learning (ML) builds software by learning patterns from data instead of coding every rule ; o1:Replacing all databases with CSS ; o2:Turning off networking permanently ; o3:Only hardware manufacturing | correct=o0 | why: Focus on the core teaching point of this concept.
+
+### deep-learning | ai-fundamentals | Deep Learning — Multi-layer nets that learn hierarchical features | beginner
+SUMMARY: Deep learning uses neural networks with many layers. Early layers often capture simple patterns; deeper layers compose them into richer concepts. GPUs and large datasets made deep stacks practical, powering modern vision and language systems.
+ANALOGY: An assembly line of understanding: edges → parts → objects (or characters → words → intent).
+EXPL: “Deep” means many stacked transformations. || Networks learn representations instead of only hand-built features. || Cost: data, compute, and harder interpretability. || Transformers are a deep architecture for sequences.
+TERMS: Layer=One transformation stage || Representation=Internal numeric features || GPU=Hardware accelerating tensor math
+VIZ(stepped): Raw signal enters. >> Shallow layers detect local patterns. >> Mid layers form parts. >> Deep layers form task concepts. >> A head outputs the prediction.
+MATH: (none)
+INTERACTIVE(generic-toggle): Try the idea :: {"options":["Hand-built image features","End-to-end learned filters","Keyword sentiment counts"],"insights":{"Hand-built image features":"Classical ML features.","End-to-end learned filters":"Deep learning style.","Keyword sentiment counts":"Simple baseline vs contextual deep text models."},"selected":"Hand-built image features"}
+CODE: (none)
+REAL: Phone dictation :: Deep acoustic models map sound to text better than older hand-tuned pipelines. :: Depth helps on hierarchical raw signals.
+Q: Deep learning is… | opts: o0:Any spreadsheet ; o1:ML with multi-layer neural nets ; o2:Only robots ; o3:A disk format | correct=o1 | why: Layer depth is the idea.
+Q: It scaled because… | opts: o0:Thinner monitors ; o1:Big data + GPU compute ; o2:HTML alone ; o3:Wi-Fi alone | correct=o1 | why: Data and compute unlocked it.
+Q: In one line, Deep Learning is mainly about… | opts: o0:Deep learning uses neural networks with many layers ; o1:Replacing all databases with CSS ; o2:Turning off networking permanently ; o3:Only hardware manufacturing | correct=o0 | why: Focus on the core teaching point of this concept.
+
+### neural-networks | ai-fundamentals | Neural Networks — Weighted units transforming numbers into predictions | beginner
+SUMMARY: A neural network stacks simple units that mix inputs with learned weights, apply a nonlinearity, and pass signals forward. With enough capacity and data, nets approximate complex input–output maps—from pixels to labels to next-token probabilities.
+ANALOGY: A giant board of knobs (weights). Training twists knobs until outputs match targets.
+EXPL: A neuron: weighted sum + bias + activation. || Layers compose into powerful function approximators. || Training uses loss and backpropagation. || Regularization and evaluation prevent hollow “perfect train scores.”
+TERMS: Weight=Learnable connection strength || Activation=Nonlinearity enabling complex functions || Parameter=Any learnable number in the model
+VIZ(stepped): Inputs arrive as numbers. >> Hidden units mix them with weights. >> Activations reshape signals. >> Outputs become scores/probabilities. >> Errors later drive weight updates.
+MATH: (none)
+INTERACTIVE(generic-toggle): Try the idea :: {"options":["Weights store whole articles verbatim","Weights control signal influence","Weights are passwords"],"insights":{"Weights store whole articles verbatim":"Knowledge is distributed—not a document DB.","Weights control signal influence":"Yes—dials of influence.","Weights are passwords":"No."},"selected":"Weights store whole articles verbatim"}
+CODE: One neuron
+REAL: Digit recognition :: Tiny nets classify handwritten digits by learning stroke patterns as weights. :: Even small nets show learning from raw features.
+Q: A weight is… | opts: o0:Only gym mass ; o1:A learnable connection strength ; o2:A keyboard ; o3:GPU temp | correct=o1 | why: Weights are parameters.
+Q: Activations matter because… | opts: o0:They compile code ; o1:Nonlinearities enable complex functions ; o2:They delete data ; o3:They replace datasets | correct=o1 | why: Without them, deep stacks stay linear.
+Q: In one line, Neural Networks is mainly about… | opts: o0:A neural network stacks simple units that mix inputs with learned weights, apply a nonlinearity, and pass signals forward ; o1:Replacing all databases with CSS ; o2:Turning off networking permanently ; o3:Only hardware manufacturing | correct=o0 | why: Focus on the core teaching point of this concept.
+
+### what-is-generative-ai | ai-fundamentals | What is Generative AI? — Models that create new content | beginner
+SUMMARY: Generative AI creates new samples—text, images, audio, code—by learning patterns of a data distribution and sampling from them. New does not mean true: outputs can be fluent and wrong. These models excel at drafting and transformation when paired with verification.
+ANALOGY: A musician improvising in a practiced genre: stylish, not automatically historically accurate.
+EXPL: Generators model how data looks, then sample. || LLMs sample tokens; diffusion denoise images. || Use for ideation/drafting; verify facts and safety. || Different from classifiers that only output labels.
+TERMS: Generation=Producing new samples || Sampling=Drawing outputs from model probabilities || Distribution=Statistical shape of possible data
+VIZ(stepped): Classifier labels an email spam/ham. >> Generator receives “write a refund email”. >> It samples tokens into a new message. >> Output is a draft, not guaranteed truth. >> Evaluate usefulness and factuality separately.
+MATH: (none)
+INTERACTIVE(generic-toggle): Try the idea :: {"options":["Draft a launch email","Detect fracture on X-ray","Create logo variations"],"insights":{"Draft a launch email":"Generative.","Detect fracture on X-ray":"Mostly discriminative.","Create logo variations":"Generative."},"selected":"Draft a launch email"}
+CODE: (none)
+REAL: Code autocomplete :: IDEs draft next lines; developers accept or edit. :: Generation accelerates drafting with human review.
+Q: Generative AI primarily… | opts: o0:Deletes files ; o1:Creates new content samples ; o2:Charges phones ; o3:Replaces TCP | correct=o1 | why: Synthesis is the hallmark.
+Q: Generated text is… | opts: o0:Always true ; o1:Plausible, not guaranteed correct ; o2:Always false ; o3:A DB key | correct=o1 | why: Plausibility ≠ truth.
+Q: In one line, What is Generative AI? is mainly about… | opts: o0:Generative AI creates new samples—text, images, audio, code—by learning patterns of a data distribution and sampling from them ; o1:Replacing all databases with CSS ; o2:Turning off networking permanently ; o3:Only hardware manufacturing | correct=o0 | why: Focus on the core teaching point of this concept.
+
+### discriminative-vs-generative | ai-fundamentals | Discriminative vs Generative — Separate classes vs model how data is made | beginner
+SUMMARY: Discriminative models learn p(y|x): decide the label given an input. Generative models learn enough about data to produce new samples (and often condition on prompts). Classifiers are typically discriminative; LLMs and diffusion models are generative. Products often combine both.
+ANALOGY: Bouncer (discriminative) vs chef who can cook new dishes in-house style (generative).
+EXPL: Discriminative: decision boundaries / label probabilities. || Generative: model/samplers for new x (or sequences). || LLMs: generative next-token distributions. || Pick based on whether you need labels or creations.
+TERMS: Discriminative=Predict labels / separate classes || Generative=Model and produce data samples || Conditional generation=Generate given a prompt/constraints
+VIZ(stepped): Plot cat vs dog points. >> Draw a discriminative boundary. >> Learn a generative notion of “cat images”. >> Sample a new cat-like image. >> Different goals need different metrics.
+MATH: (none)
+INTERACTIVE(generic-toggle): Try the idea :: {"options":["Approve loans","Generate product photos","Route tickets and draft replies"],"insights":{"Approve loans":"Discriminative (plus fairness constraints).","Generate product photos":"Generative.","Route tickets and draft replies":"Hybrid."},"selected":"Approve loans"}
+CODE: (none)
+REAL: Moderate then rewrite :: Classifier flags toxicity; generator suggests a civil rewrite. :: Hybrid pipelines are common.
+Q: Spam filters are mostly… | opts: o0:Generative ; o1:Discriminative ; o2:Compilers ; o3:CDNs | correct=o1 | why: They predict labels.
+Q: Image synthesizers are… | opts: o0:Discriminative ; o1:Generative ; o2:Caches ; o3:Mutexes | correct=o1 | why: They create samples.
+Q: In one line, Discriminative vs Generative is mainly about… | opts: o0:Discriminative models learn p(y|x): decide the label given an input ; o1:Replacing all databases with CSS ; o2:Turning off networking permanently ; o3:Only hardware manufacturing | correct=o0 | why: Focus on the core teaching point of this concept.
+
+### transformers-overview | ai-fundamentals | Transformers (overview) — Attention-based sequence architecture | intermediate
+SUMMARY: Transformers process sequences with attention so each token can selectively gather information from others. They parallelize better than many recurrent nets and scale well—hence their dominance in LLMs and many multimodal systems.
+ANALOGY: In a group chat, attention is how each new message decides which prior messages matter now.
+EXPL: Self-attention mixes token information. || Multi-head attention tracks different relation types. || FFN + residual + norm complete a block. || Decoder-only models power most chat LLMs.
+TERMS: Attention=Weighted focus over other tokens || Token=Chunk of text the model reads/writes || Decoder-only=Predicts next token from left context
+VIZ(stepped): Split text into tokens. >> Embed tokens as vectors. >> Self-attention mixes context. >> Feed-forward refines each position. >> Stacked blocks feed prediction heads.
+MATH: (none)
+INTERACTIVE(generic-toggle): Try the idea :: {"options":["Fill masked words","Chat next-token assistant","Translate EN→FR"],"insights":{"Fill masked words":"Encoder/masked modeling style.","Chat next-token assistant":"Decoder-only.","Translate EN→FR":"Encoder-decoder classic."},"selected":"Fill masked words"}
+CODE: (none)
+REAL: Translation leap :: Attention transformers beat many older RNN translation stacks. :: Architecture + scale changed practical quality.
+Q: Transformers rely heavily on… | opts: o0:Bubble sort ; o1:Attention ; o2:FTP ; o3:Flexbox | correct=o1 | why: Attention is central.
+Q: GPT-like chat models are usually… | opts: o0:Decoder-only transformers ; o1:Only decision trees ; o2:Excel macros ; o3:GPS chips | correct=o0 | why: Autoregressive decoders dominate.
+Q: In one line, Transformers (overview) is mainly about… | opts: o0:Transformers process sequences with attention so each token can selectively gather information from others ; o1:Replacing all databases with CSS ; o2:Turning off networking permanently ; o3:Only hardware manufacturing | correct=o0 | why: Focus on the core teaching point of this concept.
+
+### foundation-models | ai-fundamentals | Foundation Models — Broad models adapted to many tasks | intermediate
+SUMMARY: Foundation models are large models trained on broad data and reused across many downstream tasks via prompting, retrieval, fine-tuning, or tools. Teams adapt one base instead of training from scratch each time—changing product speed and concentrating capability.
+ANALOGY: A broadly educated graduate who later specializes—rather than training a newborn for each career.
+EXPL: Broad pretraining creates transferable capabilities. || Adaptation: prompts, RAG, fine-tunes, agents. || Benefits: speed; risks: inherited bias and cost. || Right-sizing still matters; bigger is not always better.
+TERMS: Foundation model=Broad reusable base model || Adaptation=Specializing a base to a task || Transfer learning=Reuse knowledge across tasks
+VIZ(stepped): Pretrain on diverse data. >> App A: tutoring prompts. >> App B: RAG over docs. >> App C: fine-tune style. >> Shared base + different controls.
+MATH: (none)
+INTERACTIVE(generic-toggle): Try the idea :: {"options":["10 niche defect images","Support bot for 50 products","On-device wake word"],"insights":{"10 niche defect images":"Tiny data—giant FM may be overkill.","Support bot for 50 products":"Strong FM + RAG candidate.","On-device wake word":"Small specialized model."},"selected":"10 niche defect images"}
+CODE: (none)
+REAL: Enterprise copilots :: One approved base model powers many department assistants with shared security. :: Foundations become platforms.
+Q: Foundation models are… | opts: o0:Only calculators ; o1:Broad reusable models ; o2:Printer drivers ; o3:HTML tags | correct=o1 | why: Broad + adaptable.
+Q: You always need the largest model. | opts: o0:True ; o1:False ; o2:Only Tuesdays ; o3:Only for CSS | correct=o1 | why: Right-size the model.
+Q: In one line, Foundation Models is mainly about… | opts: o0:Foundation models are large models trained on broad data and reused across many downstream tasks via prompting, retrieval, fine-tuning, or tools ; o1:Replacing all databases with CSS ; o2:Turning off networking permanently ; o3:Only hardware manufacturing | correct=o0 | why: Focus on the core teaching point of this concept.
+
+### llms | ai-fundamentals | LLMs — Large language models as next-token engines | beginner
+SUMMARY: Large Language Models are neural nets trained to predict tokens at scale. From that objective emerge summarization, drafting, coding help, and dialogue. They model language patterns—they do not automatically ground claims in live reality without tools or retrieval.
+ANALOGY: Extremely well-read autocomplete that can converse: eloquent, fallible on facts without grounding.
+EXPL: Pretraining predicts tokens over huge corpora. || Instruction/preference tuning shapes helpful behavior. || Context length and decoding settings change outcomes. || Apps add RAG, tools, evals, and guardrails.
+TERMS: LLM=Large neural language model || Context window=Token capacity per request || Alignment=Steering behavior to preferences/policies
+VIZ(stepped): User enters a prompt. >> Tokenizer emits token IDs. >> Transformer contextualizes them. >> Next-token distribution appears. >> Decoding loops until stop.
+MATH: (none)
+INTERACTIVE(generic-toggle): Try the idea :: {"options":["Draft a lab outline","See private DB with no access","Execute bank transfer alone"],"insights":{"Draft a lab outline":"Strong generation fit.","See private DB with no access":"Needs provided data/tools.","Execute bank transfer alone":"Needs auth + hard controls."},"selected":"Draft a lab outline"}
+CODE: (none)
+REAL: Algorithms tutor :: Students get adaptive explanations that may invent citations if ungrounded. :: Great for teaching drafts; verify critical claims.
+Q: LLMs are mainly trained to… | opts: o0:Predict/generate tokens ; o1:Replace CPUs ; o2:Render CSS ; o3:Run payroll by default | correct=o0 | why: Token prediction is core.
+Q: Without tools, an LLM knows live prices. | opts: o0:True ; o1:False ; o2:If font is green ; o3:Only offline | correct=o1 | why: No magic live data.
+Q: In one line, LLMs is mainly about… | opts: o0:Large Language Models are neural nets trained to predict tokens at scale ; o1:Replacing all databases with CSS ; o2:Turning off networking permanently ; o3:Only hardware manufacturing | correct=o0 | why: Focus on the core teaching point of this concept.
+
+### multimodal-intro | ai-fundamentals | Multimodal intro — Connecting text, images, audio, and more | intermediate
+SUMMARY: Multimodal models handle more than one signal type—e.g., image+text in, text out. They relate pixels and words in a shared representational space, enabling captioning, visual Q&A, and document understanding.
+ANALOGY: A friend who can look at your whiteboard photo and answer your question about it.
+EXPL: Modalities: text, image, audio, video, sensors. || Encoders + fusion combine signals. || Images may become visual tokens for transformers. || Risks: mis-seeing details; eval is harder.
+TERMS: Modality=A data type/signal kind || Fusion=Combining modalities || Visual tokens=Image features as sequence units
+VIZ(stepped): Image + question arrive. >> Vision encoder yields features/tokens. >> Joint model attends across both. >> Answer tokens are generated. >> Check grounding against the image.
+MATH: (none)
+INTERACTIVE(generic-toggle): Try the idea :: {"options":["Explain a schematic photo","Rewrite a paragraph","Transcribe a lecture"],"insights":{"Explain a schematic photo":"Vision+language.","Rewrite a paragraph":"Text-only may suffice.","Transcribe a lecture":"Audio→text pipeline."},"selected":"Explain a schematic photo"}
+CODE: (none)
+REAL: Worksheet photos :: Students photograph homework; a tutor reads and guides. :: Multimodality removes retyping friction.
+Q: Multimodal means… | opts: o0:Many GPUs only ; o1:Multiple data types ; o2:Many passwords ; o3:Many CSS files | correct=o1 | why: Multiple modalities.
+Q: A key risk is… | opts: o0:Inventing image details ; o1:Too much font RAM ; o2:DNS only ; o3:USB-C | correct=o0 | why: Visual hallucination.
+Q: In one line, Multimodal intro is mainly about… | opts: o0:Multimodal models handle more than one signal type—e ; o1:Replacing all databases with CSS ; o2:Turning off networking permanently ; o3:Only hardware manufacturing | correct=o0 | why: Focus on the core teaching point of this concept.
+
+### diffusion-intro | ai-fundamentals | Diffusion intro — Images via iterative denoising | intermediate
+SUMMARY: Diffusion models generate images by learning to reverse a noising process: start from noise and denoise step-by-step toward a prompt-conditioned picture. Latent diffusion runs this in a compressed space for speed.
+ANALOGY: Reassembling a clear stained-glass picture out of static, guided by a caption.
+EXPL: Training: add noise to images; learn to remove it. || Sampling: iterative denoising from noise. || Text embeddings condition each step. || Tradeoffs: steps/latency, prompt brittleness, safety filters.
+TERMS: Denoising=Removing estimated noise || Latent diffusion=Diffusion in compressed latent space || Guidance=How hard the prompt steers sampling
+VIZ(stepped): Start from noise. >> Condition on the prompt. >> Coarse structure appears. >> Details refine. >> Final image emerges.
+MATH: (none)
+INTERACTIVE(generic-toggle): Try the idea :: {"options":["Stronger guidance","Fewer steps","New random seed"],"insights":{"Stronger guidance":"Tighter prompt match; can look brittle if extreme.","Fewer steps":"Faster, maybe less refined.","New random seed":"Different sample."},"selected":"Stronger guidance"}
+CODE: (none)
+REAL: Concept art ideation :: Artists generate variations, then paint over winners. :: Diffusion explores; humans finish.
+Q: Sampling usually starts from… | opts: o0:A finished JPEG ; o1:Random noise ; o2:A SQL row ; o3:CSS grid | correct=o1 | why: Noise first.
+Q: Latent diffusion helps because… | opts: o0:It ignores prompts ; o1:It is more efficient ; o2:It deletes GPUs ; o3:It bans images | correct=o1 | why: Compressed space efficiency.
+Q: In one line, Diffusion intro is mainly about… | opts: o0:Diffusion models generate images by learning to reverse a noising process: start from noise and denoise step-by-step toward a prompt-conditioned picture ; o1:Replacing all databases with CSS ; o2:Turning off networking permanently ; o3:Only hardware manufacturing | correct=o0 | why: Focus on the core teaching point of this concept.
+
+### llm-app-serving | deployment | LLM app serving mental model — Clients talk to your app, app talks to models | beginner
+SUMMARY: Serving an LLM app usually means your backend receives user requests, applies auth and policies, builds prompts/context, calls a model endpoint, streams tokens back, and logs traces. The model may be hosted by you or a cloud provider.
+ANALOGY: A restaurant: customers talk to waiters (your API), kitchen (model) cooks, food comes out in courses (streams).
+EXPL: Client → API → orchestration → model. || Keep secrets server-side. || Separate product logic from model vendor. || Design for timeouts and partial failures.
+TERMS: Endpoint=Network API your clients call || Orchestration=Prompt/RAG/tool logic || Model inference=Generating tokens
+VIZ(stepped): Client sends request. >> API authenticates. >> Orchestration builds context. >> Model generates. >> Response streams back.
+MATH: (none)
+INTERACTIVE(generic-toggle): Try the idea :: {"options":["Browser holds API keys","Server-side orchestration","No timeouts"],"insights":{"Browser holds API keys":"Leak risk.","Server-side orchestration":"Proper.","No timeouts":"Hung UX."},"selected":"Browser holds API keys"}
+CODE: (none)
+REAL: Campus tutor SaaS :: Web UI hits a FastAPI service that calls a hosted LLM with RAG. :: Your app is the product boundary.
+Q: Clients should usually call… | opts: o0:Your app API ; o1:Your raw cloud keys in the browser ; o2:The GPU directly via USB ; o3:Random IPs | correct=o0 | why: App boundary.
+Q: Secrets belong… | opts: o0:Server-side ; o1:In frontend bundles ; o2:In screenshots ; o3:In CSS | correct=o0 | why: Server.
+Q: Orchestration includes… | opts: o0:Prompt/RAG/tool logic ; o1:Only HDMI ; o2:Only fonts ; o3:Only fan curves | correct=o0 | why: App brain.
+
+### fastapi-role | deployment | FastAPI role — Python APIs that orchestrate LLM calls | beginner
+SUMMARY: FastAPI is a popular Python web framework for building async APIs—commonly used as the orchestration layer for LLM apps: routes, auth, validation, and streaming responses. Conceptually any solid API framework can play this role.
+ANALOGY: The waiter station: takes orders in a standard format and coordinates the kitchen.
+EXPL: Define request/response schemas. || Implement orchestration routes. || Stream tokens over HTTP. || Validate inputs. || Not the model itself—just the app layer.
+TERMS: Route=URL handler || Pydantic model=Request validation schema || Streaming response=Send tokens incrementally
+VIZ(stepped): Define /chat route. >> Validate body. >> Call model provider. >> Stream tokens. >> Log trace id.
+MATH: (none)
+INTERACTIVE(generic-toggle): Try the idea :: {"options":["Monolith notebook exposed publicly","Typed API routes","No input validation"],"insights":{"Monolith notebook exposed publicly":"Fragile/unsafe.","Typed API routes":"Solid.","No input validation":"Injection and crashes."},"selected":"Monolith notebook exposed publicly"}
+CODE: (none)
+REAL: Hackathon backends :: Students expose /ask endpoints wrapping OpenAI-compatible APIs. :: Fast iteration API layer.
+Q: FastAPI often serves as… | opts: o0:The orchestration API layer ; o1:The GPU silicon ; o2:The tokenizer hardware ; o3:The vector math unit | correct=o0 | why: API layer.
+Q: It is… | opts: o0:Not the LLM itself ; o1:Always a vector DB ; o2:A CSS framework ; o3:A loss function | correct=o0 | why: App server.
+Q: Streaming responses help… | opts: o0:Perceived latency ; o1:Delete logs ; o2:Ban JSON ; o3:Cool rooms | correct=o0 | why: UX.
+
+### docker | deployment | Docker — Package the app and its dependencies | beginner
+SUMMARY: Docker packages your application, runtime, and dependencies into images that run as containers. For LLM apps, containers make API services portable across laptops and clouds—while model weights may still live on volumes or remote APIs.
+ANALOGY: A shipping container for software: same box runs on different ships (machines).
+EXPL: Write a Dockerfile. || Build an image. || Run a container. || Pin dependency versions. || Keep secrets out of images.
+TERMS: Image=Immutable package || Container=Running instance || Dockerfile=Build recipe
+VIZ(stepped): App code ready. >> Build image. >> Run container locally. >> Same image in staging. >> Promote to prod.
+MATH: (none)
+INTERACTIVE(generic-toggle): Try the idea :: {"options":["Works on my machine only","Containerized API","Bake API keys into the image"],"insights":{"Works on my machine only":"Fragile.","Containerized API":"Portable.","Bake API keys into the image":"Leak risk."},"selected":"Works on my machine only"}
+CODE: (none)
+REAL: Identical tutor API envs :: “Works on my machine” fades when classmates run the same image. :: Portability aids teamwork.
+Q: Docker packages… | opts: o0:App and dependencies ; o1:Ocean water ; o2:Only CSS ; o3:Only HDMI | correct=o0 | why: Images.
+Q: Secrets should be… | opts: o0:Injected at runtime, not baked in ; o1:Committed in Dockerfiles ; o2:Printed on labels ; o3:Stored in wallpapers | correct=o0 | why: Runtime secrets.
+Q: Containers help… | opts: o0:Portable deploys ; o1:Guaranteed model quality ; o2:Infinite context ; o3:Free GPUs | correct=o0 | why: Ops portability.
+
+### kubernetes-overview | deployment | Kubernetes overview — Orchestrate many containers | intermediate
+SUMMARY: Kubernetes (K8s) schedules and manages containers across machines: deploy replicas, restart crashes, expose services, and scale. LLM apps may put API replicas on K8s while inference runs on GPU nodes or external APIs.
+ANALOGY: An air-traffic control system for containers—landing, scaling, and restarting workloads.
+EXPL: Pods run containers. || Deployments manage replicas. || Services provide networking. || Autoscaling reacts to load. || Complexity must be justified.
+TERMS: Pod=Smallest schedulable unit || Deployment=Replica management || Service=Stable network endpoint
+VIZ(stepped): Build container image. >> Declare Deployment. >> Expose Service. >> Scale on load. >> Rolling update.
+MATH: (none)
+INTERACTIVE(generic-toggle): Try the idea :: {"options":["Single VM docker run","K8s for multi-replica API","K8s for a 5-person static site"],"insights":{"Single VM docker run":"Fine at small scale.","K8s for multi-replica API":"Fits growth.","K8s for a 5-person static site":"Overkill."},"selected":"Single VM docker run"}
+CODE: (none)
+REAL: Campus cloud club :: API autoscales during exam week traffic spikes. :: Orchestration absorbs load.
+Q: Kubernetes mainly… | opts: o0:Orchestrates containers ; o1:Trains models by itself ; o2:Replaces prompts ; o3:Paints UI | correct=o0 | why: Orchestration.
+Q: A Deployment manages… | opts: o0:Replicas of your pods ; o1:Font files ; o2:HDMI cables ; o3:Cosine scores | correct=o0 | why: Replicas.
+Q: Use K8s when… | opts: o0:You need scalable container ops ; o1:You only have a static HTML file ; o2:You hate logs ; o3:You need no networking | correct=o0 | why: Justify complexity.
+
+### bedrock | deployment | Bedrock — Managed foundation models on AWS | beginner
+SUMMARY: Amazon Bedrock is a managed service to call foundation models via AWS APIs without self-hosting GPUs. Conceptually: provider-hosted inference with cloud IAM, networking, and billing integrated into AWS.
+ANALOGY: Ordering kitchen output from a hotel that already runs industrial kitchens—you bring recipes (prompts), they run stoves.
+EXPL: Invoke models through AWS APIs. || IAM controls access. || Useful when already on AWS. || Still build your orchestration and RAG.
+TERMS: Managed inference=Provider runs the model servers || IAM=Identity and access management || Invocation=API call to generate
+VIZ(stepped): App authenticates to AWS. >> Calls Bedrock invoke API. >> Receives generations. >> Logs to CloudWatch. >> Pays per usage.
+MATH: (none)
+INTERACTIVE(generic-toggle): Try the idea :: {"options":["Self-host all GPUs","Managed Bedrock-like API","Browser-embedded cloud keys"],"insights":{"Self-host all GPUs":"Ops heavy.","Managed Bedrock-like API":"Faster path on AWS.","Browser-embedded cloud keys":"Leak."},"selected":"Self-host all GPUs"}
+CODE: (none)
+REAL: Enterprise AWS shops :: Teams adopt Bedrock to stay inside existing AWS controls. :: Cloud gravity matters.
+Q: Bedrock provides… | opts: o0:Managed model access on AWS ; o1:A CSS framework ; o2:A local tokenizer chip ; o3:A vector proof | correct=o0 | why: Managed models.
+Q: You still need… | opts: o0:Your app orchestration ; o1:Zero auth ; o2:No monitoring ; o3:No prompts | correct=o0 | why: App remains.
+Q: Access is typically governed by… | opts: o0:IAM policies ; o1:Wallpaper color ; o2:Fan stickers ; o3:Mouse DPI | correct=o0 | why: IAM.
+
+### vertex-ai | deployment | Vertex AI — Google Cloud ML/LLM platform | beginner
+SUMMARY: Vertex AI is Google Cloud’s platform for ML and generative AI services—model APIs, tooling, and MLOps integrations. Conceptually similar tradeoff: managed capabilities inside a cloud ecosystem versus self-hosting.
+ANALOGY: A city workshop district with shared power tools—you build products using the district’s infrastructure.
+EXPL: Managed generative APIs. || Ties into GCP IAM and networking. || MLOps tooling nearby. || Orchestration still your job.
+TERMS: Vertex AI=GCP ML/GenAI platform || Managed API=Hosted model endpoint || MLOps=Operate ML systems in prod
+VIZ(stepped): Enable Vertex APIs. >> Call a generative endpoint. >> Wire results into app. >> Monitor usage. >> Iterate prompts/evals.
+MATH: (none)
+INTERACTIVE(generic-toggle): Try the idea :: {"options":["DIY GPU cluster first day","Managed Vertex-like APIs","Skip monitoring"],"insights":{"DIY GPU cluster first day":"Slow start.","Managed Vertex-like APIs":"Faster on GCP.","Skip monitoring":"Blind."},"selected":"DIY GPU cluster first day"}
+CODE: (none)
+REAL: GCP-native startups :: Use Vertex model APIs with BigQuery-stored logs. :: Ecosystem integration.
+Q: Vertex AI is… | opts: o0:GCP’s ML/GenAI platform ; o1:A CSS reset ; o2:A HDMI switch ; o3:A cosine formula | correct=o0 | why: GCP platform.
+Q: Managed endpoints reduce… | opts: o0:Self-host inference ops ; o1:Need for evals ; o2:Need for auth ; o3:Need for UX | correct=o0 | why: Ops relief.
+Q: Your app still handles… | opts: o0:Product logic and safety ; o1:Silicon design ; o2:Ocean cooling ; o3:Font casting | correct=o0 | why: Product layer.
+
+### azure-ai | deployment | Azure AI — Microsoft cloud AI services | beginner
+SUMMARY: Azure AI services provide managed model and AI capability APIs in Microsoft’s cloud, often attractive to enterprises already on Azure and Microsoft identity. Same mental model: managed inference plus your orchestration.
+ANALOGY: Building inside an office park that already has power, security badges, and utilities.
+EXPL: Managed model endpoints. || Enterprise identity integrations. || Region and compliance options. || Your RAG/agents remain custom.
+TERMS: Azure OpenAI / Azure AI=Managed model offerings on Azure || Entra ID=Microsoft identity platform || Compliance=Regional/policy constraints
+VIZ(stepped): Authenticate with Azure identity. >> Call model deployment. >> Apply enterprise policies. >> Log to Azure Monitor. >> Ship features.
+MATH: (none)
+INTERACTIVE(generic-toggle): Try the idea :: {"options":["Ignore enterprise identity","Use cloud identity with managed models","Share one key in Slack"],"insights":{"Ignore enterprise identity":"Hard in corps.","Use cloud identity with managed models":"Enterprise fit.","Share one key in Slack":"Incident."},"selected":"Ignore enterprise identity"}
+CODE: (none)
+REAL: Corp Copilot add-ons :: Enterprises host approved deployments on Azure. :: Identity and compliance drive cloud choice.
+Q: Azure AI appeals when… | opts: o0:You are invested in Microsoft cloud/identity ; o1:You need a CSS framework ; o2:You hate APIs ; o3:You only train locally always | correct=o0 | why: Ecosystem fit.
+Q: Managed deployments still need… | opts: o0:App-side safety and evals ; o1:No logging ; o2:Public keys in mobile apps ; o3:Zero auth | correct=o0 | why: Responsibility remains.
+Q: Identity integrations help… | opts: o0:Enterprise access control ; o1:Bold fonts ; o2:Cool GPUs ; o3:Shorter cables | correct=o0 | why: Access.
+
+### streaming | deployment | Streaming — Send tokens as they generate | beginner
+SUMMARY: Streaming delivers tokens to clients as they are produced, improving perceived latency and enabling cancelation. Implement with server-sent events or websockets, and design UIs for partial answers.
+ANALOGY: Reading a story as it’s being typed instead of waiting for the whole novel PDF.
+EXPL: Model emits tokens incrementally. || API streams to client. || UI renders partial text. || Users can stop early. || Handle disconnects cleanly.
+TERMS: SSE=Server-Sent Events || Time-to-first-token=Latency until first output || Cancelation=Stop generation early
+VIZ(stepped): Request starts. >> First token arrives quickly. >> UI updates live. >> User stops. >> Server cancels generation.
+MATH: (none)
+INTERACTIVE(generic-toggle): Try the idea :: {"options":["Wait for full answer","Stream tokens","No cancel button"],"insights":{"Wait for full answer":"Feels slower.","Stream tokens":"Better UX.","No cancel button":"Wasted tokens."},"selected":"Wait for full answer"}
+CODE: (none)
+REAL: Chat UIs :: Streaming makes tutors feel responsive during long explanations. :: Perceived performance matters.
+Q: Streaming improves… | opts: o0:Perceived latency ; o1:Model truth automatically ; o2:GPU silicon ; o3:CSS specificity | correct=o0 | why: UX speed feel.
+Q: Time-to-first-token measures… | opts: o0:Latency to first output ; o1:Disk RPM ; o2:Font size ; o3:Cable ohms | correct=o0 | why: TTFT.
+Q: Cancelation lets users… | opts: o0:Stop generation early ; o1:Delete the cloud ; o2:Ban JSON ; o3:Skip auth | correct=o0 | why: Control.
+
+### monitoring-basics | deployment | Monitoring basics — Watch latency, errors, and cost | beginner
+SUMMARY: Monitoring tracks request rates, latencies, error codes, token usage, and tool failures. Without it, LLM apps fail quietly and bills surprise you. Start with golden signals plus token economics.
+ANALOGY: A car dashboard: speed, fuel, warning lights—not driving blind.
+EXPL: Latency and error rate. || Token/cost metrics. || Trace IDs across orchestration. || Alert on budgets. || Dashboards for debugging.
+TERMS: Golden signals=Latency, traffic, errors, saturation || Trace ID=Correlates logs across steps || Token usage=Consumption meter
+VIZ(stepped): Emit metrics per request. >> Dashboard graphs. >> Alert on error spikes. >> Investigate traces. >> Fix and verify.
+MATH: (none)
+INTERACTIVE(generic-toggle): Try the idea :: {"options":["No metrics","Latency/error/token dashboards","Alert on nothing"],"insights":{"No metrics":"Blind.","Latency/error/token dashboards":"Minimum viable.","Alert on nothing":"Too late."},"selected":"No metrics"}
+CODE: (none)
+REAL: Exam-week spike :: Latency alerts reveal retrieval bottlenecks under load. :: Metrics guide scaling.
+Q: Monitor especially… | opts: o0:Latency, errors, token cost ; o1:Only wallpaper ; o2:Only fan RGB ; o3:Only commit emojis | correct=o0 | why: Golden + cost.
+Q: Trace IDs help… | opts: o0:Correlate multi-step requests ; o1:Heat rooms ; o2:Bold text ; o3:Route HDMI | correct=o0 | why: Debug.
+Q: Cost alerts prevent… | opts: o0:Bill shock ; o1:Better fonts ; o2:Shorter cables ; o3:Colder coffee automatically | correct=o0 | why: Budgets.
+
+### tokenization | how-llms-work | Tokenization — Split text into model-readable pieces | beginner
+SUMMARY: Tokenization converts text into tokens—integer IDs the model understands. Tokens may be words, subwords, or characters depending on the tokenizer. Everything an LLM reads or writes is mediated by this segmentation, which affects cost, context limits, and awkward splits of rare words.
+ANALOGY: Like cutting a paragraph into LEGO bricks before a machine rebuilds meaning from brick IDs.
+EXPL: Tokenizers map text to token ID sequences and back. || Subword schemes balance vocabulary size and coverage. || Token counts drive context usage and pricing. || Weird splits can hurt reasoning on codes, names, or math.
+TERMS: Token=Atomic text unit for the model || Tokenizer=Algorithm mapping text to token IDs || Subword=Fragment smaller than a full word
+VIZ(flagship): Raw sentence arrives. >> Tokenizer applies merge rules. >> Produce token strings. >> Map to numeric IDs. >> IDs enter the embedding layer.
+MATH: (none)
+INTERACTIVE(token-split): Split a sentence into tokens :: {"text":"Generative AI learns patterns from data.","vocabHint":true}
+CODE: (none)
+REAL: API billing by tokens :: A verbose prompt costs more even if word count looks modest. :: Measure tokens, not only words.
+Q: Tokenization turns text into… | opts: o0:Pixels only ; o1:Token IDs ; o2:CSS classes ; o3:IP addresses | correct=o1 | why: IDs the model consumes.
+Q: Subword tokenization helps… | opts: o0:Delete GPUs ; o1:Handle rare words with fragments ; o2:Remove attention ; o3:Ban Unicode | correct=o1 | why: Fragments compose unknowns.
+Q: Token count affects… | opts: o0:Only wallpaper ; o1:Context limits and often pricing ; o2:Ocean tides ; o3:Mouse DPI | correct=o1 | why: Context and cost.
+
+### vocabulary-context-window | how-llms-work | Vocabulary & Context Window — What the model can name, and how much it can see | beginner
+SUMMARY: Vocabulary is the finite set of tokens a model knows IDs for. The context window is how many tokens of prompt, history, and generation the model can consider at once. If information falls outside the window, the model cannot directly use it unless you retrieve or summarize it back in.
+ANALOGY: Vocabulary is the dictionary of bricks; context window is the size of the table you can build on.
+EXPL: Finite vocab plus subword strategies cover open text. || Context window is a hard capacity constraint. || Long context helps but is not perfect memory. || Attention cost scales with context length.
+TERMS: Vocabulary=Set of known tokens || Context window=Max tokens per model pass || Truncation=Dropping overflow tokens
+VIZ(stepped): Prompt grows with chat history. >> Tokenizer counts tokens. >> Nearing the window limit. >> Oldest turns get truncated or summarized. >> Model only sees what remains.
+MATH: (none)
+INTERACTIVE(generic-toggle): Try the idea :: {"options":["Short FAQ answer","Paste entire codebase","Summarize then ask"],"insights":{"Short FAQ answer":"Usually fits easily.","Paste entire codebase":"May blow the window; chunk/retrieve instead.","Summarize then ask":"Practical context engineering."},"selected":"Short FAQ answer"}
+CODE: (none)
+REAL: Support chat resets :: Agents summarize old turns to stay inside context. :: Long conversations need memory strategies.
+Q: If text exceeds context… | opts: o0:Model telepathically knows it ; o1:It must be truncated, summarized, or retrieved later ; o2:RAM upgrades itself ; o3:CSS expands | correct=o1 | why: Outside window is invisible.
+Q: Vocabulary is… | opts: o0:Infinite always ; o1:Finite token inventory ; o2:A Kubernetes pod ; o3:A color palette | correct=o1 | why: Finite token set.
+Q: Longer context always means perfect recall. | opts: o0:True ; o1:False ; o2:Only at night ; o3:Only in Python | correct=o1 | why: Capacity is not perfect memory.
+
+### embeddings | how-llms-work | Embeddings — Meaning as coordinates in vector space | intermediate
+SUMMARY: Embeddings are numeric vectors representing tokens, sentences, or documents so similar meanings land nearby geometrically. Models use embeddings internally; retrieval systems also embed queries and docs to find neighbors. Distances become a proxy for semantic relatedness.
+ANALOGY: A city map for meaning: doctor sits nearer nurse than screwdriver.
+EXPL: Embedding layer maps token IDs to vectors. || Training places related items closer. || Cosine similarity is a common closeness measure. || Dimensionality and data shape the geometry.
+TERMS: Embedding=Vector representing meaning || Vector space=Coordinate world for similarity || Cosine similarity=Angle-based closeness score
+VIZ(flagship): Token IDs enter. >> Lookup embedding vectors. >> Nearby meanings cluster. >> Downstream layers transform vectors. >> Similarity search can reuse embeddings.
+MATH: (none)
+INTERACTIVE(similarity): Compare meaning distances :: {"phrases":["king","queen","apple","orange","transformer model","neural network"],"vectors":{"king":[0.9,0.1],"queen":[0.85,0.2],"apple":[0.1,0.9],"orange":[0.15,0.85],"transformer model":[0.7,0.65],"neural network":[0.68,0.6]}}
+CODE: (none)
+REAL: Duplicate question detection :: Forums embed posts to find near-duplicate asks. :: Vectors power semantic matching.
+Q: Embeddings represent… | opts: o0:Only file sizes ; o1:Meaning as vectors ; o2:CSS breakpoints ; o3:MAC addresses | correct=o1 | why: Vectors for meaning.
+Q: Similar meanings should be… | opts: o0:Far apart ; o1:Nearby in vector space ; o2:Deleted ; o3:Sorted alphabetically only | correct=o1 | why: Geometry encodes similarity.
+Q: Cosine similarity measures… | opts: o0:Exact string equality only ; o1:Directional closeness of vectors ; o2:CPU temperature ; o3:Packet loss | correct=o1 | why: Common semantic metric.
+
+### positional-encoding | how-llms-work | Positional Encoding — Tell the model token order matters | intermediate
+SUMMARY: Self-attention alone does not inherently know order. Positional encodings (sinusoidal, learned, RoPE, ALiBi, and others) inject order so “dog bites man” differs from “man bites dog.”
+ANALOGY: Like page numbers in a shuffled manuscript—bricks need positions to rebuild the plot.
+EXPL: Attention mixes tokens; positions disambiguate order. || Absolute and relative schemes exist. || Modern LLMs often use rotary embeddings (RoPE). || Length generalization depends on the scheme.
+TERMS: Positional encoding=Signal carrying sequence order || RoPE=Rotary position embedding used in many LLMs || Relative position=Encoding distances between tokens
+VIZ(stepped): Tokens without order look bag-of-words-ish. >> Add position signals to embeddings. >> Attention uses order-aware interactions. >> Sentence meaning stabilizes. >> Long-context behavior depends on the method.
+MATH: (none)
+INTERACTIVE(generic-toggle): Try the idea :: {"options":["Bag embeddings only","Embeddings + positions","Shuffle tokens at inference"],"insights":{"Bag embeddings only":"Weak order signal.","Embeddings + positions":"Standard fix.","Shuffle tokens at inference":"Breaks meaning on purpose."},"selected":"Bag embeddings only"}
+CODE: (none)
+REAL: Code completion sensitivity :: Swapping two args changes meaning; positions preserve that. :: Order is semantics in language and code.
+Q: Without positions, transformers risk… | opts: o0:Perfect grammar always ; o1:Losing word-order information ; o2:Faster DNS ; o3:Bigger monitors | correct=o1 | why: Order must be injected.
+Q: RoPE is… | opts: o0:A climbing sport only ; o1:A positional method used in many LLMs ; o2:A database ; o3:A CSS unit | correct=o1 | why: Rotary positions.
+Q: Dog bites man vs man bites dog shows… | opts: o0:Positions do not matter ; o1:Order changes meaning ; o2:Tokens are pixels ; o3:Models ignore verbs | correct=o1 | why: Order encodes meaning.
+
+### self-attention | how-llms-work | Self-Attention — Each token gathers relevant context from others | intermediate
+SUMMARY: Self-attention lets every token build a new representation by taking a weighted mix of other tokens information. Weights come from compatibility between queries and keys; values carry the content mixed in. This is how context disambiguates words like bank.
+ANALOGY: In a meeting, you glance more at people relevant to your current sentence—not equally at everyone forever.
+EXPL: Query, Key, Value projections create attention scores. || Softmax turns scores into weights. || Weighted values form the output. || Causal masks prevent looking ahead in decoders. || Attention is powerful but quadratic in sequence length.
+TERMS: Query=What I am looking for || Key=What I contain for matching || Value=Information I contribute when selected
+VIZ(flagship): Each token makes Q, K, V. >> Score Q against all K. >> Softmax yields attention weights. >> Mix V by those weights. >> New contextual vectors appear.
+MATH: (none)
+INTERACTIVE(generic-toggle): What should “bank” attend to? :: {"options":["river bank erosion","bank account balance"],"insights":{"river bank erosion":"Attend to river/erosion senses of bank.","bank account balance":"Attend to money/account senses of bank."},"selected":"river bank erosion"}
+CODE: (none)
+REAL: Pronoun resolution :: Attention helps bind pronouns to the right noun. :: Context selection is core to understanding.
+Q: Self-attention mainly… | opts: o0:Sorts files ; o1:Lets tokens gather info from other tokens ; o2:Charges laptops ; o3:Paints UI | correct=o1 | why: Contextual mixing.
+Q: Softmax over scores produces… | opts: o0:Random bytes ; o1:Attention weights ; o2:IP leases ; o3:PDF fonts | correct=o1 | why: Weights sum to about 1.
+Q: Causal masking stops… | opts: o0:All learning ; o1:Looking at future tokens while decoding ; o2:Using GPUs ; o3:Saving logs | correct=o1 | why: No peeking ahead.
+
+### multi-head-attention | how-llms-work | Multi-Head Attention — Several attention perspectives in parallel | intermediate
+SUMMARY: Multi-head attention runs several attention operations in parallel, each potentially specializing in different relationship types, then concatenates results. More heads increase expressive capacity at a compute cost.
+ANALOGY: Multiple specialists reading the same paragraph: one tracks subjects, one tracks numbers, one tracks quotes.
+EXPL: Split Q/K/V into heads. || Each head attends independently. || Concatenate head outputs. || Project back to model dimension. || Heads can specialize but are not guaranteed interpretable.
+TERMS: Attention head=One parallel attention subspace || Model dimension=Width of token vectors || Concatenation=Joining head outputs
+VIZ(stepped): Start with token vectors. >> Project into multiple QKV sets. >> Heads attend in parallel. >> Merge head outputs. >> Feed the combined signal onward.
+MATH: (none)
+INTERACTIVE(generic-toggle): Try the idea :: {"options":["1 head only","8 heads","512 heads on a tiny model"],"insights":{"1 head only":"Less diverse relational capacity.","8 heads":"Common practical setting.","512 heads on a tiny model":"Diminishing returns risk."},"selected":"1 head only"}
+CODE: (none)
+REAL: Translation alignments :: Different heads may track different alignment patterns. :: Parallel perspectives enrich representations.
+Q: Multi-head means… | opts: o0:Many computers under a desk ; o1:Parallel attention subspaces ; o2:Many CSS files ; o3:Multiple passwords | correct=o1 | why: Parallel heads.
+Q: Heads are always human-interpretable. | opts: o0:True ; o1:False ; o2:Only Fridays ; o3:Only in JSON | correct=o1 | why: Specialization is emergent, not guaranteed.
+Q: Outputs of heads are typically… | opts: o0:Deleted ; o1:Concatenated and projected ; o2:Converted to MP3 ; o3:Emailed | correct=o1 | why: Merge then continue.
+
+### feed-forward-network | how-llms-work | Feed-Forward Network — Per-token MLP that refines representations | intermediate
+SUMMARY: After attention mixes information across tokens, a position-wise feed-forward network transforms each token vector independently. Intuitively, attention is communication; the FFN is private computation.
+ANALOGY: Group discussion (attention) then each person quietly rewrites their notes (FFN).
+EXPL: FFN applies the same MLP at each position. || Usually expand, nonlinearity, project back. || Pairs with attention inside each block. || Holds substantial parameter count in LLMs.
+TERMS: FFN / MLP=Position-wise feed-forward layers || GeLU/ReLU=Common nonlinearities || Block=Attention plus FFN unit with residuals/norms
+VIZ(stepped): Contextual vectors leave attention. >> Each position enters the MLP. >> Hidden width expands. >> Nonlinear transform applied. >> Projected vectors continue.
+MATH: (none)
+INTERACTIVE(generic-toggle): Try the idea :: {"options":["Remove FFN","Remove attention","Keep both"],"insights":{"Remove FFN":"Loses heavy per-token computation.","Remove attention":"Tokens cannot share context well.","Keep both":"Standard transformer block."},"selected":"Remove FFN"}
+CODE: (none)
+REAL: Factual association research :: Studies suggest FFNs play a large role in storing associations. :: Attention routes; FFNs often compute and store.
+Q: FFN operates… | opts: o0:Across users private emails by default ; o1:Position-wise on each token vector ; o2:Only without math ; o3:On CSS selectors | correct=o1 | why: Per position.
+Q: Attention vs FFN intuition… | opts: o0:Attention mixes across tokens; FFN transforms each ; o1:FFN replaces tokenization ; o2:Neither uses numbers ; o3:Both are databases | correct=o0 | why: Communicate vs compute.
+Q: FFNs usually… | opts: o0:Shrink then disappear ; o1:Expand then project back ; o2:Ban softmax ; o3:Delete residuals | correct=o1 | why: Expand-contract pattern.
+
+### residual-connections | how-llms-work | Residual Connections — Add the input back to ease deep training | intermediate
+SUMMARY: Residual connections add a block input to its output so layers learn residual updates rather than whole transformations from scratch. This stabilizes deep stacks and improves gradient flow.
+ANALOGY: Editing with track changes: keep the original and add a delta instead of rewriting the whole essay each time.
+EXPL: Output is roughly input plus layer(input). || Helps train very deep nets. || Used around attention and FFN sublayers. || Works with normalization for stability.
+TERMS: Residual=Skip connection adding input to output || Gradient flow=How error signals propagate backward || Sublayer=Attention or FFN unit inside a block
+VIZ(stepped): Token vector enters a sublayer. >> Sublayer computes an update. >> Add update to original. >> Normalized result proceeds. >> Deep stacks remain trainable.
+MATH: (none)
+INTERACTIVE(generic-toggle): Try the idea :: {"options":["Plain stack no skips","Residual stack","Zero the input path"],"insights":{"Plain stack no skips":"Harder to train deep.","Residual stack":"Standard stable approach.","Zero the input path":"Breaks the skip benefit."},"selected":"Plain stack no skips"}
+CODE: (none)
+REAL: Deeper models, fewer crashes :: Residuals were key to training very deep nets. :: Architecture details unlock depth.
+Q: Residuals add… | opts: o0:Random noise always ; o1:Input back to sublayer output ; o2:Extra taxes ; o3:CSS margins | correct=o1 | why: x + F(x).
+Q: They help mainly by… | opts: o0:Improving gradient flow ; o1:Deleting data ; o2:Removing GPUs ; o3:Banning batching | correct=o0 | why: Depth becomes trainable.
+Q: Transformers use residuals… | opts: o0:Never ; o1:Around major sublayers ; o2:Only in CSS ; o3:Only offline | correct=o1 | why: Standard pattern.
+
+### layer-normalization | how-llms-work | Layer Normalization — Stabilize activations across features | intermediate
+SUMMARY: Layer normalization rescales activations across features for each token so values stay well-behaved through deep stacks. Combined with residuals, it stabilizes training. Placement (pre-norm vs post-norm) varies by architecture.
+ANALOGY: Auto-adjusting microphone gain so each singer sits in a healthy volume range before the next effect pedal.
+EXPL: Normalize mean and variance across features. || Learned scale and bias restore flexibility. || Pre-norm is common in modern LLMs. || Stabilizes deep residual pipelines.
+TERMS: LayerNorm=Per-token feature normalization || Pre-norm=Normalize before sublayer || Activation scale=Magnitude of neuron outputs
+VIZ(stepped): Vector enters with uneven magnitudes. >> Compute mean and variance. >> Normalize. >> Apply learned scale and bias. >> Sublayer receives stable inputs.
+MATH: (none)
+INTERACTIVE(generic-toggle): Try the idea :: {"options":["No normalization","LayerNorm","BatchNorm style only"],"insights":{"No normalization":"Training can become brittle.","LayerNorm":"Standard in transformers.","BatchNorm style only":"Less common for variable-length NLP."},"selected":"No normalization"}
+CODE: (none)
+REAL: Training deep chat models :: Norm choices affect convergence speed and stability. :: Small engineering choices, large training impact.
+Q: LayerNorm mainly… | opts: o0:Deletes tokens ; o1:Stabilizes feature scales ; o2:Paints icons ; o3:Sets DNS | correct=o1 | why: Stabilization.
+Q: Pre-norm means… | opts: o0:Norm after optimizer ; o1:Normalize before the sublayer ; o2:No residuals ; o3:No attention | correct=o1 | why: Placement variant.
+Q: Norm works with residuals to… | opts: o0:Make depth trainable ; o1:Remove datasets ; o2:Ban GPUs ; o3:Replace loss | correct=o0 | why: Stability pair.
+
+### encoder-decoder-types | how-llms-work | Encoder/Decoder types — BERT-like, GPT-like, and seq2seq layouts | intermediate
+SUMMARY: Transformer families differ by attention layout. Encoder-only models bidirectional-encode inputs. Decoder-only models causally generate left-to-right. Encoder-decoder models encode a source then decode a target.
+ANALOGY: Encoder is reading comprehension; decoder is writing with only past drafts visible; encoder-decoder is read then write.
+EXPL: Encoder: bidirectional context. || Decoder: causal mask for generation. || Encoder-decoder: conditional generation. || Choose by task: understand, generate, or transform.
+TERMS: Causal mask=Block attending to future tokens || Bidirectional=See left and right context || Seq2seq=Map an input sequence to an output sequence
+VIZ(stepped): Task appears: classify, chat, or translate. >> Pick architecture family. >> Wire attention masks accordingly. >> Train objective matches layout. >> Deploy the right interface.
+MATH: (none)
+INTERACTIVE(generic-toggle): Try the idea :: {"options":["Spam classify","Write a story","Translate docs"],"insights":{"Spam classify":"Encoder/classifier style.","Write a story":"Decoder-only generation.","Translate docs":"Encoder-decoder strong classic."},"selected":"Spam classify"}
+CODE: (none)
+REAL: T5-style unification :: Many NLP tasks cast as text-to-text with encoder-decoder models. :: Layout follows the information flow you need.
+Q: Chat GPTs are typically… | opts: o0:Encoder-only ; o1:Decoder-only ; o2:Spreadsheets ; o3:Routers | correct=o1 | why: Causal decoders.
+Q: BERT-like models are… | opts: o0:Encoder-oriented ; o1:Only diffusion ; o2:Only audio ; o3:Only CSS | correct=o0 | why: Bidirectional encoders.
+Q: Translation classic fit… | opts: o0:Encoder-decoder ; o1:No neural nets ; o2:Only regex ; o3:Only FTP | correct=o0 | why: Seq2seq.
+
+### autoregressive-decoding | how-llms-work | Autoregressive Decoding — Generate the next token using past tokens only | intermediate
+SUMMARY: Autoregressive decoding produces tokens one by one, each conditioned on previously generated tokens and the prompt. That is why chat models stream words and why early mistakes can cascade.
+ANALOGY: Writing a sentence aloud without erasing: each new word must fit what you already said.
+EXPL: Predict token t given tokens before t. || Append sample and repeat. || Streaming UX matches this loop. || Errors compound; decoding strategy matters.
+TERMS: Autoregressive=Left-to-right sequential generation || Prefix=Tokens already fixed || Stop condition=EOS token or max length
+VIZ(stepped): Prompt tokens fixed. >> Model predicts next distribution. >> Sample or argmax a token. >> Append to prefix. >> Repeat until stop.
+MATH: (none)
+INTERACTIVE(generic-toggle): Try the idea :: {"options":["Greedy top token","Sample with temperature","Beam search for short outputs"],"insights":{"Greedy top token":"Deterministic but can be dull.","Sample with temperature":"More variety; needs tuning.","Beam search for short outputs":"Classic for some structured tasks."},"selected":"Greedy top token"}
+CODE: (none)
+REAL: Live token streaming :: UIs show partial answers as tokens arrive. :: AR decoding enables incremental UX.
+Q: Autoregressive models generate… | opts: o0:All tokens independently at once always ; o1:Sequentially conditioned on the past ; o2:Only images ; o3:Only hashes | correct=o1 | why: Sequential conditioning.
+Q: An early wrong token can… | opts: o0:Never matter ; o1:Steer later tokens off course ; o2:Speed up light ; o3:Fix DNS | correct=o1 | why: Error cascade.
+Q: Streaming is natural because… | opts: o0:Tokens arrive one after another ; o1:Browsers forbid text ; o2:GPUs hate math ; o3:CSS forbids words | correct=o0 | why: Sequential emission.
+
+### next-token-prediction | how-llms-work | Next-Token Prediction — The core training and inference objective | beginner
+SUMMARY: Next-token prediction asks: given previous tokens, what is the probability distribution over the next token? Pretraining minimizes error on this task at scale; inference samples from it. Rich behaviors emerge without guaranteeing truth.
+ANALOGY: A fill-in-the-next-word game played billions of times until the player becomes an expert stylist of continuations.
+EXPL: Loss compares predicted distribution vs actual next token. || Inference samples from the distribution. || Capabilities emerge from objective plus data. || Calibration and factuality still need extra systems.
+TERMS: Logits=Raw scores before softmax || Softmax=Convert scores to probabilities || Teacher forcing=Train on true prefixes
+VIZ(flagship): Prefix: The cat sat on the. >> Model outputs scores for many tokens. >> Softmax yields probabilities. >> mat ranks high. >> Sample and continue.
+MATH: (none)
+INTERACTIVE(decode-sampler): Predict the next token :: {"prefix":"The cat sat on the","candidates":[{"t":"mat","p":0.42},{"t":"floor","p":0.18},{"t":"couch","p":0.12},{"t":"moon","p":0.01}]}
+CODE: (none)
+REAL: Email subject autocomplete :: Productive continuation without understanding your whole company. :: Prediction is not verified knowledge.
+Q: The core LLM objective is… | opts: o0:Next-token prediction ; o1:Sorting arrays ; o2:Compiling C ; o3:Rendering CSS | correct=o0 | why: NTP.
+Q: Softmax turns logits into… | opts: o0:Files ; o1:Probabilities ; o2:Pods ; o3:Fonts | correct=o1 | why: Distributions.
+Q: Fluent next tokens imply true facts. | opts: o0:Always ; o1:Not necessarily ; o2:Never useful ; o3:Only in Latin | correct=o1 | why: Fluency is not truth.
+
+### temperature-top-k-top-p | how-llms-work | Temperature / Top-k / Top-p — Knobs that shape randomness of sampling | intermediate
+SUMMARY: Decoding strategies reshape the next-token distribution. Temperature softens or sharpens probabilities. Top-k keeps only k highest tokens; top-p keeps the smallest set whose cumulative probability exceeds p. These knobs trade creativity versus stability.
+ANALOGY: Temperature is spice level; top-k and top-p cut off absurd ingredients.
+EXPL: Temperature divides logits before softmax. || Low temp is peaky; high temp is flatter. || Top-k and top-p truncate the tail. || Task-dependent tuning beats dogma.
+TERMS: Temperature=Softmax sharpness control || Top-k=Keep k best tokens || Top-p / nucleus=Keep probability mass at least p
+VIZ(flagship): Model yields raw logits. >> Apply temperature scaling. >> Optionally mask with top-k or top-p. >> Softmax on reduced set. >> Sample the next token.
+MATH: (none)
+INTERACTIVE(temperature): Tune sampling randomness :: {"labels":["mat","floor","couch","window","moon"],"logits":[3.2,2.1,1.7,0.4,-1]}
+CODE: (none)
+REAL: Creative copy vs legal boilerplate :: Marketing wants higher temperature; contracts want near-greedy decoding. :: Match sampler to risk tolerance.
+Q: Higher temperature generally… | opts: o0:Always increases factuality ; o1:Flattens distribution toward more randomness ; o2:Deletes context ; o3:Removes GPUs | correct=o1 | why: More random.
+Q: Top-p sampling keeps… | opts: o0:All tokens always ; o1:A dynamic nucleus of probability mass ; o2:Only verbs ; o3:Only digits | correct=o1 | why: Nucleus.
+Q: For strict formatting, prefer… | opts: o0:Maximum chaos ; o1:Lower temperature or constrained decoding ; o2:Infinite temperature ; o3:No evaluation | correct=o1 | why: Stability first.
+
+### text-generation-loop | how-llms-work | Text Generation Loop — The full prompt to sample to append cycle | beginner
+SUMMARY: The generation loop tokenizes the prompt, repeatedly samples a next token under the decoding policy, appends it, and stops on end-of-sequence, max length, or a stop string. Tool-using apps insert actions inside or around this loop.
+ANALOGY: A typewriter that guesses the next character, types it, then guesses again until it stops.
+EXPL: Encode prompt. || Decode step-by-step. || Apply stop rules. || Detokenize to text. || Optionally stream partial results.
+TERMS: EOS=End-of-sequence token || Max tokens=Hard length cap || Stop sequence=String that halts generation
+VIZ(stepped): Receive prompt. >> Tokenize. >> Sample next token. >> Append and check stops. >> Detokenize and return.
+MATH: (none)
+INTERACTIVE(generic-toggle): Try the idea :: {"options":["Stop on EOS","Stop on code fence","Hit max tokens mid-sentence"],"insights":{"Stop on EOS":"Natural completion.","Stop on code fence":"Useful for code block control.","Hit max tokens mid-sentence":"Truncation artifact."},"selected":"Stop on EOS"}
+CODE: (none)
+REAL: Chat UX streaming :: Tokens appear as the loop runs for perceived speed. :: Loop mechanics shape product feel.
+Q: Generation stops when… | opts: o0:EOS, max, or stop hit ; o1:The sun explodes only ; o2:CSS loads ; o3:DNS fails | correct=o0 | why: Stop conditions.
+Q: Appending tokens updates… | opts: o0:The prefix for the next prediction ; o1:Only the footer CSS ; o2:Kubernetes ; o3:The BIOS | correct=o0 | why: AR state.
+Q: Detokenization converts… | opts: o0:IDs back to text ; o1:Text to electricity ; o2:Pods to fonts ; o3:JSON to rain | correct=o0 | why: Readable output.
+
+### why-hallucinations-happen | how-llms-work | Why Hallucinations Happen — Fluent guesses without grounded truth checks | beginner
+SUMMARY: Hallucinations happen because models optimize for plausible continuations, not verified world state. When context is missing or conflicting, the model still produces confident-sounding text. Decoding randomness, outdated data, and prompts that forbid uncertainty amplify the issue.
+ANALOGY: A skilled improv actor who never says I do not know unless trained to—and invents details to keep the scene going.
+EXPL: Objective is plausible tokens, not database lookup. || Gaps get filled with likely-sounding content. || Prompts can demand answers without uncertainty. || Mitigations include retrieval, tools, citations, refusals, and evals.
+TERMS: Hallucination=Confident false or unverifiable content || Grounding=Tying answers to sources or tools || Calibration=Matching confidence to correctness
+VIZ(stepped): Hard question, weak evidence. >> Model still must emit tokens. >> Prior patterns suggest a tidy answer. >> Fluent falsehood appears. >> Grounding systems could interrupt.
+MATH: (none)
+INTERACTIVE(generic-toggle): Try the idea :: {"options":["Answer with sources only","Force an answer with no context","Allow I am not sure"],"insights":{"Answer with sources only":"Reduces unsupported claims.","Force an answer with no context":"Hallucination bait.","Allow I am not sure":"Healthy uncertainty."},"selected":"Answer with sources only"}
+CODE: (none)
+REAL: Fake case citations :: Legal tools invented case law that looked real. :: High-stakes domains need grounding and verification.
+Q: Hallucinations stem largely from… | opts: o0:Optimizing plausible text without guaranteed grounding ; o1:Evil GPUs ; o2:CSS bugs ; o3:USB-C | correct=o0 | why: Plausibility objective.
+Q: A useful mitigation is… | opts: o0:Never evaluate ; o1:RAG, tools, and verification ; o2:Delete logs ; o3:Raise temperature always | correct=o1 | why: Ground and check.
+Q: Fluency guarantees truth. | opts: o0:Yes ; o1:No ; o2:Only in poetry ; o3:Only offline | correct=o1 | why: No.
+
+### evaluation | production-ai | Evaluation — Measure quality with tests, not vibes | beginner
+SUMMARY: Evaluation scores whether an AI system meets task requirements: automated metrics, LLM-as-judge carefully used, human review, and regression sets. Production teams treat evals like unit tests for behavior.
+ANALOGY: Exam questions for your product—run them before every release.
+EXPL: Build a golden dataset. || Score answers automatically where possible. || Sample human reviews. || Run on every prompt/model change. || Separate retrieval vs generation scores for RAG.
+TERMS: Golden set=Curated labeled examples || Regression eval=Catch quality drops || LLM-as-judge=Model scoring outputs with caveats
+VIZ(stepped): Collect representative cases. >> Define rubrics. >> Score baseline. >> Change a prompt. >> Compare deltas.
+MATH: (none)
+INTERACTIVE(generic-toggle): Try the idea :: {"options":["Ship by intuition","Golden set regressions","One anecdote from a friend"],"insights":{"Ship by intuition":"Risky.","Golden set regressions":"Healthy.","One anecdote from a friend":"Anecdote ≠ eval."},"selected":"Ship by intuition"}
+CODE: (none)
+REAL: Tutor answer quality gates :: Weekly eval suite blocks deploys that hurt math accuracy. :: Evals are release gates.
+Q: Evaluation should be… | opts: o0:Systematic and repeatable ; o1:Only vibes ; o2:Only GPU temps ; o3:Only CSS lint | correct=o0 | why: Systematic.
+Q: Golden sets are… | opts: o0:Curated test examples ; o1:Random memes only ; o2:Docker secrets ; o3:Fan curves | correct=o0 | why: Tests.
+Q: For RAG, evaluate… | opts: o0:Retrieval and answers ; o1:Only fonts ; o2:Only HDMI ; o3:Only cables | correct=o0 | why: Both stages.
+
+### observability | production-ai | Observability — See inside live requests | intermediate
+SUMMARY: Observability captures traces, logs, and artifacts for each request: prompts, retrieved chunks, tool calls, latencies, and outputs (with privacy controls). It turns “the model was weird” into a debuggable timeline.
+ANALOGY: Flight data recorders for AI requests.
+EXPL: Trace orchestration steps. || Redact sensitive fields. || Link metrics to traces. || Sample when volume is huge. || Use traces to improve prompts/RAG.
+TERMS: Trace=Structured timeline of a request || Span=One step inside a trace || Redaction=Remove sensitive data
+VIZ(stepped): Request starts with trace id. >> Retrieval span logs chunk IDs. >> LLM span logs token stats. >> Tool span logs args/results. >> Debug with the timeline.
+MATH: (none)
+INTERACTIVE(generic-toggle): Try the idea :: {"options":["Log nothing","Traces with redaction","Log raw secrets forever"],"insights":{"Log nothing":"Cannot debug.","Traces with redaction":"Balanced.","Log raw secrets forever":"Breach risk."},"selected":"Log nothing"}
+CODE: (none)
+REAL: Why did it cite the wrong doc? :: Trace shows reranker order flipped after a deploy. :: Observability finds root causes.
+Q: Observability provides… | opts: o0:Debuggable traces of requests ; o1:Free GPUs ; o2:Perfect truth ; o3:Automatic compliance forever | correct=o0 | why: Visibility.
+Q: Redaction is needed because… | opts: o0:Prompts may contain secrets ; o1:Fonts are bold ; o2:CSS is pink ; o3:HDMI is hot | correct=o0 | why: Privacy.
+Q: Spans represent… | opts: o0:Steps inside a trace ; o1:Ocean waves ; o2:Cable types ; o3:Mouse LOD | correct=o0 | why: Steps.
+
+### security-privacy | production-ai | Security / Privacy — Threat models for LLM apps | intermediate
+SUMMARY: LLM apps add threats: prompt injection, data exfiltration via tools, training data leakage, insecure key handling, and sensitive logs. Apply least privilege, isolation, redaction, and adversarial testing.
+ANALOGY: A building with doors, badges, cameras, and rules for contractors—not only a polite receptionist.
+EXPL: Threat-model tools and data flows. || Never trust retrieved/web content as instructions. || Isolate credentials. || Minimize retained personal data. || Pen-test prompts and tools.
+TERMS: Prompt injection=Hostile text steering the model || Least privilege=Minimal access rights || Exfiltration=Stealing data via outputs/tools
+VIZ(stepped): Map data flows. >> Identify injection surfaces. >> Constrain tools. >> Redact logs. >> Test attacks.
+MATH: (none)
+INTERACTIVE(generic-toggle): Try the idea :: {"options":["Trust all retrieved text","Isolate tools + sanitize","Put keys in the mobile app"],"insights":{"Trust all retrieved text":"Unsafe.","Isolate tools + sanitize":"Hardening.","Put keys in the mobile app":"Leak."},"selected":"Trust all retrieved text"}
+CODE: (none)
+REAL: Web-reading agents :: Untrusted pages tried to exfiltrate secrets via tool calls. :: Isolation saved the day.
+Q: Prompt injection is… | opts: o0:Hostile text steering the model ; o1:A CSS property ; o2:A GPU driver ; o3:A vector index type | correct=o0 | why: Injection.
+Q: Tool access should follow… | opts: o0:Least privilege ; o1:Root for all ; o2:No auth ; o3:Public keys in apps | correct=o0 | why: Least privilege.
+Q: Logs may contain… | opts: o0:Sensitive prompts needing redaction ; o1:Only weather ; o2:Only fonts ; o3:Only HDMI CEC | correct=o0 | why: Careful logging.
+
+### hallucination-mitigation | production-ai | Hallucination mitigation — Reduce fluent falsehoods | intermediate
+SUMMARY: Mitigate hallucinations with grounding (RAG/tools), abstention (“I don’t know”), citation requirements, lower-stakes drafting roles, constrained decoding, and human review for high risk. No single trick eliminates them.
+ANALOGY: Journalism standards: require sources, allow “unknown,” and fact-check before publish.
+EXPL: Ground with evidence. || Allow uncertainty. || Cite or link sources. || Verify critical claims. || Measure groundedness.
+TERMS: Abstention=Refusing when unsure || Citation=Pointer to evidence || Fact check=Independent verification
+VIZ(stepped): Ask a factual question. >> Retrieve evidence. >> Answer only from evidence. >> Cite chunks. >> Flag missing evidence.
+MATH: (none)
+INTERACTIVE(generic-toggle): Try the idea :: {"options":["Always answer confidently","Answer only with citations or abstain","Ban all uncertainty language"],"insights":{"Always answer confidently":"Hallucination bait.","Answer only with citations or abstain":"Safer pattern.","Ban all uncertainty language":"Forces guessing."},"selected":"Always answer confidently"}
+CODE: (none)
+REAL: Medical adjacent FAQ :: Bot refuses diagnosis and cites approved leaflets only. :: Scope control reduces harm.
+Q: A strong mitigation is… | opts: o0:Grounding plus abstention ; o1:Max temperature always ; o2:No evals ; o3:Delete retrieval | correct=o0 | why: Ground and abstain.
+Q: Citations help users… | opts: o0:Verify claims ; o1:Heat laptops ; o2:Bold text ; o3:Route packets | correct=o0 | why: Verify.
+Q: Hallucinations can be fully solved by one prompt sentence. | opts: o0:True ; o1:False ; o2:Only in Latin ; o3:Only offline | correct=o1 | why: Defense in depth.
+
+### production-guardrails | production-ai | Guardrails — Runtime policy enforcement | intermediate
+SUMMARY: Production guardrails enforce policies at runtime: topic blocks, PII filters, tool allowlists, rate limits, and output validators. Layer them: before model, around tools, after generation.
+ANALOGY: Airport security lanes plus cockpit locks—multiple checkpoints.
+EXPL: Input filters. || Tool gates. || Output validators. || Rate and abuse limits. || Metrics on blocks.
+TERMS: Rate limit=Cap request volume || Output validator=Checks format/policy || Policy engine=Central rules
+VIZ(stepped): Input screened. >> Model runs. >> Output screened. >> Tool call gated. >> Safe path completes.
+MATH: (none)
+INTERACTIVE(generic-toggle): Try the idea :: {"options":["Prompt-only policy","Layered runtime guardrails","Disable all filters in prod"],"insights":{"Prompt-only policy":"Soft.","Layered runtime guardrails":"Production grade.","Disable all filters in prod":"Reckless."},"selected":"Prompt-only policy"}
+CODE: (none)
+REAL: Student data bots :: PII filters block national IDs in outputs. :: Policy as code.
+Q: Guardrails should be layered… | opts: o0:Before, around tools, and after ; o1:Only in marketing ; o2:Only in CSS ; o3:Only on Fridays | correct=o0 | why: Layers.
+Q: Rate limits mitigate… | opts: o0:Abuse and cost spikes ; o1:Hallucinations completely ; o2:Need for auth ; o3:Need for UX | correct=o0 | why: Abuse/cost.
+Q: Validators check… | opts: o0:Outputs against rules/schemas ; o1:Ocean tides ; o2:Fan RGB ; o3:Mouse LOD | correct=o0 | why: Checks.
+
+### cost-optimization | production-ai | Cost optimization — Spend tokens where they matter | beginner
+SUMMARY: LLM cost is driven by tokens, model choice, retries, and tool calls. Optimize with caching, smaller models for easy tasks, tighter prompts, retrieval over long pastes, and routing hard cases to bigger models.
+ANALOGY: Household budgeting: stop leaving every light on; use the big oven only when needed.
+EXPL: Measure cost per successful task. || Cache repeated prompts/results. || Route by difficulty. || Trim context waste. || Cap agent steps.
+TERMS: Cache=Reuse prior results || Model routing=Pick model by case difficulty || Cost per task=Economic KPI
+VIZ(stepped): Log token spend. >> Find verbose prompts. >> Tighten and cache. >> Route simple intents small. >> Bill drops, quality holds.
+MATH: (none)
+INTERACTIVE(generic-toggle): Try the idea :: {"options":["Largest model for everything","Routed models + cache","Uncapped agent loops"],"insights":{"Largest model for everything":"Expensive.","Routed models + cache":"Sane.","Uncapped agent loops":"Bill shock."},"selected":"Largest model for everything"}
+CODE: (none)
+REAL: Support deflection :: FAQ intents use a small model; complex cases escalate. :: Routing saves money.
+Q: Major LLM cost driver is… | opts: o0:Tokens and model choice ; o1:Wallpaper resolution ; o2:Cable color ; o3:Commit emoji count | correct=o0 | why: Tokens/models.
+Q: Caching helps… | opts: o0:Repeated work ; o1:Guaranteed novelty always ; o2:Infinite context ; o3:No auth | correct=o0 | why: Reuse.
+Q: Routing sends… | opts: o0:Hard cases to bigger models ; o1:All cases to the largest always ; o2:No cases anywhere ; o3:Only CSS to GPUs | correct=o0 | why: Right-size.
+
+### latency-scaling | production-ai | Latency / Scaling — Make it fast enough under load | intermediate
+SUMMARY: Latency comes from retrieval, model time-to-first-token, tool calls, and network hops. Scale with concurrency limits, caches, async jobs, streaming, and horizontal replicas—while watching queueing delays.
+ANALOGY: Grocery checkout: open more lanes at peak, and let people see items scanned live (streaming).
+EXPL: Measure p50/p95 latency. || Stream early tokens. || Cache hot retrievals. || Bound concurrency. || Scale replicas carefully.
+TERMS: p95 latency=Slowish typical-worse delay || Concurrency=Simultaneous in-flight requests || Queueing=Wait time under overload
+VIZ(stepped): Load test starts. >> p95 spikes. >> Add cache + replicas. >> Stream TTFT improves. >> SLOs met.
+MATH: (none)
+INTERACTIVE(generic-toggle): Try the idea :: {"options":["No load tests","p95 SLOs + streaming + cache","Infinite concurrency"],"insights":{"No load tests":"Surprises.","p95 SLOs + streaming + cache":"Solid.","Infinite concurrency":"Meltdown."},"selected":"No load tests"}
+CODE: (none)
+REAL: Exam-week tutor traffic :: Caching syllabus chunks keeps RAG snappy. :: Scale the bottleneck, not everything.
+Q: Streaming mainly helps… | opts: o0:Time-to-first-token UX ; o1:Model truth ; o2:GPU lithography ; o3:CSS grids | correct=o0 | why: Perceived speed.
+Q: p95 focuses on… | opts: o0:Worse common latency ; o1:Best case only ; o2:Font size ; o3:Cable ohms | correct=o0 | why: Tail-ish latency.
+Q: Under overload, watch… | opts: o0:Queues and concurrency limits ; o1:Only wallpapers ; o2:Only emojis ; o3:Only HDMI CEC | correct=o0 | why: Saturation.
+
+### reliability | production-ai | Reliability — Fail gracefully and recover | intermediate
+SUMMARY: Reliable AI systems define timeouts, retries with idempotency, fallbacks (smaller model, cached answer, human), and clear degraded modes. Models will error; products should not hard-crash.
+ANALOGY: City power grids with backup generators and polite “service degraded” banners.
+EXPL: Timeouts everywhere. || Retries only when safe. || Fallbacks for outages. || Circuit breakers. || Status communication to users.
+TERMS: Fallback=Backup behavior || Circuit breaker=Stop calling a sick dependency || Degraded mode=Limited but honest functionality
+VIZ(stepped): Provider outage starts. >> Timeouts fire. >> Fallback model engages. >> User sees degraded notice. >> Primary recovers.
+MATH: (none)
+INTERACTIVE(generic-toggle): Try the idea :: {"options":["Crash on provider 500","Fallback + user notice","Silent wrong answers"],"insights":{"Crash on provider 500":"Brittle.","Fallback + user notice":"Reliable.","Silent wrong answers":"Worst."},"selected":"Crash on provider 500"}
+CODE: (none)
+REAL: Checkout assistants :: If LLM down, show FAQ search fallback. :: Degrade, don’t blank-screen.
+Q: Reliability includes… | opts: o0:Timeouts, retries, fallbacks ; o1:Only happy paths ; o2:No monitoring ; o3:Infinite waits | correct=o0 | why: Resilience.
+Q: Idempotency matters for… | opts: o0:Safe retries ; o1:Bold fonts ; o2:Cool GPUs ; o3:Short cables | correct=o0 | why: Retry safety.
+Q: Degraded mode should be… | opts: o0:Honest and limited ; o1:Hidden always ; o2:Louder hallucinations ; o3:Keyless admin | correct=o0 | why: Honesty.
+
+### best-practices-checklist | production-ai | Best practices checklist — A practical ship list | beginner
+SUMMARY: Before calling an AI feature “done,” check: threat model, eval suite, tracing, budgets, guardrails, fallbacks, privacy review, and on-call ownership. This checklist turns Generative AI from a demo into an engineered product.
+ANALOGY: Preflight checklist before takeoff—not optional theater.
+EXPL: Define user value and risks. || Evals gate releases. || Observe production. || Control cost and latency. || Own incidents and improvements.
+TERMS: Go/no-go=Release readiness decision || Owner=Person/team on point || SLO=Service level objective
+VIZ(stepped): Draft checklist. >> Score the feature. >> Fix gaps. >> Ship with owners. >> Review after incidents.
+MATH: (none)
+INTERACTIVE(generic-toggle): Try the idea :: {"options":["Ship demo as prod","Pass checklist with owners","Ignore incidents"],"insights":{"Ship demo as prod":"Reckless.","Pass checklist with owners":"Professional.","Ignore incidents":"Culture failure."},"selected":"Ship demo as prod"}
+CODE: (none)
+REAL: Capstone demos to pilots :: Student teams use the checklist before showing faculty advisors. :: Discipline beats dazzle.
+Q: A release checklist should include… | opts: o0:Evals, safety, observability, owners ; o1:Only logos ; o2:Only GPU brands ; o3:Only emojis | correct=o0 | why: Readiness.
+Q: SLOs help define… | opts: o0:Reliability targets ; o1:Font fashion ; o2:Cable taste ; o3:Wallpaper art | correct=o0 | why: Targets.
+Q: Demos without owners… | opts: o0:Become orphan incidents ; o1:Are always safe ; o2:Need no logs ; o3:Never fail | correct=o0 | why: Ownership matters.
+
+### roles-system-user-assistant | prompt-engineering | Roles (system/user/assistant) — Who is speaking in the dialogue format | beginner
+SUMMARY: Chat models are trained on roles: system sets policy and persona, user provides requests, assistant responds. Clear role separation improves control. System messages are powerful but not magical security boundaries.
+ANALOGY: A play script: stage directions (system), audience request (user), actor lines (assistant).
+EXPL: System steers global behavior. || User turns carry tasks. || Assistant turns are model outputs. || Do not treat system prompts as perfect sandboxing.
+TERMS: System prompt=High-level instructions and policies || User message=Human or app request || Assistant message=Model response
+VIZ(stepped): Define system policy. >> User asks a question. >> Assistant answers in-policy. >> Next user turn continues. >> Roles keep structure stable.
+MATH: (none)
+INTERACTIVE(generic-toggle): Try the idea :: {"options":["No system prompt","Clear system policy","Stuff secrets only in system prompt"],"insights":{"No system prompt":"Less consistent behavior.","Clear system policy":"Better steering.","Stuff secrets only in system prompt":"Unsafe assumption."},"selected":"No system prompt"}
+CODE: (none)
+REAL: Support bot persona :: System: be brief and cite policy; user asks refund question. :: Roles encode product behavior.
+Q: System role mainly… | opts: o0:Sets policy and persona ; o1:Replaces the GPU ; o2:Is the user question ; o3:Is CSS | correct=o0 | why: Global steering.
+Q: Assistant role is… | opts: o0:The model response channel ; o1:Always the database ; o2:Only offline ; o3:A Kubernetes node | correct=o0 | why: Model output.
+Q: System prompts are perfect security. | opts: o0:True ; o1:False ; o2:Only on Mondays ; o3:Only in XML | correct=o1 | why: Not a hard security boundary.
+
+### zero-one-few-shot | prompt-engineering | Zero / One / Few-shot — Teach by giving zero to a few examples | beginner
+SUMMARY: Zero-shot asks the model to perform a task with instructions only. One-shot and few-shot provide example input-output pairs in the prompt so the model mirrors the pattern. Examples are a lightweight way to specify format and style without fine-tuning.
+ANALOGY: Showing a worked example on the blackboard before asking students to do the next problem.
+EXPL: Zero-shot: instructions alone. || Few-shot: demos in context. || Pick diverse, correct examples. || Too many demos can crowd the context window.
+TERMS: Zero-shot=No examples in the prompt || Few-shot=Multiple in-context examples || In-context learning=Adapting from prompt examples
+VIZ(stepped): State the task. >> Optionally add examples. >> Ask for the new case. >> Model mirrors the pattern. >> Check format adherence.
+MATH: (none)
+INTERACTIVE(generic-toggle): Try the idea :: {"options":["Zero-shot extract JSON","One good example","Five conflicting examples"],"insights":{"Zero-shot extract JSON":"Works if instructions are crisp.","One good example":"Often stabilizes format.","Five conflicting examples":"Confuses the pattern."},"selected":"Zero-shot extract JSON"}
+CODE: (none)
+REAL: Ticket triage labels :: Show three labeled tickets, then ask for the fourth label. :: Examples specify the label taxonomy quickly.
+Q: Few-shot prompting provides… | opts: o0:Examples in the prompt ; o1:New GPU drivers ; o2:A database schema automatically ; o3:CSS themes | correct=o0 | why: In-context demos.
+Q: Zero-shot means… | opts: o0:No examples, instructions only ; o1:Zero temperature always ; o2:No tokens ; o3:No model | correct=o0 | why: Instructions only.
+Q: Bad examples usually… | opts: o0:Help always ; o1:Teach the wrong pattern ; o2:Delete context ; o3:Fix hallucinations | correct=o1 | why: Demos are teachers.
+
+### chain-of-thought | prompt-engineering | Chain of Thought — Ask for step-by-step reasoning | intermediate
+SUMMARY: Chain-of-Thought (CoT) prompting asks the model to reason in intermediate steps before the final answer. For multi-step problems, visible reasoning often improves accuracy—though steps can also look convincing while being wrong.
+ANALOGY: Show your work on a math quiz: intermediate lines catch arithmetic slips.
+EXPL: Encourage stepwise reasoning. || Helps on multi-step tasks. || Does not guarantee correctness. || Can be combined with self-consistency or tools.
+TERMS: Chain of Thought=Intermediate reasoning tokens || Final answer=The concluded result || Scratchpad=Working space for steps
+VIZ(flagship): Pose a multi-step question. >> Ask for step-by-step reasoning. >> Model emits intermediate steps. >> Conclude with an answer. >> Verify the steps.
+MATH: (none)
+INTERACTIVE(prompt-builder): Add reasoning scaffolding :: {"base":"If a factory makes 12 widgets/hour and runs 7 hours, how many widgets?","withCot":"Think step by step, then give the final number.","answers":{"base":"Jumps to 84 (maybe).","withCot":"Shows 12×7=84 with intermediate checks."}}
+CODE: (none)
+REAL: Physics word problems :: Students prompt think step by step for unit conversions. :: Process scaffolding lifts performance.
+Q: CoT mainly asks the model to… | opts: o0:Hide all reasoning ; o1:Write intermediate reasoning steps ; o2:Delete tokens ; o3:Ban math | correct=o1 | why: Show work.
+Q: CoT guarantees correctness. | opts: o0:True ; o1:False ; o2:Only in rhyme ; o3:Only offline | correct=o1 | why: Helpful but fallible.
+Q: CoT helps most when… | opts: o0:Tasks are multi-step ; o1:Tasks are single-token copies ; o2:CSS is involved ; o3:DNS is down | correct=o0 | why: Multi-step reasoning.
+
+### self-consistency | prompt-engineering | Self-Consistency — Sample multiple reasonings and vote | intermediate
+SUMMARY: Self-consistency samples several chain-of-thought trajectories (usually with temperature) and selects the most common final answer. Agreement across diverse paths often beats one greedy reasoning trace.
+ANALOGY: Ask three study partners to solve independently, then trust the answer they converge on.
+EXPL: Sample multiple reasoning paths. || Extract final answers. || Majority vote. || Costs more tokens. || Helps when reasoning is brittle.
+TERMS: Self-consistency=Vote over multiple sampled solutions || Diversity=Different reasoning paths || Majority vote=Pick the most common answer
+VIZ(stepped): Ask a hard question. >> Sample N CoT answers. >> Parse finals. >> Vote. >> Return consensus.
+MATH: (none)
+INTERACTIVE(generic-toggle): Try the idea :: {"options":["One greedy CoT","Five sampled CoTs + vote","Hundred samples for a yes/no FAQ"],"insights":{"One greedy CoT":"Cheap, riskier.","Five sampled CoTs + vote":"Common reliability boost.","Hundred samples for a yes/no FAQ":"Overkill cost."},"selected":"One greedy CoT"}
+CODE: (none)
+REAL: Math contest practice :: Multiple samples reduce unlucky reasoning slips. :: Compute trades for reliability.
+Q: Self-consistency uses… | opts: o0:Multiple sampled solutions and voting ; o1:A single forced lie ; o2:Only CSS ; o3:Only one token ever | correct=o0 | why: Vote ensemble.
+Q: It usually needs… | opts: o0:Higher token cost ; o1:Zero compute ; o2:No parsing ; o3:No question | correct=o0 | why: More samples cost more.
+Q: It helps when… | opts: o0:Single traces are brittle ; o1:The answer is a random GIF ; o2:Networking is off ; o3:Fonts are bold | correct=o0 | why: Brittle reasoning.
+
+### tree-of-thoughts | prompt-engineering | Tree of Thoughts — Explore branching reasoning options | advanced
+SUMMARY: Tree of Thoughts explores multiple partial reasoning branches, evaluates them, and expands promising ones—more search-like than a single linear chain. It can improve hard planning problems at higher complexity and cost.
+ANALOGY: A chess player considers several move trees, prunes weak lines, and deepens strong ones.
+EXPL: Propose multiple next thoughts. || Evaluate branches. || Expand the best candidates. || Prune weak paths. || Heavier than linear CoT.
+TERMS: Branch=An alternative partial solution || Evaluation=Scoring intermediate thoughts || Search=Exploring a tree of options
+VIZ(stepped): Root problem posed. >> Generate candidate thoughts. >> Score them. >> Expand top branches. >> Choose best leaf answer.
+MATH: (none)
+INTERACTIVE(generic-toggle): Try the idea :: {"options":["Linear CoT","Tree search of thoughts","Random words"],"insights":{"Linear CoT":"Simple path.","Tree search of thoughts":"Explore alternatives.","Random words":"Not reasoning."},"selected":"Linear CoT"}
+CODE: (none)
+REAL: Puzzle solving demos :: ToT-style search helps certain planning puzzles. :: Search wrappers sit around the LLM.
+Q: Tree of Thoughts is… | opts: o0:Branching exploration of reasoning ; o1:A CSS layout only ; o2:A database index ; o3:A GPU brand | correct=o0 | why: Branching search.
+Q: Compared with linear CoT, ToT is usually… | opts: o0:Cheaper always ; o1:More expensive and search-like ; o2:Impossible ; o3:Only for images | correct=o1 | why: Heavier.
+Q: Pruning means… | opts: o0:Dropping weak branches ; o1:Deleting the model ; o2:Banning prompts ; o3:Formatting JSON | correct=o0 | why: Cut weak lines.
+
+### react-prompting | prompt-engineering | ReAct prompting — Interleave reasoning with actions | intermediate
+SUMMARY: ReAct prompting structures outputs as interleaved Thought, Action, and Observation. The model plans, calls a tool, reads the result, and continues. It is a prompting pattern that later becomes the backbone of many agents.
+ANALOGY: A lab notebook: hypothesize, run an experiment, record the observation, then decide the next step.
+EXPL: Think about what is needed. || Act with a tool or API. || Observe the result. || Repeat until answerable. || Reduces pure hallucination on lookup tasks.
+TERMS: Thought=Internal plan text || Action=Tool call || Observation=Tool result
+VIZ(stepped): User asks a grounded question. >> Thought: need a lookup. >> Action: call tool. >> Observation returns facts. >> Final answer uses observations.
+MATH: (none)
+INTERACTIVE(generic-toggle): Try the idea :: {"options":["Answer with no tools","ReAct with a calculator","ReAct but ignore observations"],"insights":{"Answer with no tools":"May invent numbers.","ReAct with a calculator":"Grounded arithmetic.","ReAct but ignore observations":"Defeats the pattern."},"selected":"Answer with no tools"}
+CODE: (none)
+REAL: Weather plus outfit advice :: Thought needs weather; action calls API; observation guides clothing advice. :: Tools ground the loop.
+Q: ReAct interleaves… | opts: o0:Thought, action, observation ; o1:Only CSS and HTML ; o2:Only loss and accuracy ; o3:Only pods and nodes | correct=o0 | why: TAO loop.
+Q: Actions are typically… | opts: o0:Tool calls ; o1:Random poetry only ; o2:GPU temperatures ; o3:Font downloads | correct=o0 | why: Tools.
+Q: Observations are… | opts: o0:Tool results fed back ; o1:Ignored always ; o2:CSS variables ; o3:DNS TXT records only | correct=o0 | why: Feedback.
+
+### prompt-chaining | prompt-engineering | Prompt Chaining — Break a job into staged prompts | intermediate
+SUMMARY: Prompt chaining splits a complex task into stages where each prompt’s output feeds the next: extract, transform, verify, format. Smaller steps are easier to control, test, and cache than one mega-prompt.
+ANALOGY: An assembly line: cut, assemble, paint, inspect—rather than one chaotic workshop moment.
+EXPL: Decompose the workflow. || Define interfaces between steps. || Validate intermediate outputs. || Parallelize independent stages. || Easier debugging than monolith prompts.
+TERMS: Chain=Sequence of prompt steps || Intermediate artifact=Output passed downstream || Validator step=Checks quality before continuing
+VIZ(stepped): Big task arrives. >> Step 1 extracts facts. >> Step 2 drafts. >> Step 3 critiques. >> Step 4 formats final.
+MATH: (none)
+INTERACTIVE(generic-toggle): Try the idea :: {"options":["One mega-prompt","Extract then draft then check","Infinite chain of 200 microsteps"],"insights":{"One mega-prompt":"Hard to debug.","Extract then draft then check":"Practical chain.","Infinite chain of 200 microsteps":"Over-fragmented latency."},"selected":"One mega-prompt"}
+CODE: (none)
+REAL: RFP response drafting :: Extract requirements, draft sections, compliance check, then polish. :: Chains match real document workflows.
+Q: Prompt chaining… | opts: o0:Splits work into staged prompts ; o1:Merges all GPUs ; o2:Deletes context always ; o3:Bans JSON | correct=o0 | why: Staged prompts.
+Q: A benefit is… | opts: o0:Easier testing of steps ; o1:Guaranteed truth ; o2:Free hosting ; o3:No need for evals | correct=o0 | why: Debuggability.
+Q: Interfaces between steps should be… | opts: o0:Clear and validated ; o1:Random ; o2:Hidden forever ; o3:Only emojis | correct=o0 | why: Contracts.
+
+### structured-outputs | prompt-engineering | Structured Outputs — Force machine-readable answers | intermediate
+SUMMARY: Structured outputs ask the model to return JSON, tables, or schema-valid objects so software can parse results reliably. Schemas, constrained decoding, and validators turn prose generators into API-friendly components.
+ANALOGY: Fill a form with labeled fields instead of writing a free-form essay your parser cannot read.
+EXPL: Provide a schema or template. || Prefer constrained decoding when available. || Validate and retry on failure. || Keep schemas minimal and explicit.
+TERMS: Schema=Expected fields and types || Constrained decoding=Limit tokens to valid structures || Validation=Check output against schema
+VIZ(stepped): Define JSON schema. >> Prompt for schema-only output. >> Model emits JSON. >> Validator checks. >> App consumes fields.
+MATH: (none)
+INTERACTIVE(generic-toggle): Try the idea :: {"options":["Free prose only","JSON schema + validation","Huge ambiguous schema"],"insights":{"Free prose only":"Hard to parse.","JSON schema + validation":"Production pattern.","Huge ambiguous schema":"Brittle compliance."},"selected":"Free prose only"}
+CODE: Schema sketch
+REAL: Invoice field extraction :: Return vendor, date, total as JSON for accounting software. :: Structure bridges LLMs and programs.
+Q: Structured outputs help… | opts: o0:Programs parse results reliably ; o1:GPUs overheat less by magic ; o2:DNS resolve faster ; o3:Fonts bold themselves | correct=o0 | why: Machine readability.
+Q: A schema defines… | opts: o0:Expected fields and types ; o1:Ocean currents ; o2:Cable colors ; o3:Only temperatures | correct=o0 | why: Shape contract.
+Q: On invalid JSON you should… | opts: o0:Validate and retry or repair ; o1:Trust it anyway ; o2:Delete the app ; o3:Raise temperature to 100 | correct=o0 | why: Validate.
+
+### role-prompting-constraints | prompt-engineering | Role prompting & constraints — Persona plus hard rules | beginner
+SUMMARY: Role prompting assigns a persona (tutor, reviewer, SRE) while constraints specify hard rules: length limits, banned topics, citation requirements, or tool-only claims. Constraints matter more than theatrical personas.
+ANALOGY: Costume plus safety rules: the costume sets tone; the rules keep the performance legal.
+EXPL: Persona shapes style. || Constraints encode non-negotiables. || Prefer testable rules. || Conflicts between style and safety need priority order.
+TERMS: Persona=Assumed role or style || Constraint=Hard requirement || Priority=Which rule wins on conflict
+VIZ(stepped): Assign a helpful tutor persona. >> Add constraints: no final exam answers verbatim. >> User asks for a solution. >> Model teaches with hints. >> Constraints override flair.
+MATH: (none)
+INTERACTIVE(generic-toggle): Try the idea :: {"options":["Funny persona only","Funny persona + hard privacy rules","No constraints"],"insights":{"Funny persona only":"Style without guardrails.","Funny persona + hard privacy rules":"Balanced.","No constraints":"Risky drift."},"selected":"Funny persona only"}
+CODE: (none)
+REAL: Exam-safe tutoring :: Tutor role with ban on full answer dumps. :: Constraints protect academic integrity.
+Q: Constraints should be… | opts: o0:Testable rules ; o1:Only vibes ; o2:Hidden from evals ; o3:Random | correct=o0 | why: Testable.
+Q: Persona mainly affects… | opts: o0:Tone and framing ; o1:GPU voltage ; o2:DNS TTL ; o3:Disk format | correct=o0 | why: Style.
+Q: If persona conflicts with safety… | opts: o0:Safety should win ; o1:Persona always wins ; o2:Flip a coin ; o3:Delete both | correct=o0 | why: Priorities.
+
+### context-engineering | prompt-engineering | Context Engineering — Design what enters the window on purpose | intermediate
+SUMMARY: Context engineering is the discipline of selecting, compressing, ordering, and refreshing what the model sees: instructions, tools, retrieved docs, memory, and user state. Prompts are only one ingredient; the whole window is the product.
+ANALOGY: Packing a backpack for a hike: bring the map and snacks that matter, leave the encyclopedias.
+EXPL: Choose high-value tokens. || Order matters; put critical rules where models attend reliably. || Compress history with summaries. || Retrieve just-in-time facts. || Measure context ablations.
+TERMS: Context budget=Limited token capacity || Memory=Persisted state outside raw chat || Ablation=Remove pieces to test impact
+VIZ(stepped): Inventory possible context sources. >> Rank by relevance. >> Fit into budget. >> Place instructions carefully. >> Generate with that curated window.
+MATH: (none)
+INTERACTIVE(generic-toggle): Try the idea :: {"options":["Paste everything","Rank and fit top evidence","Empty context"],"insights":{"Paste everything":"Noise and truncation.","Rank and fit top evidence":"Core skill.","Empty context":"Under-specified."},"selected":"Paste everything"}
+CODE: (none)
+REAL: IDE coding agents :: Rules files, open tabs, and retrieved chunks are curated into context. :: Engineering the window beats prompt poetry alone.
+Q: Context engineering focuses on… | opts: o0:What enters the model window ; o1:Only temperature ; o2:Only CSS ; o3:Only GPU brands | correct=o0 | why: Window design.
+Q: A context budget is… | opts: o0:Limited token capacity ; o1:Unlimited always ; o2:A finance PDF only ; o3:A font file | correct=o0 | why: Capacity.
+Q: Summaries help by… | opts: o0:Compressing old history ; o1:Deleting the model ; o2:Banning tools ; o3:Raising loss | correct=o0 | why: Compression.
+
+### prompt-failure-modes | prompt-engineering | Prompt failure modes — How prompts go wrong in practice | beginner
+SUMMARY: Prompts fail through ambiguity, conflicting instructions, missing constraints, format drift, jailbreak pressure, and overlong clutter. Treat prompts like code: test, version, and monitor regressions when models change.
+ANALOGY: Vague homework instructions that get five different interpretations from five students.
+EXPL: Ambiguity yields variance. || Conflicts create unstable behavior. || Missing evals hide breakage. || Model upgrades can invalidate prompt assumptions.
+TERMS: Ambiguity=Unclear success criteria || Instruction conflict=Two rules that disagree || Prompt regression=Old prompt fails on new model
+VIZ(stepped): Ship a vague prompt. >> Users interpret differently. >> Outputs vary wildly. >> Add constraints and examples. >> Variance drops; quality rises.
+MATH: (none)
+INTERACTIVE(generic-toggle): Try the idea :: {"options":["Vague adjectives","Measurable constraints","Contradictory rules"],"insights":{"Vague adjectives":"High variance.","Measurable constraints":"More reliable.","Contradictory rules":"Unstable behavior."},"selected":"Vague adjectives"}
+CODE: (none)
+REAL: Promo email generator :: “Make it pop” produced chaos until length, audience, and CTA were specified. :: Specificity beats adjectives.
+Q: A common failure is… | opts: o0:Ambiguous success criteria ; o1:Too much electricity ; o2:CSS being blue ; o3:USB-C | correct=o0 | why: Ambiguity.
+Q: Prompts should be… | opts: o0:Tested like code ; o1:Never changed ; o2:Hidden from product ; o3:Written only in emojis | correct=o0 | why: Engineer them.
+Q: Model upgrades can… | opts: o0:Invalidate prompt assumptions ; o1:Never affect prompts ; o2:Delete JSON forever ; o3:Ban evaluation | correct=o0 | why: Regressions happen.
+
+### why-rag | rag | Why RAG — Ground answers in your documents | beginner
+SUMMARY: Retrieval-Augmented Generation (RAG) fetches relevant documents at query time and conditions the model on that evidence. It reduces reliance on parametric memory for private or changing facts and makes citations possible.
+ANALOGY: An open-book exam: instead of memorizing every page, look up the chapter you need, then write the answer.
+EXPL: LLMs have stale or missing private knowledge. || Retrieve first, then generate. || Enables citations and updates without full retraining. || Still fails if retrieval misses or context is misused.
+TERMS: RAG=Retrieve then generate || Parametric knowledge=Facts stored in weights || Grounding=Basing answers on evidence
+VIZ(stepped): User asks a policy question. >> System retrieves relevant docs. >> Docs enter the prompt. >> Model answers with evidence. >> Optional citations shown.
+MATH: (none)
+INTERACTIVE(generic-toggle): Try the idea :: {"options":["Memorize all PDFs in weights","RAG over PDFs","Ignore documents"],"insights":{"Memorize all PDFs in weights":"Expensive and stale.","RAG over PDFs":"Practical grounding.","Ignore documents":"Invented policies risk."},"selected":"Memorize all PDFs in weights"}
+CODE: (none)
+REAL: HR policy assistant :: Employees ask about leave; answers come from the latest handbook chunks. :: Update docs without retraining the LLM.
+Q: RAG mainly helps by… | opts: o0:Fetching evidence for generation ; o1:Deleting models ; o2:Replacing GPUs ; o3:Banning prompts | correct=o0 | why: Retrieve then generate.
+Q: A benefit is… | opts: o0:Easier knowledge updates ; o1:Infinite perfect memory ; o2:No need for evals ; o3:Free electricity | correct=o0 | why: Updatable docs.
+Q: RAG guarantees no hallucinations. | opts: o0:True ; o1:False ; o2:Only on Fridays ; o3:Only offline | correct=o1 | why: Bad retrieval still fails.
+
+### chunking | rag | Chunking — Split documents into retrievable pieces | beginner
+SUMMARY: Chunking splits documents into passages sized for embedding and context budgets. Too large and retrieval is noisy; too small and meaning fragments. Overlap and structure-aware splits (headings, code functions) often help.
+ANALOGY: Indexing a textbook by coherent sections instead of one giant blob or single sentences with no context.
+EXPL: Choose chunk size for embedder and LLM. || Preserve semantic boundaries. || Overlap reduces boundary loss. || Metadata keeps source trail.
+TERMS: Chunk=A retrievable text passage || Overlap=Shared text between adjacent chunks || Metadata=Source, page, section labels
+VIZ(stepped): Load a document. >> Split on structure. >> Apply size and overlap. >> Attach metadata. >> Ready for embedding.
+MATH: (none)
+INTERACTIVE(generic-toggle): Try the idea :: {"options":["One chunk = whole book","Heading-aware medium chunks","Random 20-character shards"],"insights":{"One chunk = whole book":"Poor retrieval precision.","Heading-aware medium chunks":"Strong default.","Random 20-character shards":"Meaning destroyed."},"selected":"One chunk = whole book"}
+CODE: (none)
+REAL: API docs RAG :: Split by endpoint sections so retrieval returns whole endpoint explanations. :: Structure-aware chunks win.
+Q: Chunking is… | opts: o0:Splitting docs into passages ; o1:Deleting punctuation only ; o2:GPU scheduling ; o3:CSS minify | correct=o0 | why: Passages.
+Q: Too-small chunks risk… | opts: o0:Losing surrounding meaning ; o1:Perfect answers always ; o2:Infinite context ; o3:Free hosting | correct=o0 | why: Fragmentation.
+Q: Metadata helps… | opts: o0:Cite and filter sources ; o1:Heat the room ; o2:Bold fonts ; o3:Route Ethernet | correct=o0 | why: Provenance.
+
+### embeddings-for-retrieval | rag | Embeddings for retrieval — Encode queries and chunks into one space | intermediate
+SUMMARY: Retrieval embeddings map queries and document chunks into a shared vector space so similar meanings neighbor each other. Embedding model choice, domain fit, and instruction formats strongly affect recall.
+ANALOGY: Library call numbers for meaning: related books shelved near each other so you can walk to the right aisle.
+EXPL: Embed chunks offline. || Embed query online. || Compare vectors by similarity. || Domain mismatch hurts recall. || Re-embed when chunking changes.
+TERMS: Retrieval embedding=Vector used for search || Recall=Did we fetch the needed evidence? || Domain fit=Match between embedder and corpus
+VIZ(stepped): Chunk text. >> Embed and store vectors. >> Embed user query. >> Find nearest chunk vectors. >> Pass text to generator.
+MATH: (none)
+INTERACTIVE(similarity): Try the idea :: {"phrases":["king","queen","apple","orange","transformer model","neural network"],"vectors":{"king":[0.9,0.1],"queen":[0.85,0.2],"apple":[0.1,0.9],"orange":[0.15,0.85],"transformer model":[0.7,0.65],"neural network":[0.68,0.6]}}
+CODE: (none)
+REAL: Bug tracker search :: Semantic search finds issues describing the same crash with different words. :: Meaning beats keywords alone.
+Q: Retrieval embeddings are used to… | opts: o0:Find semantically related chunks ; o1:Render CSS ; o2:Compile C ; o3:Charge phones | correct=o0 | why: Semantic search.
+Q: Queries and docs should be… | opts: o0:In a comparable embedding space ; o1:On different planets ; o2:Unembedded ; o3:Only hashed | correct=o0 | why: Shared space.
+Q: Changing chunking usually means… | opts: o0:Re-embedding ; o1:Never updating vectors ; o2:Deleting the LLM ; o3:Banning metadata | correct=o0 | why: Keep index consistent.
+
+### vector-db-concept | rag | Vector DB concept — Store and search embeddings at scale | intermediate
+SUMMARY: A vector database stores embeddings plus metadata and supports nearest-neighbor search at scale. It is the index behind most RAG stacks. Think retrieval engine, not a replacement for your system of record.
+ANALOGY: A specialized card catalog for coordinates of meaning, with filters for author and date.
+EXPL: Upsert vectors with IDs and metadata. || Query by nearest neighbors. || Filter with metadata. || ANN algorithms trade exactness for speed. || Still need the original text store.
+TERMS: ANN=Approximate nearest neighbor search || Upsert=Insert or update a vector record || Metadata filter=Constrain search by fields
+VIZ(stepped): Embed chunk. >> Upsert into vector DB. >> Query with filters. >> Return top IDs. >> Fetch raw text for prompting.
+MATH: (none)
+INTERACTIVE(generic-toggle): Try the idea :: {"options":["Postgres only keywords","Vector index + metadata filters","Store vectors on sticky notes"],"insights":{"Postgres only keywords":"Misses paraphrases.","Vector index + metadata filters":"RAG standard.","Store vectors on sticky notes":"Not scalable."},"selected":"Postgres only keywords"}
+CODE: (none)
+REAL: Enterprise knowledge base :: Teams store millions of chunk vectors with ACL metadata filters. :: Scale and permissions meet.
+Q: Vector DBs specialize in… | opts: o0:Nearest-neighbor embedding search ; o1:Payroll taxes ; o2:CSS grid ; o3:HDMI | correct=o0 | why: Vector search.
+Q: ANN means… | opts: o0:Approximate nearest neighbors ; o1:Absolute never never ; o2:A new GPU ; o3:A font | correct=o0 | why: Approx search.
+Q: Vector DB replaces your source docs store. | opts: o0:True ; o1:False ; o2:Only Sundays ; o3:Only in YAML | correct=o1 | why: It indexes; source of truth remains elsewhere.
+
+### similarity-search | rag | Similarity Search — Find nearest neighbors to a query vector | beginner
+SUMMARY: Similarity search ranks stored vectors by closeness to the query embedding using metrics like cosine similarity or inner product. Top-k results become candidate passages for the LLM.
+ANALOGY: Standing at a map pin and asking who is closest to me.
+EXPL: Embed the query. || Score against index. || Take top-k. || Optionally threshold. || Feed texts downstream.
+TERMS: Top-k=Return k nearest items || Cosine similarity=Angle-based score || Candidate set=Retrieved passages before rerank
+VIZ(stepped): Query arrives. >> Become a vector. >> Score neighbors. >> Select top-k. >> Hand texts to the model.
+MATH: (none)
+INTERACTIVE(similarity): Try the idea :: {"phrases":["king","queen","apple","orange","transformer model","neural network"],"vectors":{"king":[0.9,0.1],"queen":[0.85,0.2],"apple":[0.1,0.9],"orange":[0.15,0.85],"transformer model":[0.7,0.65],"neural network":[0.68,0.6]}}
+CODE: (none)
+REAL: FAQ deflection :: Similar past answers retrieved for new tickets. :: Neighbors suggest solutions.
+Q: Similarity search returns… | opts: o0:Nearest vectors/passages ; o1:Random GPUs ; o2:CSS files ; o3:DNS zones | correct=o0 | why: Neighbors.
+Q: Top-k means… | opts: o0:Keep k best matches ; o1:Keep all internet ; o2:Delete k tokens ; o3:Train k epochs only | correct=o0 | why: Best k.
+Q: Cosine similarity cares a lot about… | opts: o0:Vector direction ; o1:Cable color ; o2:Fan stickers ; o3:Mouse DPI | correct=o0 | why: Direction/angle.
+
+### hybrid-search | rag | Hybrid Search — Combine keywords and vectors | intermediate
+SUMMARY: Hybrid search blends lexical matching (BM25/keywords) with vector similarity. Keywords catch exact IDs and rare terms; vectors catch paraphrases. Fusion methods merge ranked lists into a stronger candidate set.
+ANALOGY: Using both the index at the back of a book and a librarian who understands meaning.
+EXPL: Run keyword and vector retrieval. || Fuse rankings. || Boost exact SKUs and codes. || Tune weights per corpus. || Often beats either alone.
+TERMS: BM25=Classic lexical ranking || Fusion=Combine ranked lists || Exact match=Literal string hits
+VIZ(stepped): Query has a SKU and a symptom. >> Keyword finds the SKU doc. >> Vector finds paraphrase guides. >> Fusion merges. >> Better candidates.
+MATH: (none)
+INTERACTIVE(generic-toggle): Try the idea :: {"options":["Keywords only","Vectors only","Hybrid fusion"],"insights":{"Keywords only":"Misses paraphrases.","Vectors only":"May miss exact IDs.","Hybrid fusion":"Often best."},"selected":"Keywords only"}
+CODE: (none)
+REAL: E-commerce support :: Order IDs need keywords; fuzzy symptom descriptions need vectors. :: Hybrid covers both.
+Q: Hybrid search combines… | opts: o0:Lexical and vector retrieval ; o1:Only images and audio ; o2:Loss and LR ; o3:Pods and nodes only | correct=o0 | why: Both modes.
+Q: Keywords help with… | opts: o0:Exact IDs and rare tokens ; o1:Only poetry vibes ; o2:GPU voltage ; o3:Font kerning | correct=o0 | why: Exactness.
+Q: Vectors help with… | opts: o0:Paraphrases ; o1:Only identical strings ; o2:HDMI hotplug ; o3:CSS :hover | correct=o0 | why: Meaning.
+
+### re-ranking | rag | Re-ranking — Second-stage relevance sorting | intermediate
+SUMMARY: Re-ranking takes a broader candidate set from cheap retrieval and scores each query-document pair with a stronger model. It improves precision before the LLM sees context, at extra compute cost.
+ANALOGY: A first pass grabs 50 library books quickly; an expert skims and keeps the best 5.
+EXPL: Retrieve many candidates cheaply. || Score pairs with a cross-encoder or LLM judge. || Keep top n. || Trade latency for precision. || Garbage in still limits quality.
+TERMS: Cross-encoder=Model scoring a query-doc pair together || Precision=Are top results relevant? || Candidate generation=First-stage retrieval
+VIZ(stepped): Retrieve top 50. >> Re-rank with a stronger scorer. >> Keep top 5. >> Stuff into prompt. >> Answer quality rises.
+MATH: (none)
+INTERACTIVE(generic-toggle): Try the idea :: {"options":["No rerank, stuff top 20","Rerank to top 5","Rerank with a random shuffle"],"insights":{"No rerank, stuff top 20":"Noisy context.","Rerank to top 5":"Common pattern.","Rerank with a random shuffle":"Useless."},"selected":"No rerank, stuff top 20"}
+CODE: (none)
+REAL: Legal research assistants :: Re-rankers prioritize truly on-point case passages. :: Precision matters under liability.
+Q: Re-ranking is… | opts: o0:Second-stage relevance sorting ; o1:Deleting the index ; o2:CSS minify ; o3:GPU overclocking | correct=o0 | why: Rescoring.
+Q: It usually follows… | opts: o0:Cheap candidate retrieval ; o1:Model deletion ; o2:Font install ; o3:DNS flush | correct=o0 | why: Two stages.
+Q: Goal is higher… | opts: o0:Precision of context ; o1:Temperature ; o2:Fan noise ; o3:Token prices always | correct=o0 | why: Better top docs.
+
+### context-budget | rag | Context budget — Spend limited tokens wisely | intermediate
+SUMMARY: The context budget is how many tokens you can afford for instructions, history, retrieved chunks, and the answer. RAG quality often hinges on what you include and exclude under that budget.
+ANALOGY: A fixed-size suitcase: folding and choosing beats bringing the whole closet.
+EXPL: Measure token costs of each section. || Prefer high-signal chunks. || Compress or omit low-value history. || Leave room for the answer. || Monitor truncation bugs.
+TERMS: Budget=Token capacity allocation || Truncation=Cutting overflow || High-signal=Evidence that changes the answer
+VIZ(stepped): Count instruction tokens. >> Add ranked chunks until budget. >> Reserve answer space. >> Generate. >> Log what was dropped.
+MATH: (none)
+INTERACTIVE(generic-toggle): Try the idea :: {"options":["Stuff until overflow","Ranked fill with reserve","Empty retrieval"],"insights":{"Stuff until overflow":"Silent truncation risk.","Ranked fill with reserve":"Budget-aware.","Empty retrieval":"Under-grounded."},"selected":"Stuff until overflow"}
+CODE: (none)
+REAL: Mobile support bots :: Smaller windows force aggressive chunk selection. :: Budget discipline is product quality.
+Q: Context budget is about… | opts: o0:Limited tokens to allocate ; o1:Unlimited paste ; o2:GPU watts only ; o3:Cable length | correct=o0 | why: Allocation.
+Q: You should reserve space for… | opts: o0:The answer generation ; o1:Nothing ; o2:Only ads ; o3:Only emojis | correct=o0 | why: Completion room.
+Q: Low-signal chunks should be… | opts: o0:Deprioritized ; o1:Always included first ; o2:Used to replace instructions ; o3:Printed | correct=o0 | why: Prioritize signal.
+
+### retrieval-pipeline | rag | Retrieval pipeline — End-to-end RAG flow | intermediate
+SUMMARY: A retrieval pipeline chains ingest, chunk, embed, index, retrieve, (rerank), prompt assembly, generate, and cite. Production RAG is this pipeline plus evaluation and access control—not a single API call.
+ANALOGY: A newsroom workflow: archive stories, index them, research for a question, then write with sources.
+EXPL: Offline path builds the index. || Online path answers a query. || Assembly builds the grounded prompt. || Citations map claims to chunks. || Evals measure retrieval and answer quality.
+TERMS: Ingest=Load source documents || Prompt assembly=Build the grounded context || Citation=Link answer spans to sources
+VIZ(flagship): Ingest docs. >> Chunk and embed. >> Query retrieves. >> Rerank and assemble. >> Generate grounded answer.
+MATH: (none)
+INTERACTIVE(rag-query): Run a mini RAG trace :: {"question":"What is our refund window?","docs":[{"id":"d1","text":"Refunds accepted within 30 days with receipt."},{"id":"d2","text":"Shipping takes 3–5 business days."},{"id":"d3","text":"Warranty covers manufacturing defects for 1 year."}],"answer":"According to policy docs, refunds are accepted within 30 days with receipt."}
+CODE: (none)
+REAL: Internal wiki assistant :: Pipeline refreshes nightly as wiki pages change. :: Fresh index, same generator.
+Q: RAG online path starts with… | opts: o0:A user query ; o1:Deleting the index ; o2:CSS build ; o3:DNS renew | correct=o0 | why: Query time.
+Q: Prompt assembly… | opts: o0:Builds grounded context for the LLM ; o1:Trains GPUs ; o2:Paints icons ; o3:Replaces chunking | correct=o0 | why: Context build.
+Q: Citations connect… | opts: o0:Answers to sources ; o1:Fans to cases ; o2:Fonts to GPUs ; o3:Pods to CSS | correct=o0 | why: Provenance.
+
+### agentic-rag-intro | rag | Agentic RAG intro — Retrieve iteratively with decisions | advanced
+SUMMARY: Agentic RAG lets the model decide when and what to retrieve, possibly running multiple search steps, comparing sources, or asking clarifying questions. It is more flexible than one-shot retrieve-then-read, and more failure-prone without limits.
+ANALOGY: A researcher who searches, reads, realizes a gap, searches again, then writes—not a single Google query.
+EXPL: Plan information needs. || Retrieve in loops. || Stop when enough evidence. || Needs tool budgets and audits. || Great for multi-hop questions.
+TERMS: Multi-hop=Needs several facts chained || Tool budget=Max retrieval/actions || Stop condition=When to answer
+VIZ(stepped): Question needs two facts. >> First retrieval partial. >> Agent plans second query. >> Combines evidence. >> Answers with sources.
+MATH: (none)
+INTERACTIVE(agent-loop): Try the idea :: {"goal":"Find tomorrow’s weather in Pune and suggest an outfit.","steps":[{"thought":"I need a weather lookup tool.","action":"weather_api(city=\"Pune\", day=\"tomorrow\")","observation":"32°C, sunny"},{"thought":"Hot and sunny—recommend light clothes.","action":"final_answer","observation":"Wear breathable cotton; sunglasses optional."}]}
+CODE: (none)
+REAL: Competitive research briefs :: Agent pulls market notes then pricing pages before drafting. :: Iteration finds multi-hop facts.
+Q: Agentic RAG retrieves… | opts: o0:Iteratively with decisions ; o1:Exactly once always ; o2:Never ; o3:Only images | correct=o0 | why: Loops.
+Q: A risk is… | opts: o0:Unbounded tool loops ; o1:Perfect safety automatic ; o2:Free tokens ; o3:No need for ACLs | correct=o0 | why: Control needed.
+Q: Multi-hop questions often need… | opts: o0:Multiple retrievals ; o1:One keyword only ; o2:No docs ; o3:CSS only | correct=o0 | why: Several facts.
+
+### rag-failure-modes | rag | RAG failure modes — Why grounded systems still fail | intermediate
+SUMMARY: RAG fails when chunking is bad, embeddings miss, filters exclude the truth, context is noisy, the model ignores evidence, or citations are fabricated. Evaluate retrieval and generation separately.
+ANALOGY: An open-book exam where you grab the wrong chapter, or read the right chapter and still misquote it.
+EXPL: Missed retrieval: answer has no chance. || Noisy context: model gets distracted. || Refusal to use evidence: ungrounded prose. || Stale indexes: outdated truth. || Measure recall@k and groundedness.
+TERMS: Recall@k=Was the needed chunk in top k? || Groundedness=Claims supported by context || Index freshness=How up to date the store is
+VIZ(stepped): Ask a known question. >> Needed chunk missing. >> Model invents. >> Fix chunking/embeddings. >> Answer becomes citable.
+MATH: (none)
+INTERACTIVE(generic-toggle): Try the idea :: {"options":["No evals","Recall@k + groundedness checks","Trust all citations"],"insights":{"No evals":"Blind.","Recall@k + groundedness checks":"Healthy.","Trust all citations":"Dangerous."},"selected":"No evals"}
+CODE: (none)
+REAL: Wrong policy version served :: Index lagged after handbook update; bot cited old leave days. :: Freshness is a reliability feature.
+Q: If retrieval misses, generation often… | opts: o0:Hallucinates or abstains poorly ; o1:Becomes perfectly true ; o2:Speeds DNS ; o3:Fixes CSS | correct=o0 | why: No evidence.
+Q: Evaluate… | opts: o0:Retrieval and generation separately ; o1:Only font size ; o2:Only GPU brand ; o3:Only cable length | correct=o0 | why: Two stages.
+Q: Fabricated citations are… | opts: o0:A known failure mode ; o1:Impossible ; o2:Required ; o3:A vector metric | correct=o0 | why: Must check.
+
+### datasets | training-alignment | Datasets — The raw fuel of model behavior | beginner
+SUMMARY: Datasets are collections of examples used to train or evaluate models. For LLMs this may be web text, books, code, instructions, or preference pairs. Data quality, licensing, diversity, and filters shape capabilities and harms more than most people expect.
+ANALOGY: You are what you eat—models absorb the statistics of their data diet.
+EXPL: Pretraining corpora are huge and noisy. || Fine-tune sets are smaller and task-focused. || Eval sets must not leak into training. || Governance covers consent, license, PII, and bias.
+TERMS: Corpus=Large text collection || Label=Desired output annotation || Data leakage=Train/test contamination
+VIZ(stepped): Collect raw sources. >> Filter and deduplicate. >> Split train/validation/test. >> Document provenance. >> Train and evaluate carefully.
+MATH: (none)
+INTERACTIVE(generic-toggle): Try the idea :: {"options":["Web crawl dump","Curated textbooks and code","Personal emails without consent"],"insights":{"Web crawl dump":"Scale plus noise plus legal risk.","Curated textbooks and code":"Higher signal, smaller scale.","Personal emails without consent":"Hard no—privacy violation."},"selected":"Web crawl dump"}
+CODE: (none)
+REAL: Code models :: Training on repositories boosts coding help—and can memorize secrets if unfiltered. :: Data policy is model policy.
+Q: Datasets primarily… | opts: o0:Decorate UIs ; o1:Provide learning signal examples ; o2:Replace loss functions ; o3:Cool GPUs | correct=o1 | why: Fuel for learning.
+Q: Eval data should… | opts: o0:Always equal training data ; o1:Stay separate to measure generalization ; o2:Be deleted always ; o3:Be only emojis | correct=o1 | why: No leakage.
+Q: Licensing matters because… | opts: o0:Fonts look nicer ; o1:Legal and ethical constraints bind training data ; o2:GPUs hate licenses ; o3:CSS requires it | correct=o1 | why: Compliance and ethics.
+
+### preprocessing | training-alignment | Preprocessing — Clean and shape raw data before training | beginner
+SUMMARY: Preprocessing turns messy raw sources into trainable examples: cleaning, filtering toxicity and PII, language detection, deduplication, formatting dialogues, and packing sequences. Bad preprocessing silently poisons quality.
+ANALOGY: Washing and measuring ingredients before cooking—the model only tastes what you prep.
+EXPL: Normalize encodings and formats. || Filter harmful or private content. || Deduplicate near-copies. || Structure into tensors and batches.
+TERMS: Deduplication=Removing repeated near-identical samples || PII=Personally identifiable information || Packing=Combining short examples into sequences
+VIZ(stepped): Raw messy text. >> Strip boilerplate. >> Filter PII and abuse. >> Deduplicate. >> Emit clean training records.
+MATH: (none)
+INTERACTIVE(generic-toggle): Try the idea :: {"options":["Keep all duplicates","Aggressive dedupe","Strip PII patterns"],"insights":{"Keep all duplicates":"Wastes compute.","Aggressive dedupe":"Often improves quality.","Strip PII patterns":"Necessary privacy step."},"selected":"Keep all duplicates"}
+CODE: (none)
+REAL: Chat instruction formatting :: Messages labeled system/user/assistant become supervised samples. :: Structure teaches roles.
+Q: Preprocessing happens… | opts: o0:After the universe ends ; o1:During dataset prep for training ; o2:Only in CSS ; o3:Only on phones | correct=o1 | why: Data prep stage.
+Q: Deduplication helps… | opts: o0:Memorize more spam ; o1:Reduce repetitive bias from clones ; o2:Delete GPUs ; o3:Ban Unicode | correct=o1 | why: Less clone dominance.
+Q: PII filtering aims to… | opts: o0:Increase secrets in models ; o1:Reduce private data memorization risk ; o2:Remove math ; o3:Break tokenizers | correct=o1 | why: Privacy hygiene.
+
+### tokenization-training | training-alignment | Tokenization (training view) — Choose a vocab that shapes learning | intermediate
+SUMMARY: From a training view, tokenization is a compression and inductive-bias choice: vocabulary size and special tokens affect sequence lengths, rare word handling, multilingual fairness, and throughput.
+ANALOGY: Deciding whether your kitchen cuts veggies into cubes or ribbons—same ingredients, different cooking dynamics.
+EXPL: Fit tokenizer on domain-relevant text. || Special tokens mark roles and boundaries. || Domain mismatch hurts efficiency. || Frozen tokenizers couple to embedding matrices.
+TERMS: BPE=Byte Pair Encoding merges || Special token=Reserved symbol like EOS || Vocab size=Number of distinct tokens
+VIZ(stepped): Sample training text. >> Count and merge subwords. >> Freeze vocab. >> Encode corpus to IDs. >> Train embeddings on those IDs.
+MATH: (none)
+INTERACTIVE(generic-toggle): Try the idea :: {"options":["General web vocab","Code-heavy vocab","Tiny 500-token vocab"],"insights":{"General web vocab":"Broad coverage.","Code-heavy vocab":"Better for repos.","Tiny 500-token vocab":"Long sequences, slow learning."},"selected":"General web vocab"}
+CODE: (none)
+REAL: Multilingual fairness :: Tiny English-heavy vocab can over-fragment other languages. :: Tokenization can encode inequity.
+Q: Tokenizer choice affects… | opts: o0:Only wallpaper color ; o1:Sequence length and learning dynamics ; o2:Ocean salinity ; o3:Mouse DPI | correct=o1 | why: Core training factor.
+Q: Special tokens are used to… | opts: o0:Mark structure and control ; o1:Replace GPUs ; o2:Paint SVGs ; o3:Route packets | correct=o0 | why: Control markers.
+Q: Domain-mismatched tokenizers often… | opts: o0:Help always ; o1:Over-fragment domain text ; o2:Delete loss ; o3:Ban batching | correct=o1 | why: Inefficient splits.
+
+### loss-function | training-alignment | Loss Function — The training score to minimize | beginner
+SUMMARY: A loss function measures how wrong predictions are. For LLMs, cross-entropy versus the true next token is standard. Training iteratively reduces loss—it does not directly maximize truth or safety.
+ANALOGY: A coach scorecard: mistakes add penalty points; practice aims to lower the score.
+EXPL: Loss quantifies error for gradient updates. || Cross-entropy fits next-token prediction. || Low loss is a proxy, not a virtue metric. || Auxiliary losses can add constraints.
+TERMS: Cross-entropy=Penalty for low probability on the true token || Objective=What optimization targets || Metric=Evaluation measure that may differ from loss
+VIZ(stepped): Model predicts a distribution. >> Compare to true next token. >> Compute cross-entropy. >> Backprop gradients. >> Optimizer steps parameters.
+MATH: (none)
+INTERACTIVE(generic-toggle): Try the idea :: {"options":["Track loss only","Track loss and task accuracy","Track nothing"],"insights":{"Track loss only":"Incomplete picture.","Track loss and task accuracy":"Healthier.","Track nothing":"Flying blind."},"selected":"Track loss only"}
+CODE: Cross-entropy idea
+REAL: Overconfident wrong answers :: Loss can look fine on frequent patterns while rare facts stay wrong. :: Monitor task metrics beyond loss.
+Q: LLM pretraining loss is usually… | opts: o0:Cross-entropy on next tokens ; o1:JPEG size ; o2:CSS lint ; o3:Ping time | correct=o0 | why: CE NTP.
+Q: Lower loss always means ethical behavior. | opts: o0:True ; o1:False ; o2:Only Sundays ; o3:Only in Rust | correct=o1 | why: Proxy is not values.
+Q: Loss drives… | opts: o0:Gradient updates ; o1:Only UI themes ; o2:DNS TTLs ; o3:Fan noise only | correct=o0 | why: Training signal.
+
+### gradient-descent | training-alignment | Gradient Descent — Nudge parameters downhill on the loss surface | beginner
+SUMMARY: Gradient descent updates parameters in the direction that locally decreases loss. The gradient indicates downhill; learning rate controls step size. Deep learning uses stochastic mini-batch estimates.
+ANALOGY: Hiking down a foggy mountain: feel the slope, take a step, repeat—avoid leaping into a ravine with a huge learning rate.
+EXPL: Compute gradient of loss versus parameters. || Step opposite the gradient. || Learning rate is critical. || Stochastic estimates come from batches.
+TERMS: Gradient=Local slope of loss || Learning rate=Step size || Local minimum=Bowl the optimizer may settle in
+VIZ(stepped): Parameters at a point. >> Estimate gradient from a batch. >> Step downhill. >> Loss trends down overall. >> Repeat for many steps.
+MATH: (none)
+INTERACTIVE(generic-toggle): Try the idea :: {"options":["Tiny LR","Sane LR","Huge LR"],"insights":{"Tiny LR":"Slow progress.","Sane LR":"Stable learning.","Huge LR":"Divergence risk."},"selected":"Tiny LR"}
+CODE: (none)
+REAL: Training curves :: Smooth descending loss suggests healthy LR; explosions suggest trouble. :: Plots diagnose optimization.
+Q: Gradient descent updates… | opts: o0:Parameters to reduce loss ; o1:Only CSS ; o2:DNS records ; o3:Cable colors | correct=o0 | why: Optimize params.
+Q: Too high learning rate can… | opts: o0:Diverge training ; o1:Guarantee perfection ; o2:Delete tokens safely ; o3:Fix hallucinations | correct=o0 | why: Instability.
+Q: SGD uses… | opts: o0:Mini-batch gradient estimates ; o1:Astrology ; o2:One batch of all Earth data always ; o3:HTML comments | correct=o0 | why: Stochastic batches.
+
+### backpropagation | training-alignment | Backpropagation — Efficiently compute gradients through the net | intermediate
+SUMMARY: Backpropagation applies the chain rule to compute how each parameter affected the loss, reusing intermediate calculations. Forward pass computes predictions; backward pass propagates error signals.
+ANALOGY: Tracing a cooking fail backward: salty soup, who added salt, which step, adjust that step next time.
+EXPL: Forward computes outputs and loss. || Backward applies the chain rule. || Each weight gets a gradient. || Vanishing and exploding gradients challenged depth historically.
+TERMS: Autograd=Automatic differentiation || Chain rule=Compose derivatives through layers || Backward pass=Gradient propagation phase
+VIZ(stepped): Forward through layers. >> Arrive at loss. >> Send gradients backward. >> Each weight receives a gradient. >> Optimizer applies updates.
+MATH: (none)
+INTERACTIVE(generic-toggle): Try the idea :: {"options":["Manual derivatives for a 7B model","Autograd","Ignore gradients"],"insights":{"Manual derivatives for a 7B model":"Impractical.","Autograd":"Standard.","Ignore gradients":"No learning."},"selected":"Manual derivatives for a 7B model"}
+CODE: (none)
+REAL: Framework training :: PyTorch and JAX compute grads via autograd graphs. :: You design the graph; backprop fills gradients.
+Q: Backprop computes… | opts: o0:Gradients via chain rule ; o1:New GPUs ; o2:CSS grids ; o3:SSL certs | correct=o0 | why: Gradients.
+Q: Forward pass… | opts: o0:Computes predictions and loss ; o1:Deletes weights ; o2:Only shuffles tokens ; o3:Paints UI | correct=o0 | why: Outputs.
+Q: Autograd means… | opts: o0:Manual quill math always ; o1:Automatic differentiation of the compute graph ; o2:No training ; o3:No batches | correct=o1 | why: Auto diffs.
+
+### optimizers | training-alignment | Optimizers — Algorithms that apply gradients wisely | intermediate
+SUMMARY: Optimizers decide how to turn gradients into parameter updates. SGD, Momentum, Adam, and AdamW add adaptive step sizes and regularization behaviors that affect speed, stability, and final quality.
+ANALOGY: Not just walk downhill, but whether you use hiking poles or adapt stride to terrain.
+EXPL: SGD is simple and sometimes sharp. || Momentum smooths updates. || Adam and AdamW adapt per-parameter rates. || Weight decay curbs parameter growth.
+TERMS: AdamW=Adaptive optimizer with decoupled weight decay || Momentum=Velocity carrying past gradients || Weight decay=Parameter magnitude penalty
+VIZ(stepped): Receive gradients. >> Optimizer adapts the step. >> Apply to weights. >> Track moving stats if adaptive. >> Repeat next batch.
+MATH: (none)
+INTERACTIVE(generic-toggle): Try the idea :: {"options":["Plain SGD no schedule","AdamW with LR schedule","Random weight jerks"],"insights":{"Plain SGD no schedule":"Can work; may be slow.","AdamW with LR schedule":"Common modern default.","Random weight jerks":"Not an optimizer."},"selected":"Plain SGD no schedule"}
+CODE: (none)
+REAL: Stable pretraining runs :: Optimizer and schedule tweaks prevent costly divergences. :: Optimization is part of the research.
+Q: Optimizers convert gradients into… | opts: o0:Parameter updates ; o1:Podcasts ; o2:Dockerfiles ; o3:Font files | correct=o0 | why: Updates.
+Q: AdamW is popular because… | opts: o0:It bans data ; o1:Adaptive steps and weight decay work well ; o2:It removes loss ; o3:It paints icons | correct=o1 | why: Practical stability.
+Q: Weight decay tends to… | opts: o0:Encourage huge weights ; o1:Penalize large weights ; o2:Delete softmax ; o3:Stop tokenization | correct=o1 | why: Regularize magnitude.
+
+### epochs-batches-lr | training-alignment | Epochs / Batches / LR — The rhythm of training steps | beginner
+SUMMARY: Data is processed in batches. An epoch is one pass over the training set. Learning rate schedules change step size over time. For LLMs, tokens seen often matters more than epoch count.
+ANALOGY: Gym plan: sets are batches, full routines are epochs, and weekly weight is the LR schedule.
+EXPL: Batch size trades noise versus compute. || Epochs measure progress through data. || LR schedules prevent early shocks. || Token budgets dominate LLM training talk.
+TERMS: Batch=Group of examples per update || Epoch=Pass through dataset || LR schedule=Plan for learning rate over time
+VIZ(stepped): Shuffle data. >> Take a batch. >> Update with current LR. >> Advance schedule. >> Complete epoch or token budget.
+MATH: (none)
+INTERACTIVE(generic-toggle): Try the idea :: {"options":["Batch size 1","Moderate batches","Enormous batch with tiny LR"],"insights":{"Batch size 1":"Noisy and slow.","Moderate batches":"Common balance.","Enormous batch with tiny LR":"Possible with care."},"selected":"Batch size 1"}
+CODE: (none)
+REAL: Warmup saves runs :: Too-high early LR destabilizes; warmup ramps gently. :: Schedules are practical engineering.
+Q: A batch is… | opts: o0:One GPU brand ; o1:A group of examples per step ; o2:A CSS file ; o3:A DNS zone | correct=o1 | why: Step group.
+Q: Warmup means… | opts: o0:Gradually increase LR early ; o1:Delete data ; o2:Ban Adam ; o3:Stop evals | correct=o0 | why: Gentle start.
+Q: For LLMs people often track… | opts: o0:Tokens processed ; o1:Only wallpaper ; o2:Only fan RPM ; o3:Only commit emojis | correct=o0 | why: Token budgets.
+
+### pretraining-vs-finetuning | training-alignment | Pretraining vs Fine-tuning — Broad learning first, specialize second | beginner
+SUMMARY: Pretraining teaches general patterns from massive data. Fine-tuning continues training on narrower data to specialize behavior. Most products adapt a pretrained base because pretraining is extremely expensive.
+ANALOGY: Learn general literacy first, then take a professional short course.
+EXPL: Pretrain is expensive and broad. || Fine-tune is cheaper adaptation. || Catastrophic forgetting is a risk. || Parameter-efficient methods often beat full fine-tunes.
+TERMS: Pretraining=Large-scale general training || Fine-tuning=Task or domain adaptation || Catastrophic forgetting=Losing old skills while learning new
+VIZ(stepped): Pretrain on broad corpora. >> Obtain a base model. >> Fine-tune on domain data. >> Evaluate general and domain metrics. >> Ship adaptation with safeguards.
+MATH: (none)
+INTERACTIVE(generic-toggle): Try the idea :: {"options":["Train from scratch for FAQ bot","Fine-tune base","Prompt only"],"insights":{"Train from scratch for FAQ bot":"Usually wasteful.","Fine-tune base":"Strong when domain data exists.","Prompt only":"Cheapest starting point."},"selected":"Train from scratch for FAQ bot"}
+CODE: (none)
+REAL: Hospital note summarizer :: Start from a general LLM; fine-tune on de-identified note styles. :: Do not pretrain from scratch for every app.
+Q: Pretraining is usually… | opts: o0:Narrow and tiny ; o1:Broad and expensive ; o2:Only CSS ; o3:Only mobile | correct=o1 | why: Scale stage.
+Q: Fine-tuning… | opts: o0:Adapts a base model ; o1:Deletes the base always ; o2:Replaces electricity ; o3:Bans prompts | correct=o0 | why: Specialize.
+Q: Forgetting risk means… | opts: o0:New training can erode old skills ; o1:GPUs forget math ; o2:Tokens vanish from Unicode ; o3:Logs delete themselves | correct=o0 | why: Catastrophic forgetting.
+
+### sft | training-alignment | SFT — Supervised Fine-Tuning on instructions | intermediate
+SUMMARY: Supervised Fine-Tuning trains the model on high-quality prompt-response examples so it follows instructions in a desired style. It turns a base completion model into a more helpful assistant before preference optimization.
+ANALOGY: Script rehearsal: show ideal dialogues until the actor hits the right tone and structure.
+EXPL: Curate instruction datasets. || Minimize loss on target responses. || Quality beats sheer quantity. || SFT alone may still hallucinate.
+TERMS: Instruction tuning=Fine-tuning to follow instructions || Gold response=Target answer text || Demonstration data=Example dialogues
+VIZ(stepped): Base model completes text. >> Provide instruction examples. >> SFT updates toward gold answers. >> Assistant-style behavior emerges. >> Later preference stages refine choices.
+MATH: (none)
+INTERACTIVE(generic-toggle): Try the idea :: {"options":["Noisy scraped Q&A","Expert-reviewed demos","Contradictory instructions"],"insights":{"Noisy scraped Q&A":"Teaches messy habits.","Expert-reviewed demos":"Best SFT fuel.","Contradictory instructions":"Confuses behavior."},"selected":"Noisy scraped Q&A"}
+CODE: (none)
+REAL: Company tone of voice :: SFT on approved templates yields on-brand support drafts. :: Demonstrations teach manners and format.
+Q: SFT stands for… | opts: o0:Supervised Fine-Tuning ; o1:Super Fast TCP ; o2:Soft Font Type ; o3:Secure File Telegram | correct=o0 | why: SFT.
+Q: SFT uses… | opts: o0:Labeled prompt-response pairs ; o1:Only unlabeled noise ; o2:Only rewards without text ; o3:Only CSS | correct=o0 | why: Supervised pairs.
+Q: Quality of demos… | opts: o0:Barely matters ; o1:Strongly drives behavior ; o2:Deletes GPUs ; o3:Fixes networking | correct=o1 | why: Quality over quantity.
+
+### lora-qlora | training-alignment | LoRA / QLoRA — Fine-tune small adapters instead of all weights | intermediate
+SUMMARY: LoRA freezes most base weights and trains tiny low-rank adapter matrices, cutting memory and storage. QLoRA quantizes the base model while training adapters, enabling fine-tuning on smaller GPUs.
+ANALOGY: Instead of rewriting an entire textbook, stick removable sticky notes you can swap per subject.
+EXPL: Inject low-rank updates into layers. || Train adapters; freeze base. || QLoRA uses a quantized base plus adapters. || Swap adapters per task or tenant.
+TERMS: LoRA=Low-Rank Adaptation || Quantization=Store weights with fewer bits || Adapter=Small trainable module
+VIZ(stepped): Load base model. >> Insert LoRA adapters. >> Optionally quantize base. >> Train adapters on task data. >> Ship tiny adapter files.
+MATH: (none)
+INTERACTIVE(generic-toggle): Try the idea :: {"options":["Full fine-tune 70B on one laptop","LoRA","QLoRA on limited VRAM"],"insights":{"Full fine-tune 70B on one laptop":"Usually impossible.","LoRA":"Efficient adaptation.","QLoRA on limited VRAM":"Practical on smaller GPUs."},"selected":"Full fine-tune 70B on one laptop"}
+CODE: LoRA idea
+REAL: Multi-tenant customization :: One base plus many per-customer adapters. :: Efficient specialization at scale.
+Q: LoRA trains… | opts: o0:Small adapter matrices typically ; o1:Every marketing PDF ; o2:Only CSS variables ; o3:DNS records | correct=o0 | why: Adapters.
+Q: QLoRA helps by… | opts: o0:Quantizing base to save memory ; o1:Deleting attention ; o2:Banning data ; o3:Removing loss | correct=o0 | why: Memory efficiency.
+Q: Adapters are useful because… | opts: o0:They are swappable and small ; o1:They erase bases always ; o2:They forbid evals ; o3:They replace tokenizers | correct=o0 | why: Modularity.
+
+### rlhf | training-alignment | RLHF — Align with human preferences via rewards | advanced
+SUMMARY: Reinforcement Learning from Human Feedback fits a reward model on human preference comparisons, then optimizes the LLM policy to score higher while staying close to a reference model. It can improve helpfulness but is complex and can over-optimize quirks.
+ANALOGY: A comedy writer tries jokes, audience ranks them, coach trains for crowd-pleasers without wandering off-character.
+EXPL: Collect pairwise human preferences. || Train a reward model. || Optimize policy with RL plus KL penalty. || Expensive and sensitive to preference data.
+TERMS: Reward model=Model predicting preference scores || Policy=The generating LLM being optimized || KL penalty=Keep policy near reference
+VIZ(stepped): Humans compare answers. >> Reward model learns preferences. >> Policy samples answers. >> Update toward higher reward. >> Stay near reference behavior.
+MATH: (none)
+INTERACTIVE(generic-toggle): Try the idea :: {"options":["No preference stage","RLHF","Only SFT"],"insights":{"No preference stage":"More raw completion behavior.","RLHF":"Preference-optimized.","Only SFT":"Strong baseline before RL."},"selected":"No preference stage"}
+CODE: (none)
+REAL: Assistant helpfulness jumps :: Chat models became more instruction-following after preference tuning eras. :: Human preferences shape product feel.
+Q: RLHF uses… | opts: o0:Preference feedback to shape rewards ; o1:Only unsupervised clustering ; o2:Only CSS ; o3:Only ping | correct=o0 | why: Preferences.
+Q: KL penalties aim to… | opts: o0:Prevent drifting too far from reference ; o1:Delete tokens ; o2:Ban GPUs ; o3:Stop tokenization | correct=o0 | why: Stay close.
+Q: RLHF is… | opts: o0:Simple regex ; o1:Complex but influential alignment method ; o2:A font ; o3:A cable | correct=o1 | why: Powerful and heavy.
+
+### dpo | training-alignment | DPO — Preference tuning without a full RL loop | advanced
+SUMMARY: Direct Preference Optimization fine-tunes on preferred versus rejected responses using a classification-style objective that avoids a separate RL loop. It is often simpler operationally than classic RLHF.
+ANALOGY: Show good versus bad answers and teach prefer this over that, without a separate scoreboard coach in an RL loop.
+EXPL: Dataset holds prompt, chosen, rejected. || Optimize a closed-form preference loss. || No explicit reward-model RL loop required. || Still depends on preference data quality.
+TERMS: Chosen=Preferred response || Rejected=Dispreferred response || Reference model=Anchor for implicit regularization
+VIZ(stepped): Gather preference triples. >> Compute DPO loss. >> Update policy parameters. >> Preferred style becomes likelier. >> Evaluate regressions.
+MATH: (none)
+INTERACTIVE(generic-toggle): Try the idea :: {"options":["RLHF stack","DPO","No preference optimization"],"insights":{"RLHF stack":"Powerful, ops-heavy.","DPO":"Simpler preference tuning.","No preference optimization":"Misses preference shaping."},"selected":"RLHF stack"}
+CODE: DPO sketch
+REAL: Safer refusal style :: Teams use DPO to nudge refusals without heavy RL ops. :: Operational simplicity matters.
+Q: DPO trains on… | opts: o0:Chosen versus rejected responses ; o1:Only unlabeled audio ; o2:Only CSS ; o3:Only IP addresses | correct=o0 | why: Preference pairs.
+Q: DPO typically avoids… | opts: o0:A full RL loop with explicit reward model ; o1:Any math ; o2:Any data ; o3:Any eval | correct=o0 | why: Simpler pipeline.
+Q: Bad preference data yields… | opts: o0:Magic safety ; o1:Misaligned behavior ; o2:Free GPUs ; o3:Perfect truth | correct=o1 | why: Garbage in, garbage out.
+
+### overfit-underfit | training-alignment | Overfit / Underfit intuition — Memorize too hard versus learn too little | beginner
+SUMMARY: Underfitting means the model is too simple or under-trained. Overfitting means it memorizes training quirks and fails to generalize. Watch train versus validation metrics for gaps.
+ANALOGY: Underfit: studying only chapter titles. Overfit: memorizing answer keys, then freezing on a new question.
+EXPL: Train and val curves diagnose fit. || Regularization and more data fight overfit. || More capacity or training can fix underfit. || LLMs can memorize; privacy and eval design matter.
+TERMS: Overfitting=Great train, poor generalization || Underfitting=Poor train and poor generalization || Regularization=Techniques limiting memorization
+VIZ(stepped): Train accuracy climbs. >> Validation stalls or drops. >> Suspect overfitting. >> Add data, regularize, or stop earlier. >> Generalization improves.
+MATH: (none)
+INTERACTIVE(generic-toggle): Try the idea :: {"options":["Tiny model, huge task","Huge model, tiny duplicated set","Right-sized model and diverse data"],"insights":{"Tiny model, huge task":"Underfit risk.","Huge model, tiny duplicated set":"Overfit risk.","Right-sized model and diverse data":"Healthier fit."},"selected":"Tiny model, huge task"}
+CODE: (none)
+REAL: Leaderboard leakage :: Tuning to a public test set overfits the leaderboard. :: Hold out truly unseen tests.
+Q: Overfitting looks like… | opts: o0:Train up, validation down ; o1:Both always perfect forever ; o2:No training ; o3:Only CSS bugs | correct=o0 | why: Gap pattern.
+Q: Underfitting means… | opts: o0:Model too weak or undertrained ; o1:Too much perfect memory ; o2:Infinite context ; o3:No loss | correct=o0 | why: Too simple.
+Q: A remedy for overfit… | opts: o0:More diverse data and regularization ; o1:Delete validation ; o2:Max LR chaos always ; o3:Ignore metrics | correct=o0 | why: Generalization tools.

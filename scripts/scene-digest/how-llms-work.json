@@ -1,0 +1,530 @@
+{
+  "vocabulary-context-window": {
+    "title": "Vocabulary and context window",
+    "description": "Two different limits: the finite list of tokens the model has IDs for, and the number of tokens it can hold in one pass.",
+    "steps": [
+      {
+        "id": "vocab-1",
+        "kind": "tokens",
+        "heading": "A slice of a 50,000-entry vocabulary",
+        "caption": "Vocabulary — the model only has integer IDs for a fixed list of tokens. Common words like \"the\" get their own single ID."
+      },
+      {
+        "id": "vocab-2",
+        "kind": "tokens",
+        "heading": "\"Zyloprofen\" is not in the vocabulary",
+        "caption": "Out-of-vocabulary words — a word with no ID of its own is rebuilt from smaller subword pieces, so nothing is ever truly unknown."
+      },
+      {
+        "id": "vocab-3",
+        "kind": "budget",
+        "heading": "Turn 12 of a support chat",
+        "caption": "Context window — the separate cap on how many tokens fit in one forward pass. Here the conversation still fits inside 8,000 tokens."
+      },
+      {
+        "id": "vocab-4",
+        "kind": "budget",
+        "heading": "Turn 40 — 10,300 tokens requested into an 8,000-token window",
+        "caption": "Overflow — by turn 40 the history exceeds the window, so something must go. Nothing is remembered by magic."
+      },
+      {
+        "id": "vocab-5",
+        "kind": "budget",
+        "heading": "After compaction",
+        "caption": "Truncation or summarisation — the oldest turns are dropped or compressed into a summary. Whatever leaves the window is invisible to the model."
+      }
+    ]
+  },
+  "positional-encoding": {
+    "title": "Positional encoding",
+    "description": "Why the same word at two different places in a sentence must arrive at attention as two different vectors.",
+    "steps": [
+      {
+        "id": "pe-1",
+        "kind": "vectors",
+        "heading": "Token embeddings only: \"bank\" is identical at position 1 and position 4",
+        "caption": "The problem — attention is a weighted sum, and sums do not care about order. Without position, \"the river bank\" and \"the bank river\" produce identical token sets."
+      },
+      {
+        "id": "pe-2",
+        "kind": "vectors",
+        "heading": "Sinusoidal position signals (d = 6)",
+        "caption": "Positional encoding — a position-dependent signal is generated. Each position gets its own distinctive pattern of sines and cosines."
+      },
+      {
+        "id": "pe-3",
+        "kind": "vectors",
+        "heading": "embedding + PE",
+        "caption": "Injection — the position signal is added to the token embedding, so the vector entering attention now encodes both \"which word\" and \"where\"."
+      },
+      {
+        "id": "pe-4",
+        "kind": "panels",
+        "heading": "Order now changes the result",
+        "caption": "Consequence — because the inputs differ, attention scores differ, so \"dog bites man\" and \"man bites dog\" no longer collapse to the same computation."
+      },
+      {
+        "id": "pe-5",
+        "kind": "panels",
+        "heading": "Four ways to say \"where\"",
+        "caption": "Scheme choice — absolute, learned, RoPE and ALiBi all inject order, but they differ in how well they extrapolate past the training length."
+      }
+    ]
+  },
+  "multi-head-attention": {
+    "title": "Multi-head attention",
+    "description": "Several attention patterns computed in parallel over the same sentence, then concatenated and projected back.",
+    "steps": [
+      {
+        "id": "mha-1",
+        "kind": "blocks",
+        "heading": "d_model = 384 split across 6 heads",
+        "caption": "Split — the d_model-wide token vectors are projected into h smaller Q/K/V sets, one per head. Each head gets its own learned projection matrices."
+      },
+      {
+        "id": "mha-2",
+        "kind": "matrix",
+        "heading": "Head 1 attention weights (each row sums to 1)",
+        "caption": "Head 1 — this head ended up tracking local order: almost every row puts its weight on itself and the token immediately before it."
+      },
+      {
+        "id": "mha-3",
+        "kind": "matrix",
+        "heading": "Head 2 attention weights",
+        "caption": "Head 2 — a different pattern from the same sentence: determiners lock onto their nouns (\"The\"→\"bank\", \"the\"→\"river\")."
+      },
+      {
+        "id": "mha-4",
+        "kind": "matrix",
+        "heading": "Head 3 attention weights",
+        "caption": "Head 3 — a content head: nearly every token reaches for \"river\", the word that decides which sense of \"bank\" is meant."
+      },
+      {
+        "id": "mha-5",
+        "kind": "blocks",
+        "heading": "Per token: 6 × 64 → concat → Wᴼ → 384",
+        "caption": "Concatenate and project — each head returns a 64-dim result per token; they are glued back into 384 dims and passed through Wᴼ so the heads can mix."
+      }
+    ]
+  },
+  "feed-forward-network": {
+    "title": "Feed-forward network (position-wise MLP)",
+    "description": "After attention has moved information between tokens, each token is transformed on its own — no mixing across positions.",
+    "steps": [
+      {
+        "id": "ffn-1",
+        "kind": "vectors",
+        "heading": "Post-attention vectors (d_model = 6 for legibility)",
+        "caption": "Input — one contextual vector per token arrives from attention. From here on the tokens are processed separately."
+      },
+      {
+        "id": "ffn-2",
+        "kind": "blocks",
+        "heading": "Width profile of one FFN sublayer",
+        "caption": "Expand — the first linear layer W₁ widens the vector, usually to four times d_model. More dimensions means more room to separate features."
+      },
+      {
+        "id": "ffn-3",
+        "kind": "vectors",
+        "heading": "First 6 of 2048 hidden units for the token \"bank\"",
+        "caption": "Non-linearity — GELU (or SwiGLU) is applied element-wise. Without it, stacking linear layers would collapse into a single linear layer."
+      },
+      {
+        "id": "ffn-4",
+        "kind": "vectors",
+        "heading": "Back to 6 dimensions",
+        "caption": "Project back — W₂ compresses the wide hidden vector to d_model again so it can be added to the residual stream."
+      },
+      {
+        "id": "ffn-5",
+        "kind": "panels",
+        "heading": "Division of labour inside a transformer block",
+        "caption": "Position-wise — the same MLP ran on \"bank\" and on \"river\" with identical weights and zero interaction. Only attention moves information sideways."
+      }
+    ]
+  },
+  "residual-connections": {
+    "title": "Residual connections",
+    "description": "The skip path that makes a 100-layer stack trainable: output = x + F(x).",
+    "steps": [
+      {
+        "id": "res-1",
+        "kind": "vectors",
+        "heading": "x entering the sublayer",
+        "caption": "Input — a token vector x enters the block. Hold on to it; the whole trick is that it does not get thrown away."
+      },
+      {
+        "id": "res-2",
+        "kind": "vectors",
+        "heading": "F(x) — the residual update",
+        "caption": "Sublayer output — attention or the FFN computes F(x). Notice how small it is compared with x: the block learns a nudge, not a rewrite."
+      },
+      {
+        "id": "res-3",
+        "kind": "vectors",
+        "heading": "y = x + F(x)",
+        "caption": "Skip connection — x is added back element-wise. The block only has to learn the difference it wants to make, not reproduce its own input."
+      },
+      {
+        "id": "res-4",
+        "kind": "network",
+        "heading": "The residual stream carries x forward past every block",
+        "caption": "Residual stream — every block reads from and writes to the same running sum, so information from layer 1 can reach layer 40 untouched."
+      },
+      {
+        "id": "res-5",
+        "kind": "chart",
+        "heading": "Gradient magnitude reaching each layer during backward pass (illustrative)",
+        "caption": "Why it matters — without skips the gradient must survive a product of many Jacobians and usually vanishes. With skips it always has a direct route back."
+      }
+    ]
+  },
+  "layer-normalization": {
+    "title": "Layer normalization",
+    "description": "Normalisation computed across the features of one token — not across the batch. Each token is rescaled using only its own numbers.",
+    "steps": [
+      {
+        "id": "ln-1",
+        "kind": "vectors",
+        "heading": "One token's activation vector, mid-network",
+        "caption": "The problem — activations inside a deep stack drift to wildly different magnitudes, which destabilises the next sublayer."
+      },
+      {
+        "id": "ln-2",
+        "kind": "bars",
+        "heading": "The six features of this single token, and their mean",
+        "caption": "Statistics across features — mean and variance are computed along this one token's feature dimension: μ = 1.5, σ² = 13.39."
+      },
+      {
+        "id": "ln-3",
+        "kind": "vectors",
+        "heading": "(x − μ) / √(σ² + ε)",
+        "caption": "Normalise — subtract μ and divide by √(σ² + ε). The token now has zero mean and unit variance across its features."
+      },
+      {
+        "id": "ln-4",
+        "kind": "vectors",
+        "heading": "γ ⊙ normalised + β",
+        "caption": "Learned scale and shift — γ and β are trained parameters that let the network undo the normalisation where it is unhelpful."
+      },
+      {
+        "id": "ln-5",
+        "kind": "vectors",
+        "heading": "Each row normalised independently, left to right",
+        "caption": "Not BatchNorm — a second token in the same batch is normalised using its own statistics. Rows are independent; batch size is irrelevant."
+      }
+    ]
+  },
+  "encoder-decoder-types": {
+    "title": "Encoder, decoder and encoder–decoder",
+    "description": "The families differ by one thing you can actually see: which cells of the attention matrix are allowed.",
+    "steps": [
+      {
+        "id": "ed-1",
+        "kind": "matrix",
+        "heading": "Encoder self-attention: no mask, all 25 cells live",
+        "caption": "Encoder-only (BERT-like) — bidirectional attention. Every position may read every other position, including the ones after it."
+      },
+      {
+        "id": "ed-2",
+        "kind": "matrix",
+        "heading": "Decoder self-attention: future positions masked out",
+        "caption": "Decoder-only (GPT-like) — a causal mask zeroes the upper triangle, so position i can only attend to positions ≤ i."
+      },
+      {
+        "id": "ed-3",
+        "kind": "bars",
+        "heading": "Row 3 (\"by\") of the causal matrix",
+        "caption": "The same rows renormalise — masking happens before softmax, so each row still sums to 1 across the positions it is allowed to use."
+      },
+      {
+        "id": "ed-4",
+        "kind": "matrix",
+        "heading": "Cross-attention: target rows attend to source columns, unmasked",
+        "caption": "Encoder–decoder (T5-like) — the encoder reads the source bidirectionally, and the decoder cross-attends to it while staying causal over its own output."
+      },
+      {
+        "id": "ed-5",
+        "kind": "panels",
+        "heading": "Which layout fits the job",
+        "caption": "Pick by information flow — do you need to understand a fixed input, continue text, or map one sequence to another?"
+      }
+    ]
+  },
+  "autoregressive-decoding": {
+    "title": "Autoregressive decoding",
+    "description": "The conditioning story: each new token is drawn from a distribution that depends on every token already fixed, including the ones the model itself produced.",
+    "steps": [
+      {
+        "id": "ar-1",
+        "kind": "tokens",
+        "heading": "Step 1 — prefix length 5",
+        "caption": "Prefix — the prompt is encoded once. Nothing has been generated yet; the model is conditioning on 5 given tokens."
+      },
+      {
+        "id": "ar-2",
+        "kind": "tokens",
+        "heading": "Step 2 — prefix length 6",
+        "caption": "Append — the sampled token becomes part of the prefix. The model is now conditioning on its own output, not just yours."
+      },
+      {
+        "id": "ar-3",
+        "kind": "timeline",
+        "heading": "Work done per decoding step",
+        "caption": "KV cache — keys and values for tokens already processed are reused, so each step only computes the new position rather than the whole prefix again."
+      },
+      {
+        "id": "ar-4",
+        "kind": "tokens",
+        "heading": "A bad sample at step 2 rewrites the future",
+        "caption": "Error cascade — a wrong token is not corrected later. It is conditioned on, so every following distribution is computed from the mistake."
+      },
+      {
+        "id": "ar-5",
+        "kind": "tokens",
+        "heading": "Step 9 — the model emits EOS",
+        "caption": "Termination — decoding stops when the model samples an end-of-sequence token, or when a length or stop-string limit fires first."
+      }
+    ]
+  },
+  "text-generation-loop": {
+    "title": "The text generation loop",
+    "description": "The control flow wrapped around the model: what your runtime does before, between and after each forward pass.",
+    "steps": [
+      {
+        "id": "gen-1",
+        "kind": "flow",
+        "heading": null,
+        "caption": "Encode — the prompt text is turned into token IDs. Everything after this point works with integers, not characters."
+      },
+      {
+        "id": "gen-2",
+        "kind": "flow",
+        "heading": null,
+        "caption": "One iteration — forward pass, sample, append. This trio repeats once per token and is the only part that touches the model."
+      },
+      {
+        "id": "gen-3",
+        "kind": "flow",
+        "heading": null,
+        "caption": "Streaming — each appended token can be flushed to the client immediately, which is why answers appear word by word."
+      },
+      {
+        "id": "gen-4",
+        "kind": "panels",
+        "heading": "Why the loop ended",
+        "caption": "Stop conditions — three independent rules can end the loop, and which one fired changes how you should treat the output."
+      },
+      {
+        "id": "gen-5",
+        "kind": "flow",
+        "heading": null,
+        "caption": "Detokenize — IDs are joined back into a string. Byte-level tokenizers must buffer, because one character can span several tokens."
+      }
+    ]
+  },
+  "why-hallucinations-happen": {
+    "title": "Why hallucinations happen",
+    "description": "The same mechanism that makes the model fluent makes it confident when it should not be: it always returns a distribution, even with no evidence.",
+    "steps": [
+      {
+        "id": "hal-1",
+        "kind": "panels",
+        "heading": "User asks a question the model cannot know",
+        "caption": "The question — a fact that lives in a private document the model has never seen. There is no correct answer inside the weights."
+      },
+      {
+        "id": "hal-2",
+        "kind": "bars",
+        "heading": "p(next answer | prompt), no evidence supplied",
+        "caption": "It must still produce a distribution — the forward pass cannot return \"nothing\". Every candidate continuation gets a probability."
+      },
+      {
+        "id": "hal-3",
+        "kind": "panels",
+        "heading": "What the user sees",
+        "caption": "Fluency hides the uncertainty — the sampled answer is rendered in the same confident prose as a well-grounded one. Nothing in the output signals the 34% figure."
+      },
+      {
+        "id": "hal-4",
+        "kind": "bars",
+        "heading": "Same prompt at temperature 1.4",
+        "caption": "Amplifiers — high temperature spreads the mass further, and prompts that forbid \"I don't know\" remove the only honest option."
+      },
+      {
+        "id": "hal-5",
+        "kind": "bars",
+        "heading": "Same question, with the retrieved contract clause in context",
+        "caption": "Grounding changes the distribution — put the actual policy text in the context and the correct answer becomes overwhelmingly likely."
+      }
+    ]
+  },
+  "tokenization": {
+    "title": "Tokenization (BPE-style teaching demo)",
+    "description": "Text → subword tokens → integer ids. Common pieces stay whole; rare/long words split. Leading spaces often matter.",
+    "steps": [
+      {
+        "id": "tk-1",
+        "kind": "tokens",
+        "heading": "Input",
+        "caption": "Raw text — humans see words; the model will see tokens from a fixed vocabulary."
+      },
+      {
+        "id": "tk-2",
+        "kind": "tokens",
+        "heading": "Teaching tokenizer output (approximation)",
+        "caption": "Subword split — a teaching BPE: common words/phrases may be one token; long/rare forms split. Leading spaces are often part of the token."
+      },
+      {
+        "id": "tk-3",
+        "kind": "tokens",
+        "heading": "Rare / long word",
+        "caption": "Rare word splits — “antidisestablishment” is not one vocab entry, so it becomes pieces the model knows."
+      },
+      {
+        "id": "tk-4",
+        "kind": "tokens",
+        "heading": "Token → id",
+        "caption": "IDs — each token maps to an integer index into the embedding table. That integer is what training and inference operate on."
+      },
+      {
+        "id": "tk-5",
+        "kind": "panels",
+        "heading": "Consequences",
+        "caption": "Why it matters — billing, context windows, and quirks like “A” vs “ A” being different tokens all come from this step."
+      }
+    ]
+  },
+  "embeddings": {
+    "title": "Token embeddings",
+    "description": "Ids become vectors; similar meanings land nearby in a high-d space — shown here as a labeled 2D projection.",
+    "steps": [
+      {
+        "id": "emb-1",
+        "kind": "vectors",
+        "heading": "Demo rows (d=6, toy values)",
+        "caption": "Lookup — each token id selects a learned vector from the embedding table (d numbers)."
+      },
+      {
+        "id": "emb-2",
+        "kind": "scatter",
+        "heading": "2D projection (not the real d-space)",
+        "caption": "Projected space — royalty words cluster; fruit words cluster elsewhere. Label: 2D projection for teaching."
+      },
+      {
+        "id": "emb-3",
+        "kind": "scatter",
+        "heading": "Nearest neighbours to query “monarch”",
+        "caption": "Query near neighbours — “monarch” lands near king/queen by cosine in the toy geometry."
+      },
+      {
+        "id": "emb-4",
+        "kind": "bars",
+        "heading": "cos(monarch, ·) on toy 3-d vectors",
+        "caption": "Cosine on demo vectors — higher means smaller angle (more similar direction)."
+      }
+    ]
+  },
+  "self-attention": {
+    "title": "Self-attention",
+    "description": "Q·K scores → softmax weights → weighted sum of V. Context chooses what “bank” means.",
+    "steps": [
+      {
+        "id": "sa-1",
+        "kind": "tokens",
+        "heading": "Sentence",
+        "caption": "Tokens in — “bank” is ambiguous until other tokens can influence its representation."
+      },
+      {
+        "id": "sa-2",
+        "kind": "panels",
+        "heading": "Projections (conceptual)",
+        "caption": "Q, K, V — each token makes a query, key, and value vector (linear projections of its embedding)."
+      },
+      {
+        "id": "sa-3",
+        "kind": "bars",
+        "heading": "Attention weights α for query “bank” (river context)",
+        "caption": "Scores → weights — dot products of Q_bank with each K, then softmax so weights sum to 1."
+      },
+      {
+        "id": "sa-4",
+        "kind": "matrix",
+        "heading": "Full attention matrix (softmax per row)",
+        "caption": "Weighted sum of V — output_bank ≈ Σ αⱼ vⱼ. Mass on “river” pulls the representation toward the landscape sense."
+      },
+      {
+        "id": "sa-5",
+        "kind": "bars",
+        "heading": "α for “bank” in “The bank froze the account”",
+        "caption": "Different context — swap in money-related words and the weight mass on “river” collapses; “bank” reorients."
+      }
+    ]
+  },
+  "next-token-prediction": {
+    "title": "Next-token prediction",
+    "description": "One forward pass → logits over the vocabulary → a probability distribution for the single next token.",
+    "steps": [
+      {
+        "id": "ntp-1",
+        "kind": "tokens",
+        "heading": "Context",
+        "caption": "Prefix — the model conditions only on tokens already present (plus system/tools if any)."
+      },
+      {
+        "id": "ntp-2",
+        "kind": "bars",
+        "heading": "Logits (slice of V)",
+        "caption": "Logits — a score for every vocab entry (shown: a tiny slice). Higher logit ⇒ preferred before normalisation."
+      },
+      {
+        "id": "ntp-3",
+        "kind": "bars",
+        "heading": "p = softmax(logits)",
+        "caption": "Softmax — convert logits to probabilities that sum to 1. This is the full predictive distribution for the next token."
+      },
+      {
+        "id": "ntp-4",
+        "kind": "panels",
+        "heading": "Outcome of this step",
+        "caption": "One decision — sampling or argmax picks a single token. That is next-token prediction; looping it is generation."
+      }
+    ]
+  },
+  "temperature-top-k-top-p": {
+    "title": "Temperature, top-k, and top-p",
+    "description": "Reshape the next-token distribution: temperature scales logits; top-k / top-p truncate before sampling.",
+    "steps": [
+      {
+        "id": "tt-1",
+        "kind": "bars",
+        "heading": "T = 1",
+        "caption": "Base distribution — softmax at T=1 on fixed logits."
+      },
+      {
+        "id": "tt-2",
+        "kind": "bars",
+        "heading": "T = 0.5 (sharper)",
+        "caption": "Low temperature — T=0.5 sharpens peaks; high-probability tokens dominate more."
+      },
+      {
+        "id": "tt-3",
+        "kind": "bars",
+        "heading": "T = 1.5 (flatter)",
+        "caption": "High temperature — T=1.5 flattens; the tail (“moon”) gains mass."
+      },
+      {
+        "id": "tt-4",
+        "kind": "bars",
+        "heading": "After top-k=2 on T=1 distribution",
+        "caption": "Top-k = 2 — keep only the two largest probabilities, zero the rest, renormalise."
+      },
+      {
+        "id": "tt-5",
+        "kind": "bars",
+        "heading": "After top-p=0.9 on T=1 distribution",
+        "caption": "Top-p = 0.9 — keep the smallest prefix of sorted tokens whose cumulative probability reaches 0.9, then renormalise."
+      }
+    ]
+  }
+}

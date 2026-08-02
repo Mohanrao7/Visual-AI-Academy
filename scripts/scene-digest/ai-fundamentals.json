@@ -1,0 +1,398 @@
+{
+  "what-is-ai": {
+    "title": "What AI actually is",
+    "description": "A worked example of the only thing that separates AI software from ordinary software: the rules are fitted from data.",
+    "steps": [
+      {
+        "id": "ai-1",
+        "kind": "panels",
+        "heading": "Two ways to build the same feature",
+        "caption": "The task — decide whether an email is spam. A human can do it; the question is whether you can write the rules down."
+      },
+      {
+        "id": "ai-2",
+        "kind": "chart",
+        "heading": "Rule maintenance versus spam catch rate over one year",
+        "caption": "Rules break — spammers write \"F R E E\" and the rule misses it. Every patch adds a rule, and the rule set grows faster than the coverage."
+      },
+      {
+        "id": "ai-3",
+        "kind": "ranking",
+        "heading": "Training data: input → label",
+        "caption": "Learning instead — collect examples with the answer attached. The labelled pairs are the specification; nobody writes the rule."
+      },
+      {
+        "id": "ai-4",
+        "kind": "bars",
+        "heading": "\"Your account is on hold — verify now\"",
+        "caption": "Prediction — a new, unseen email arrives and the model outputs a probability, not a certainty. Thresholding that probability is a product decision."
+      },
+      {
+        "id": "ai-5",
+        "kind": "flow",
+        "heading": "The lifecycle you are actually operating",
+        "caption": "Oversight — the model is scored on held-out email it never trained on, and monitored after launch because spam keeps changing."
+      }
+    ]
+  },
+  "machine-learning": {
+    "title": "Machine learning: three ways to learn",
+    "description": "Supervised, unsupervised and reinforcement learning differ in what signal is available, not in how clever they are.",
+    "steps": [
+      {
+        "id": "ml-1",
+        "kind": "ranking",
+        "heading": "House price prediction",
+        "caption": "Supervised learning — every example arrives with the right answer attached. The model is corrected directly against it."
+      },
+      {
+        "id": "ml-2",
+        "kind": "scatter",
+        "heading": "Shopper behaviour, unlabelled",
+        "caption": "Unsupervised learning — no labels exist. The algorithm can only find structure: groups, directions, densities."
+      },
+      {
+        "id": "ml-3",
+        "kind": "timeline",
+        "heading": "An agent learning a maze",
+        "caption": "Reinforcement learning — no correct action is ever shown. The agent tries something and receives a scalar reward, sometimes much later."
+      },
+      {
+        "id": "ml-4",
+        "kind": "chart",
+        "heading": "Error during training",
+        "caption": "Generalisation is the real goal — training error always falls. The number that matters is error on data the model has never seen."
+      },
+      {
+        "id": "ml-5",
+        "kind": "bars",
+        "heading": "Hiring screen trained on 10 years of past decisions",
+        "caption": "Inherited bias — the model reproduces the statistics of its data, including the ones you did not intend to teach it."
+      }
+    ]
+  },
+  "deep-learning": {
+    "title": "Deep learning: composed representations",
+    "description": "Why stacking layers helps — each layer builds features out of the layer below it.",
+    "steps": [
+      {
+        "id": "dl-1",
+        "kind": "network",
+        "heading": "A face photo enters as 150,528 raw numbers",
+        "caption": "Raw input — pixels, with no structure attached. A single linear layer can only draw one straight boundary through this."
+      },
+      {
+        "id": "dl-2",
+        "kind": "network",
+        "heading": "Layer 1 features",
+        "caption": "Shallow layers learn local detectors — edges and colour gradients. These are found automatically, not hand-designed."
+      },
+      {
+        "id": "dl-3",
+        "kind": "network",
+        "heading": "Layer 2 features",
+        "caption": "Middle layers compose them — corners and textures are combinations of edges, and parts are combinations of those."
+      },
+      {
+        "id": "dl-4",
+        "kind": "network",
+        "heading": "Layer 3 features and the prediction head",
+        "caption": "Deep layers reach task concepts — whole faces. The same hierarchy appears in language: characters → words → phrases → intent."
+      },
+      {
+        "id": "dl-5",
+        "kind": "panels",
+        "heading": "What depth costs",
+        "caption": "The price — depth needs data and compute, and the learned features are hard to interpret. Depth bought capability, not clarity."
+      }
+    ]
+  },
+  "neural-networks": {
+    "title": "One neuron, then a network",
+    "description": "The whole computation, with real arithmetic: weighted sum, add a bias, apply a nonlinearity.",
+    "steps": [
+      {
+        "id": "nn-1",
+        "kind": "bars",
+        "heading": "Input vector x",
+        "caption": "Inputs — three numbers describing one example. Text, pixels and audio all reduce to a vector like this."
+      },
+      {
+        "id": "nn-2",
+        "kind": "bars",
+        "heading": "Weights w (learned)",
+        "caption": "Weights — one learnable number per input, deciding how much that input matters and in which direction. These are what training changes."
+      },
+      {
+        "id": "nn-3",
+        "kind": "bars",
+        "heading": "Contributions to the pre-activation z",
+        "caption": "Weighted sum plus bias — each input is multiplied by its weight and everything is added, including a learned offset b = -0.3."
+      },
+      {
+        "id": "nn-4",
+        "kind": "bars",
+        "heading": "φ(z) for three common activations",
+        "caption": "Activation — a nonlinearity is applied. ReLU keeps positives and zeroes negatives, so this unit outputs 0: it stays silent."
+      },
+      {
+        "id": "nn-5",
+        "kind": "network",
+        "heading": "Same unit, repeated",
+        "caption": "Scale it — a layer is thousands of these units side by side, and a model is dozens of layers. \"7 billion parameters\" counts every w and b."
+      }
+    ]
+  },
+  "what-is-generative-ai": {
+    "title": "Generative AI: sampling from a learned distribution",
+    "description": "The defining behaviour — the same input can produce different valid outputs, because the model samples rather than looks up.",
+    "steps": [
+      {
+        "id": "gen-1",
+        "kind": "bars",
+        "heading": "Discriminative output: p(label | email)",
+        "caption": "A classifier picks from a fixed, tiny set of answers — here two. Its whole output space was defined by you in advance."
+      },
+      {
+        "id": "gen-2",
+        "kind": "bars",
+        "heading": "Generative output: p(next token | \"Write a refund email.\")  — top 5 of 50,257",
+        "caption": "A generator outputs a distribution over its entire vocabulary — tens of thousands of options — and then draws one."
+      },
+      {
+        "id": "gen-3",
+        "kind": "bars",
+        "heading": "One draw",
+        "caption": "Sampling — a token is drawn according to those probabilities. This run drew \" Hi\", the second-most-likely option, entirely legitimately."
+      },
+      {
+        "id": "gen-4",
+        "kind": "panels",
+        "heading": "Same prompt, three samples",
+        "caption": "Three runs, three outputs — all fluent, all consistent with the prompt, and one of them contains an invented policy detail."
+      },
+      {
+        "id": "gen-5",
+        "kind": "panels",
+        "heading": "One idea, several output types",
+        "caption": "The same mechanism across media — text samples tokens, diffusion samples images, audio models sample waveforms. All draw from a fitted distribution."
+      }
+    ]
+  },
+  "discriminative-vs-generative": {
+    "title": "Discriminative vs generative",
+    "description": "One learns where the boundary is. The other learns where the data lives — which is why only one of them can make new examples.",
+    "steps": [
+      {
+        "id": "dvg-1",
+        "kind": "scatter",
+        "heading": "Cats and dogs as feature vectors",
+        "caption": "The data — labelled examples of two classes in some feature space. Both approaches start here."
+      },
+      {
+        "id": "dvg-2",
+        "kind": "scatter",
+        "heading": "p(y | x): a decision boundary",
+        "caption": "Discriminative — the model only needs the surface that separates the classes. Everything away from that surface is wasted effort."
+      },
+      {
+        "id": "dvg-3",
+        "kind": "scatter",
+        "heading": "p(x | y): density per class",
+        "caption": "Generative — the model instead learns where each class's data is dense. That is a description of the class, not just a wall between classes."
+      },
+      {
+        "id": "dvg-4",
+        "kind": "scatter",
+        "heading": "Draw a fresh point from p(x | cat)",
+        "caption": "Sampling — because the density is known, new points can be drawn from it. This is the capability a boundary can never provide."
+      },
+      {
+        "id": "dvg-5",
+        "kind": "flow",
+        "heading": "A moderation-and-rewrite pipeline",
+        "caption": "In practice you use both — a classifier to route or filter, a generator to draft. Real products are hybrids."
+      }
+    ]
+  },
+  "transformers-overview": {
+    "title": "Inside a transformer block",
+    "description": "The repeating unit that everything else in this category expands on.",
+    "steps": [
+      {
+        "id": "tr-1",
+        "kind": "flow",
+        "heading": "Before the first block",
+        "caption": "Input — text becomes token IDs, each ID becomes a vector, and a position signal is added."
+      },
+      {
+        "id": "tr-2",
+        "kind": "flow",
+        "heading": "Inside block k",
+        "caption": "Attention sublayer — tokens read from each other. This is the only place in the whole architecture where positions interact."
+      },
+      {
+        "id": "tr-3",
+        "kind": "flow",
+        "heading": "Inside block k, second half",
+        "caption": "Feed-forward sublayer — each token is refined on its own by a wide MLP. Communication, then computation."
+      },
+      {
+        "id": "tr-4",
+        "kind": "network",
+        "heading": "A 7B-class model: 32 identical blocks",
+        "caption": "Stack — the identical block repeats N times. Depth is where the architecture gets its capacity."
+      },
+      {
+        "id": "tr-5",
+        "kind": "bars",
+        "heading": "Logits at the last position, top 4 of 50,257",
+        "caption": "Output head — the final vector at each position is multiplied by the unembedding matrix to give one score per vocabulary token."
+      }
+    ]
+  },
+  "foundation-models": {
+    "title": "One base, many adaptations",
+    "description": "What \"foundation model\" buys you, priced against the alternatives.",
+    "steps": [
+      {
+        "id": "fm-1",
+        "kind": "blocks",
+        "heading": "Where the compute goes",
+        "caption": "Pretraining — one very expensive run over broad data produces a base model with general capabilities and no particular job."
+      },
+      {
+        "id": "fm-2",
+        "kind": "blocks",
+        "heading": "Tutoring assistant",
+        "caption": "Adaptation route 1: prompting — the base is untouched. You change behaviour by changing what enters the context window."
+      },
+      {
+        "id": "fm-3",
+        "kind": "flow",
+        "heading": "Support bot over 50 product manuals",
+        "caption": "Adaptation route 2: retrieval — still zero training. You attach a searchable document store and inject evidence at query time."
+      },
+      {
+        "id": "fm-4",
+        "kind": "blocks",
+        "heading": "On-brand copy generator (LoRA fine-tune)",
+        "caption": "Adaptation route 3: fine-tuning — a small fraction of parameters is trained on your data to change style or format reliably."
+      },
+      {
+        "id": "fm-5",
+        "kind": "panels",
+        "heading": "What you inherit with the base",
+        "caption": "The trade-off — one shared base means shared strengths and shared inherited flaws, and bigger is not automatically better for your task."
+      }
+    ]
+  },
+  "llms": {
+    "title": "What makes a language model \"large\"",
+    "description": "The training stages that turn a next-token predictor into an assistant, and what each stage can and cannot fix.",
+    "steps": [
+      {
+        "id": "llm-1",
+        "kind": "panels",
+        "heading": "The base model after pretraining",
+        "caption": "Stage 1, pretraining — predict the next token across trillions of tokens of text. Every capability starts as a side effect of this one objective."
+      },
+      {
+        "id": "llm-2",
+        "kind": "panels",
+        "heading": "After supervised fine-tuning",
+        "caption": "Stage 2, instruction tuning — training on curated request/response pairs teaches the model that a prompt is a task, not a prefix."
+      },
+      {
+        "id": "llm-3",
+        "kind": "chart",
+        "heading": "Multi-step arithmetic accuracy versus training compute (illustrative shape)",
+        "caption": "Emergent capability — abilities the objective never mentioned appear as scale grows, then plateau. Scale is a lever, not a guarantee."
+      },
+      {
+        "id": "llm-4",
+        "kind": "ranking",
+        "heading": "Six requests to the same model",
+        "caption": "What scale does not fix — the model still has a knowledge cutoff and no access to your private or live data."
+      },
+      {
+        "id": "llm-5",
+        "kind": "flow",
+        "heading": "What ships",
+        "caption": "Stage 3, the application layer — retrieval, tools, guardrails and evaluation sit around the model. That is where products are actually built."
+      }
+    ]
+  },
+  "multimodal-intro": {
+    "title": "Multimodal models",
+    "description": "How a picture ends up in the same sequence as words, so one attention stack can relate them.",
+    "steps": [
+      {
+        "id": "mm-1",
+        "kind": "panels",
+        "heading": "Two incompatible inputs",
+        "caption": "Input — an image plus a question. They are completely different data types, so they cannot yet share a sequence."
+      },
+      {
+        "id": "mm-2",
+        "kind": "matrix",
+        "heading": "The image cut into a grid of fixed-size patches",
+        "caption": "Patching — the image is cut into a grid of fixed-size patches. Each patch will become one sequence element."
+      },
+      {
+        "id": "mm-3",
+        "kind": "flow",
+        "heading": "Getting pixels into the sequence",
+        "caption": "Vision encoder and projection — each patch becomes a vector, then a learned matrix maps it into the language model's dimension."
+      },
+      {
+        "id": "mm-4",
+        "kind": "tokens",
+        "heading": "What the language model actually receives",
+        "caption": "One sequence — visual tokens and text tokens sit side by side. From here it is ordinary self-attention across both."
+      },
+      {
+        "id": "mm-5",
+        "kind": "panels",
+        "heading": "Two answers to the same photo",
+        "caption": "Grounding is still not guaranteed — the model can describe details the image does not contain, exactly as it invents text facts."
+      }
+    ]
+  },
+  "diffusion-intro": {
+    "title": "Diffusion: learning to undo noise",
+    "description": "The image is not drawn. It is uncovered, one denoising step at a time, from a field of pure noise.",
+    "steps": [
+      {
+        "id": "df-1",
+        "kind": "matrix",
+        "heading": "A training image, progressively noised (left to right in ᾱ)",
+        "caption": "Training, forward process — take a real image and add a known amount of Gaussian noise. The network's job is to predict the noise that was added."
+      },
+      {
+        "id": "df-2",
+        "kind": "matrix",
+        "heading": "Step 0 of 30",
+        "caption": "Sampling starts at pure noise — no image, no structure. ᾱ ≈ 0.02, so almost all of the signal is noise."
+      },
+      {
+        "id": "df-3",
+        "kind": "matrix",
+        "heading": "Step 10 of 30 · prompt: \"a glowing orb\"",
+        "caption": "Conditioning — the prompt is embedded and fed into every denoising step, steering which structure emerges. Coarse shapes appear first."
+      },
+      {
+        "id": "df-4",
+        "kind": "matrix",
+        "heading": "Step 22 of 30",
+        "caption": "Refinement — later steps remove less noise each time, so the remaining changes are fine detail rather than layout."
+      },
+      {
+        "id": "df-5",
+        "kind": "matrix",
+        "heading": "Step 30 of 30",
+        "caption": "Final image — the same iterative loop, run to ᾱ ≈ 1. Fewer steps means faster and rougher; more steps costs latency."
+      }
+    ]
+  }
+}

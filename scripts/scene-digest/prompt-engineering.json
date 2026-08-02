@@ -1,0 +1,392 @@
+{
+  "roles-system-user-assistant": {
+    "title": "Roles in the chat format",
+    "description": "What \"system\", \"user\" and \"assistant\" actually are once the message list is flattened into tokens.",
+    "steps": [
+      {
+        "id": "ro-1",
+        "kind": "panels",
+        "heading": "What your code sends",
+        "caption": "The message list — your application sends structured messages, each tagged with a role."
+      },
+      {
+        "id": "ro-2",
+        "kind": "tokens",
+        "heading": "After templating and tokenisation",
+        "caption": "The chat template — the list is flattened into one token sequence with special role markers. This is what the model really sees."
+      },
+      {
+        "id": "ro-3",
+        "kind": "panels",
+        "heading": "In-policy response",
+        "caption": "Generation — the model continues from the assistant marker, and everything before it is context it conditions on."
+      },
+      {
+        "id": "ro-4",
+        "kind": "timeline",
+        "heading": "Request 3 of a conversation",
+        "caption": "Multi-turn — prior assistant turns are re-sent as context on every request. The model has no memory between calls; your app supplies it."
+      },
+      {
+        "id": "ro-5",
+        "kind": "panels",
+        "heading": "An override attempt",
+        "caption": "Not a security boundary — a user message can contradict the system prompt, and sometimes wins. Roles steer behaviour; they do not enforce it."
+      }
+    ]
+  },
+  "zero-one-few-shot": {
+    "title": "Zero-, one- and few-shot prompting",
+    "description": "The same task with 0, 1 and 3 in-context examples — and what each one costs and buys.",
+    "steps": [
+      {
+        "id": "fs-1",
+        "kind": "budget",
+        "heading": "Assembled prompt: 38 tokens",
+        "caption": "Zero-shot — instruction only. It works when the task is common and the output format is easy to describe in words."
+      },
+      {
+        "id": "fs-2",
+        "kind": "ranking",
+        "heading": "Three runs of the same zero-shot prompt",
+        "caption": "Zero-shot output — correct label, wrong shape. Nothing in the instruction pinned down whether to return prose or a bare token."
+      },
+      {
+        "id": "fs-3",
+        "kind": "budget",
+        "heading": "Assembled prompt: 61 tokens",
+        "caption": "One-shot — a single demonstration is inserted before the query. It shows the format far more precisely than a sentence describing it."
+      },
+      {
+        "id": "fs-4",
+        "kind": "budget",
+        "heading": "Assembled prompt: 107 tokens",
+        "caption": "Few-shot — three examples covering all three labels. Coverage matters more than count: show each class at least once."
+      },
+      {
+        "id": "fs-5",
+        "kind": "chart",
+        "heading": "Parseable-output rate versus number of examples",
+        "caption": "Diminishing returns — format compliance jumps with the first example or two, then flattens while cost keeps climbing."
+      }
+    ]
+  },
+  "self-consistency": {
+    "title": "Self-consistency",
+    "description": "Sample several independent reasoning paths, throw away the reasoning, and take a majority vote on the answers.",
+    "steps": [
+      {
+        "id": "sc-1",
+        "kind": "panels",
+        "heading": "The question",
+        "caption": "A problem where one reasoning slip changes the answer — several arithmetic steps, each a chance to go wrong."
+      },
+      {
+        "id": "sc-2",
+        "kind": "ranking",
+        "heading": "5 independent chain-of-thought samples",
+        "caption": "Sample N paths independently at temperature 0.7. Because sampling is stochastic, each run reasons slightly differently."
+      },
+      {
+        "id": "sc-3",
+        "kind": "bars",
+        "heading": "Final answers extracted from the 5 samples",
+        "caption": "Extract only the final answers — the reasoning text is discarded. The vote is over conclusions, not explanations."
+      },
+      {
+        "id": "sc-4",
+        "kind": "bars",
+        "heading": "Vote share",
+        "caption": "Majority vote — ₹195 wins 3–1–1. The mistakes were uncorrelated, so they split their votes and the correct answer stayed modal."
+      },
+      {
+        "id": "sc-5",
+        "kind": "chart",
+        "heading": "Accuracy and cost versus number of samples",
+        "caption": "Cost and limits — accuracy rises with N and then flattens, while you pay N times per question. And correlated errors defeat it entirely."
+      }
+    ]
+  },
+  "tree-of-thoughts": {
+    "title": "Tree of Thoughts",
+    "description": "Search instead of a single line of reasoning: propose several next steps, score them, keep the promising ones, go deeper.",
+    "steps": [
+      {
+        "id": "tot-1",
+        "kind": "panels",
+        "heading": "Game of 24: reach 24 using 4, 9, 10, 13 exactly once each",
+        "caption": "The root — a planning problem where the first move constrains everything after it, so committing early is risky."
+      },
+      {
+        "id": "tot-2",
+        "kind": "ranking",
+        "heading": "Depth 1: four candidate first operations",
+        "caption": "Propose — generate several candidate first steps rather than one. Breadth at depth 1."
+      },
+      {
+        "id": "tot-3",
+        "kind": "bars",
+        "heading": "Self-evaluated promise of each branch",
+        "caption": "Evaluate — the model scores each partial state for how likely it is to reach a solution. This is the step CoT does not have."
+      },
+      {
+        "id": "tot-4",
+        "kind": "ranking",
+        "heading": "Depth 2, expanded only under the survivors",
+        "caption": "Prune and expand — keep the top 2, drop the rest, and generate the next layer only under the survivors."
+      },
+      {
+        "id": "tot-5",
+        "kind": "ranking",
+        "heading": "Cost of the three reasoning strategies on this problem",
+        "caption": "Solution and cost — a leaf reaches 24. It took roughly 14 model calls where chain-of-thought would have used one."
+      }
+    ]
+  },
+  "react-prompting": {
+    "title": "ReAct as a prompt format",
+    "description": "Before it is a runtime, ReAct is a text convention: the model writes Thought / Action / Observation lines and your parser reads them.",
+    "steps": [
+      {
+        "id": "rp-1",
+        "kind": "panels",
+        "heading": "System prompt excerpt",
+        "caption": "The format is taught in the prompt — you describe the Thought/Action/Observation convention and list the available tools."
+      },
+      {
+        "id": "rp-2",
+        "kind": "tokens",
+        "heading": "Model output, verbatim",
+        "caption": "The model writes Thought and Action, then stops. \"Observation:\" is configured as a stop sequence, so generation halts there."
+      },
+      {
+        "id": "rp-3",
+        "kind": "timeline",
+        "heading": "Who does what",
+        "caption": "Your runtime parses the Action line, executes the real tool, and appends the result as an Observation. Then generation resumes."
+      },
+      {
+        "id": "rp-4",
+        "kind": "ranking",
+        "heading": "Real drift seen in production",
+        "caption": "Parsing is the fragile part — the model drifts from the format, and a strict parser then fails on perfectly reasonable output."
+      },
+      {
+        "id": "rp-5",
+        "kind": "panels",
+        "heading": "Trade-offs",
+        "caption": "What it buys — grounded answers plus a readable trace. What it costs — every thought is billed as tokens and may leak reasoning to the user."
+      }
+    ]
+  },
+  "prompt-chaining": {
+    "title": "Prompt chaining",
+    "description": "One hard task split into staged calls, with a real artifact handed from each stage to the next.",
+    "steps": [
+      {
+        "id": "pc-1",
+        "kind": "panels",
+        "heading": "Single mega-prompt",
+        "caption": "The monolith — one prompt asked to extract, draft, check compliance and format all at once. It usually does three of the four."
+      },
+      {
+        "id": "pc-2",
+        "kind": "flow",
+        "heading": "Chain stage 1",
+        "caption": "Stage 1, extract — a narrow call with a structured output. The artifact is data your code can inspect, not prose."
+      },
+      {
+        "id": "pc-3",
+        "kind": "flow",
+        "heading": "Chain stage 2 — fan out",
+        "caption": "Stage 2, draft — 23 requirements means 23 independent calls that can run in parallel, cutting wall-clock latency."
+      },
+      {
+        "id": "pc-4",
+        "kind": "ranking",
+        "heading": "Compliance check results",
+        "caption": "Stage 3, validate — a separate call checks each draft. Failures are caught here and retried, not discovered by a customer."
+      },
+      {
+        "id": "pc-5",
+        "kind": "panels",
+        "heading": "When to split a prompt",
+        "caption": "The trade-off — more calls, more latency to manage, more code. In exchange you get testable, cacheable, individually swappable stages."
+      }
+    ]
+  },
+  "structured-outputs": {
+    "title": "Structured outputs and constrained decoding",
+    "description": "The difference between asking politely for JSON and making invalid JSON impossible to sample.",
+    "steps": [
+      {
+        "id": "so-1",
+        "kind": "ranking",
+        "heading": "100 runs of a prompt that asks for JSON",
+        "caption": "Asking nicely — an instruction to \"return JSON only\" works most of the time, and most of the time is not good enough for a parser."
+      },
+      {
+        "id": "so-2",
+        "kind": "panels",
+        "heading": "Invoice extraction schema",
+        "caption": "The schema — declare the exact fields and types you need. Keep it minimal; every optional field is another chance to drift."
+      },
+      {
+        "id": "so-3",
+        "kind": "bars",
+        "heading": "p(next token) after \"{\", no constraint",
+        "caption": "Unconstrained sampling — after the opening brace, tokens like \"Sure\" and a newline still carry real probability. Any of them breaks the parse."
+      },
+      {
+        "id": "so-4",
+        "kind": "bars",
+        "heading": "Same step, with the JSON grammar applied",
+        "caption": "Constrained decoding — invalid tokens get a logit of −∞ before the softmax, so their probability is exactly zero and the rest renormalise."
+      },
+      {
+        "id": "so-5",
+        "kind": "flow",
+        "heading": "The full pattern",
+        "caption": "Still validate — the grammar guarantees shape, not sense. A syntactically perfect object can hold a hallucinated total."
+      }
+    ]
+  },
+  "role-prompting-constraints": {
+    "title": "Personas versus constraints",
+    "description": "One of these two changes measurable behaviour. It is not the one people spend their time on.",
+    "steps": [
+      {
+        "id": "rc-1",
+        "kind": "panels",
+        "heading": "Persona only",
+        "caption": "The persona — sets tone and vocabulary. Useful, but it makes no promise you can test in an evaluation suite."
+      },
+      {
+        "id": "rc-2",
+        "kind": "ranking",
+        "heading": "Same prompt, constraints added",
+        "caption": "The constraints — rules with an observable pass/fail. Each one can become an assertion in your test suite."
+      },
+      {
+        "id": "rc-3",
+        "kind": "bars",
+        "heading": "Rule-compliance rate over 200 runs",
+        "caption": "Measured effect — the persona barely moves compliance. The constraints move it a lot, because they say what \"correct\" means."
+      },
+      {
+        "id": "rc-4",
+        "kind": "panels",
+        "heading": "A collision",
+        "caption": "Conflicts need a stated priority — when the persona and a safety rule disagree, the prompt must say which one wins."
+      },
+      {
+        "id": "rc-5",
+        "kind": "flow",
+        "heading": "Defence in depth for one rule",
+        "caption": "And enforce outside the prompt — a constraint in the system message is a strong hint; a validator in code is a guarantee."
+      }
+    ]
+  },
+  "context-engineering": {
+    "title": "Context engineering",
+    "description": "Selecting, ordering and compressing what enters the window — including where in the window each piece lands.",
+    "steps": [
+      {
+        "id": "ce-1",
+        "kind": "ranking",
+        "heading": "Candidate context for one coding question",
+        "caption": "Inventory — list everything that could go into the window, with its token cost. Most of it will not make the cut."
+      },
+      {
+        "id": "ce-2",
+        "kind": "bars",
+        "heading": "Measured effect of including each source (ablation)",
+        "caption": "Rank by expected effect on the answer — not by how related the material feels. Test output beats chat history here."
+      },
+      {
+        "id": "ce-3",
+        "kind": "budget",
+        "heading": "Packed window",
+        "caption": "Compress rather than drop — the chat history becomes a short summary, keeping the useful part at a fraction of the cost."
+      },
+      {
+        "id": "ce-4",
+        "kind": "chart",
+        "heading": "Answer accuracy versus where the needed fact sits in a long context",
+        "caption": "Position matters — the same evidence is used far more reliably at the start or end of a long context than buried in the middle."
+      },
+      {
+        "id": "ce-5",
+        "kind": "flow",
+        "heading": "Final layout of the window",
+        "caption": "Order deliberately — instructions first, evidence next with the best passage last, then the question immediately before generation."
+      }
+    ]
+  },
+  "prompt-failure-modes": {
+    "title": "How prompts fail",
+    "description": "Four failure modes with distinct symptoms, and the measurement that tells them apart.",
+    "steps": [
+      {
+        "id": "pf-1",
+        "kind": "bars",
+        "heading": "Output length across 20 runs of \"Write a promo email. Make it pop.\"",
+        "caption": "Ambiguity — \"make it pop\" has no measurable target, so the model picks a different interpretation each run."
+      },
+      {
+        "id": "pf-2",
+        "kind": "panels",
+        "heading": "Contradictory instructions",
+        "caption": "Instruction conflict — two rules that cannot both hold. The model satisfies one at random, so behaviour looks flaky rather than wrong."
+      },
+      {
+        "id": "pf-3",
+        "kind": "chart",
+        "heading": "JSON compliance versus input length",
+        "caption": "Format drift under load — a prompt that is reliable on short inputs starts dropping the format on long ones."
+      },
+      {
+        "id": "pf-4",
+        "kind": "ranking",
+        "heading": "Same prompt, two model versions",
+        "caption": "Model upgrade regression — a prompt tuned against one model breaks on its successor, because the assumptions it encoded were about that model."
+      },
+      {
+        "id": "pf-5",
+        "kind": "bars",
+        "heading": "Output length variance, before and after",
+        "caption": "The fix is specificity plus testing — replace adjectives with measurable constraints, then keep a regression set that runs on every change."
+      }
+    ]
+  },
+  "chain-of-thought": {
+    "title": "Chain of thought",
+    "description": "Ask the model to write intermediate reasoning before the answer — a single path, not a search tree.",
+    "steps": [
+      {
+        "id": "cot-1",
+        "kind": "panels",
+        "heading": "No CoT",
+        "caption": "Direct answer — the model jumps to a number. For multi-step arithmetic that often fails silently."
+      },
+      {
+        "id": "cot-2",
+        "kind": "tokens",
+        "heading": "Added instruction",
+        "caption": "CoT instruction — “show your steps” forces intermediate tokens that structure the computation."
+      },
+      {
+        "id": "cot-3",
+        "kind": "flow",
+        "heading": "One chain",
+        "caption": "Reasoning path — each line is sampled text that becomes context for the next line."
+      },
+      {
+        "id": "cot-4",
+        "kind": "panels",
+        "heading": "Limit",
+        "caption": "Still one path — if step 2 multiplies wrong, the final answer is wrong with a convincing story."
+      }
+    ]
+  }
+}
