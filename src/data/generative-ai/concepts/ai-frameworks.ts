@@ -9,26 +9,26 @@ export const concepts: Concept[] = [
     "difficulty": "beginner",
     "estimatedMinutes": 6,
     "prerequisites": [],
-    "laymanSummary": "LangChain is a popular framework for composing prompts, retrievers, tools, and memory into LLM applications. Conceptually it standardizes building blocks so you can assemble RAG and agents faster—while still owning evaluation and architecture choices.",
-    "analogy": "A box of LEGO adapters for LLM apps: useful accelerators, not a substitute for design.",
+    "laymanSummary": "LangChain is a toolkit for gluing prompts, document search, tools, and memory into a chat-style app. Think of it as building blocks so your campus ChatGPT-like tutor can look up notes and answer in one flow.",
+    "analogy": "LEGO adapters for chat apps: snap prompt → search → model → answer together without inventing every connector.",
     "explanation": [
-      "Chains compose steps.",
-      "Integrations wrap many vendors.",
-      "Abstractions can hide costs/complexity.",
-      "Great for prototypes; mind lock-in and opacity."
+      "You define steps (a “chain”) such as retrieve syllabus text, then ask the model.",
+      "Ready-made connectors talk to many model vendors and vector stores.",
+      "Great for weekend prototypes of a ChatGPT-like campus helper.",
+      "Heavy abstractions can hide cost and bugs—still test answers yourself."
     ],
     "keyTerms": [
       {
         "term": "Chain",
-        "definition": "Pipeline of LLM steps"
+        "definition": "Ordered steps that build one answer"
       },
       {
         "term": "Integration",
-        "definition": "Connector to a vendor/tool"
+        "definition": "Built-in connector to a vendor or tool"
       },
       {
         "term": "Runnable",
-        "definition": "Composable unit of work"
+        "definition": "Reusable step you can compose"
       }
     ],
     "visualization": {
@@ -255,9 +255,15 @@ export const concepts: Concept[] = [
       }
     },
     "realWorldExample": {
-      "title": "Weekend RAG demo",
-      "story": "Students wire PDF loader → split → vectorstore → QA chain quickly.",
-      "takeaway": "Speed for learning and spikes."
+      "title": "Weekend campus FAQ bot",
+      "story": "A club wires PDF handbook → chunk → search → QA chain so students ask “When is add/drop?” and get a grounded reply.",
+      "takeaway": "LangChain speeds the path from idea to ChatGPT-like demo."
+    },
+    "chatGptLens": {
+      "setting": "You’re building a ChatGPT-like campus app; LangChain wires the steps behind the chat box.",
+      "userInput": "When does the library close on Sundays?",
+      "insideTheModel": "LangChain runs: load handbook chunks → retrieve “library hours” → fill a prompt → call the LLM (same chat I/O the user sees).",
+      "modelOutput": "“Sundays 10am–6pm (Student Handbook §4). Want weekday hours too?”"
     },
     "quiz": [
       {
@@ -310,27 +316,27 @@ export const concepts: Concept[] = [
       },
       {
         "id": "langchain-q3",
-        "prompt": "It often helps…",
+        "prompt": "What is a practical reason teams reach for LangChain?",
         "options": [
           {
             "id": "o0",
-            "text": "Prototype RAG/agents faster"
+            "text": "To prototype RAG and tool flows faster"
           },
           {
             "id": "o1",
-            "text": "Replace all databases"
+            "text": "To replace all databases forever"
           },
           {
             "id": "o2",
-            "text": "Ban Python"
+            "text": "To ban Python in the project"
           },
           {
             "id": "o3",
-            "text": "Delete prompts"
+            "text": "To delete prompts from the app"
           }
         ],
         "correctOptionId": "o0",
-        "explanation": "Speed."
+        "explanation": "It accelerates composition of chat/RAG prototypes."
       }
     ],
     "nextConceptId": "langgraph"
@@ -345,26 +351,26 @@ export const concepts: Concept[] = [
     "prerequisites": [
       "langchain"
     ],
-    "laymanSummary": "LangGraph models agent workflows as graphs with nodes, edges, and explicit state—useful for durable, branching, human-in-the-loop agent systems beyond linear chains.",
-    "analogy": "A flowchart you can execute: boxes are steps, arrows are decisions, and sticky notes are state.",
+    "laymanSummary": "LangGraph turns a chat agent into a flowchart: steps, decisions, and saved state. That helps when your campus ChatGPT-like app must loop, wait for a human, or resume after a pause.",
+    "analogy": "An executable flowchart: boxes are steps, arrows are choices, sticky notes are memory between turns.",
     "explanation": [
-      "State is first-class.",
-      "Graphs support cycles and branches.",
-      "Good for durable agents.",
-      "More structure than free-form loops."
+      "State (what we know so far) is stored explicitly between steps.",
+      "Graphs can branch, loop, and pause for human approval.",
+      "Better than a single straight chain when the conversation has many paths.",
+      "Useful for durable campus agents that survive restarts."
     ],
     "keyTerms": [
       {
         "term": "Node",
-        "definition": "A computation step"
+        "definition": "One step in the agent graph"
       },
       {
         "term": "Edge",
-        "definition": "Transition between steps"
+        "definition": "Which step runs next"
       },
       {
         "term": "Durable execution",
-        "definition": "Resume-friendly runs"
+        "definition": "Pause and resume a long run"
       }
     ],
     "visualization": {
@@ -591,9 +597,15 @@ export const concepts: Concept[] = [
       }
     },
     "realWorldExample": {
-      "title": "Approval-heavy ops bots",
-      "story": "Graph pauses on HITL nodes then resumes.",
-      "takeaway": "Control flow matches business process."
+      "title": "Club event planner with approval",
+      "story": "Graph drafts a budget, pauses for a faculty click (“approve”), then emails vendors—same chat UI, controlled flow underneath.",
+      "takeaway": "Graphs match real campus processes with checkpoints."
+    },
+    "chatGptLens": {
+      "setting": "Your ChatGPT-like campus app needs a multi-step agent with an approve button mid-flow.",
+      "userInput": "Plan a ₹5,000 hackathon pizza night and wait for my OK before booking.",
+      "insideTheModel": "LangGraph walks nodes: draft plan → hit a human-approve node → on OK, call booking tool → return final reply; state keeps the draft.",
+      "modelOutput": "Draft: 40 pizzas + drinks ≈ ₹4,800. Waiting for your approval… → after OK: “Booked Campus Café for Sat 7pm.”"
     },
     "quiz": [
       {
@@ -646,27 +658,27 @@ export const concepts: Concept[] = [
       },
       {
         "id": "langgraph-q3",
-        "prompt": "Durable execution helps…",
+        "prompt": "Why does durable execution matter in LangGraph-style agents?",
         "options": [
           {
             "id": "o0",
-            "text": "Resume long runs"
+            "text": "Long runs can pause and resume safely"
           },
           {
             "id": "o1",
-            "text": "Delete logs"
+            "text": "It deletes all logs automatically"
           },
           {
             "id": "o2",
-            "text": "Ban approvals"
+            "text": "It bans human approvals"
           },
           {
             "id": "o3",
-            "text": "Avoid schemas"
+            "text": "It removes the need for any schema"
           }
         ],
         "correctOptionId": "o0",
-        "explanation": "Recovery."
+        "explanation": "Checkpoints let interrupted agent runs continue."
       }
     ],
     "prevConceptId": "langchain",
@@ -682,26 +694,26 @@ export const concepts: Concept[] = [
     "prerequisites": [
       "langgraph"
     ],
-    "laymanSummary": "LlamaIndex focuses on connecting LLMs to data: indexes, query engines, and retrieval abstractions. Conceptually reach for it when your core problem is document QA and structured data access patterns.",
-    "analogy": "A librarian toolkit specialized for getting the right pages into the model’s hands.",
+    "laymanSummary": "LlamaIndex is built for “chat with my documents”: load files, index them, and answer questions from that knowledge. Ideal when your ChatGPT-like campus app must stick to course PDFs.",
+    "analogy": "A librarian’s toolkit that finds the right pages and hands them to the model before it answers.",
     "explanation": [
-      "Indexes over documents and more.",
-      "Query engines encapsulate retrieval+synthesis.",
-      "Strong fit for RAG-centric apps.",
-      "Still needs evals for faithfulness."
+      "You load and index notes, PDFs, or tables once.",
+      "A query engine retrieves relevant chunks, then asks the model to answer.",
+      "Best fit when the main job is document Q&A (RAG).",
+      "You still need checks that answers match the sources."
     ],
     "keyTerms": [
       {
         "term": "Index",
-        "definition": "Data structure for retrieval"
+        "definition": "Searchable structure over your documents"
       },
       {
         "term": "Query engine",
-        "definition": "Retrieval plus answer interface"
+        "definition": "Retrieve plus answer in one call"
       },
       {
         "term": "Node parser",
-        "definition": "Chunking component"
+        "definition": "Splits docs into chunks"
       }
     ],
     "visualization": {
@@ -928,9 +940,15 @@ export const concepts: Concept[] = [
       }
     },
     "realWorldExample": {
-      "title": "Course material tutors",
-      "story": "Index lecture PDFs for student questions.",
-      "takeaway": "Data-first framework fit."
+      "title": "Lecture-PDF tutor",
+      "story": "Students ask “What is deadlock avoidance?” and the app answers only from this week’s OS slides, with page citations.",
+      "takeaway": "Data-first tools shine for syllabus chatbots."
+    },
+    "chatGptLens": {
+      "setting": "You’re shipping a ChatGPT-like tutor that must answer from course PDFs, not the open web.",
+      "userInput": "Summarize deadlock from this week’s OS notes.",
+      "insideTheModel": "LlamaIndex retrieves matching slide chunks, stuffs them into the prompt, then the LLM writes a grounded summary.",
+      "modelOutput": "Deadlock needs mutual exclusion, hold-and-wait, no preemption, circular wait (Slides 12–14). Want an example?"
     },
     "quiz": [
       {
@@ -983,27 +1001,27 @@ export const concepts: Concept[] = [
       },
       {
         "id": "llamaindex-q3",
-        "prompt": "You still need…",
+        "prompt": "After you index documents with LlamaIndex, what should you still do?",
         "options": [
           {
             "id": "o0",
-            "text": "Evaluation of groundedness"
+            "text": "Evaluate whether answers stay grounded"
           },
           {
             "id": "o1",
-            "text": "Zero tests"
+            "text": "Skip all tests forever"
           },
           {
             "id": "o2",
-            "text": "No chunking"
+            "text": "Never chunk documents"
           },
           {
             "id": "o3",
-            "text": "No metadata"
+            "text": "Drop all metadata"
           }
         ],
         "correctOptionId": "o0",
-        "explanation": "Evals remain."
+        "explanation": "Indexes help retrieval; evals prove faithfulness."
       }
     ],
     "prevConceptId": "langgraph",
@@ -1019,23 +1037,22 @@ export const concepts: Concept[] = [
     "prerequisites": [
       "llamaindex"
     ],
-    "laymanSummary": "CrewAI popularizes multi-agent “crews” with roles, tasks, and collaboration patterns. Conceptually it is an orchestration layer for role-based agent teams, with the usual multi-agent tradeoffs.",
-    "analogy": "Assigning producer, writer, and editor roles on a small film set.",
+    "laymanSummary": "CrewAI lets you cast several AI “teammates” with roles—researcher, writer, editor—who collaborate on one user request. Your ChatGPT-like campus app can feel like a small staff, not one solo bot.",
+    "analogy": "A tiny film crew: researcher gathers facts, writer drafts, editor polishes before the audience sees it.",
     "explanation": [
-      "Define agents with roles.",
-      "Assign tasks.",
-      "Orchestrate collaboration.",
-      "Watch cost and loops.",
-      "Validate outputs per role."
+      "You define agents with clear roles and goals.",
+      "Tasks assign who does what on a shared job.",
+      "The crew hands work between roles until a final deliverable.",
+      "More agents means more tokens and loops—keep crews small."
     ],
     "keyTerms": [
       {
         "term": "Crew",
-        "definition": "Team of agents"
+        "definition": "Team of collaborating agents"
       },
       {
         "term": "Task",
-        "definition": "Unit of work"
+        "definition": "One job assigned to an agent"
       },
       {
         "term": "Role",
@@ -1266,9 +1283,15 @@ export const concepts: Concept[] = [
       }
     },
     "realWorldExample": {
-      "title": "Content pipelines",
-      "story": "Researcher gathers sources; writer drafts; editor polishes.",
-      "takeaway": "Roles mirror human teams."
+      "title": "Club newsletter pipeline",
+      "story": "Researcher pulls event facts; writer drafts; editor shortens for WhatsApp—user only opens one chat and gets the final post.",
+      "takeaway": "Roles mirror human teams behind a single chat UI."
+    },
+    "chatGptLens": {
+      "setting": "Your ChatGPT-like campus app uses a small CrewAI team behind one chat thread.",
+      "userInput": "Write a 80-word Instagram caption for tomorrow’s robotics demo.",
+      "insideTheModel": "Researcher pulls demo facts → writer drafts caption → editor trims to ~80 words → one polished reply returns to the user.",
+      "modelOutput": "“Tomorrow 4pm, Lab 2: watch our bot stack cups live! Free snacks. Tag a friend 🤖 #CampusRobotics”"
     },
     "quiz": [
       {
@@ -1321,27 +1344,27 @@ export const concepts: Concept[] = [
       },
       {
         "id": "crewai-q3",
-        "prompt": "Tasks should be…",
+        "prompt": "How should tasks be written for a CrewAI-style crew?",
         "options": [
           {
             "id": "o0",
-            "text": "Clear per role"
+            "text": "Clear ownership and goal per role"
           },
           {
             "id": "o1",
-            "text": "Infinite and vague"
+            "text": "Infinite and deliberately vague"
           },
           {
             "id": "o2",
-            "text": "Secret from logs"
+            "text": "Hidden from all logs forever"
           },
           {
             "id": "o3",
-            "text": "Unowned"
+            "text": "Unowned so anyone may ignore them"
           }
         ],
         "correctOptionId": "o0",
-        "explanation": "Clarity."
+        "explanation": "Clear roles and tasks keep multi-agent work usable."
       }
     ],
     "prevConceptId": "llamaindex",
@@ -1357,26 +1380,26 @@ export const concepts: Concept[] = [
     "prerequisites": [
       "crewai"
     ],
-    "laymanSummary": "AutoGen (and similar systems) structure multi-agent applications as conversations between agents—including user proxies and tool-using assistants. The conversation metaphor makes patterns easy to sketch and easy to overcomplicate.",
-    "analogy": "A group chat where each participant has a job and can call tools when needed.",
+    "laymanSummary": "AutoGen-style systems treat agents as chat participants that message each other—and sometimes call tools—until they finish. Your campus ChatGPT-like product can hide that group chat and show one clean reply.",
+    "analogy": "A group chat where each participant has a job and can run tools when stuck.",
     "explanation": [
-      "Agents message each other.",
-      "User proxy can represent humans/tools.",
-      "Conversation policies control turns.",
-      "Needs termination conditions."
+      "Agents exchange messages to refine a plan or answer.",
+      "A user-proxy agent can stand in for the human or run tools.",
+      "Conversation rules decide who speaks next.",
+      "Always set a stop condition so agents don’t debate forever."
     ],
     "keyTerms": [
       {
         "term": "User proxy",
-        "definition": "Agent representing user/side effects"
+        "definition": "Agent for the user or side effects"
       },
       {
         "term": "Assistant agent",
-        "definition": "LLM-backed participant"
+        "definition": "LLM-backed chat participant"
       },
       {
         "term": "Termination",
-        "definition": "When chat stops"
+        "definition": "Rule that ends the agent chat"
       }
     ],
     "visualization": {
@@ -1603,9 +1626,15 @@ export const concepts: Concept[] = [
       }
     },
     "realWorldExample": {
-      "title": "Coding helper groups",
-      "story": "One agent writes code; another runs tests via tools.",
-      "takeaway": "Conversation drives iteration."
+      "title": "Code-help pair",
+      "story": "One agent writes a Python fix; another runs tests via a tool; the student sees only the final patched snippet in the UI.",
+      "takeaway": "Conversation drives iteration; the UI stays simple."
+    },
+    "chatGptLens": {
+      "setting": "Your ChatGPT-like coding helper uses AutoGen agents under the hood.",
+      "userInput": "Fix this function—tests fail on empty lists. [paste code]",
+      "insideTheModel": "User proxy posts the goal → assistant proposes a fix → tool agent runs tests → agents discuss until green → one answer is returned.",
+      "modelOutput": "Here’s the fix: handle `if not items: return []`. All three tests passed."
     },
     "quiz": [
       {
@@ -1658,27 +1687,27 @@ export const concepts: Concept[] = [
       },
       {
         "id": "autogen-q3",
-        "prompt": "User proxies can…",
+        "prompt": "What can a user-proxy agent represent in AutoGen-style setups?",
         "options": [
           {
             "id": "o0",
-            "text": "Represent humans or tool sides"
+            "text": "The human side or tool execution"
           },
           {
             "id": "o1",
-            "text": "Replace electricity"
+            "text": "The building’s electricity supply"
           },
           {
             "id": "o2",
-            "text": "Paint SVGs"
+            "text": "Only SVG icon painting"
           },
           {
             "id": "o3",
-            "text": "Set DNS"
+            "text": "Campus DNS configuration only"
           }
         ],
         "correctOptionId": "o0",
-        "explanation": "Bridge roles."
+        "explanation": "Proxies bridge humans and side-effecting tools."
       }
     ],
     "prevConceptId": "crewai",
@@ -1694,26 +1723,26 @@ export const concepts: Concept[] = [
     "prerequisites": [
       "autogen"
     ],
-    "laymanSummary": "Agent Development Kits (such as Google’s ADK conceptually) package patterns for building, evaluating, and deploying agents with cloud-native integrations. Think batteries-included tooling around orchestration, tools, and ops—not a new model architecture.",
-    "analogy": "A robotics starter kit: motors, sensors, and manuals so you build a robot faster than inventing parts.",
+    "laymanSummary": "An Agent Development Kit (like Google’s ADK) is a starter kit for building, testing, and deploying agents with cloud helpers. It is scaffolding—not a new brain—for your ChatGPT-like campus service.",
+    "analogy": "A robotics starter kit: motors, sensors, and manuals so you assemble faster than inventing every part.",
     "explanation": [
-      "Opinionated agent scaffolding.",
-      "Cloud integrations nearby.",
-      "Emphasis on tooling and lifecycle.",
-      "Portability varies by kit."
+      "Gives opinionated project structure for agents and tools.",
+      "Cloud integrations (auth, deploy, logging) sit nearby.",
+      "Supports the full lifecycle: build → eval → deploy → monitor.",
+      "Convenience can mean some lock-in—check portability."
     ],
     "keyTerms": [
       {
         "term": "ADK",
-        "definition": "Agent development kit"
+        "definition": "Agent development kit / starter toolkit"
       },
       {
         "term": "Scaffolding",
-        "definition": "Starter structure"
+        "definition": "Ready-made project structure"
       },
       {
         "term": "Lifecycle",
-        "definition": "Build, eval, deploy, monitor"
+        "definition": "Build, eval, deploy, monitor loop"
       }
     ],
     "visualization": {
@@ -1940,9 +1969,15 @@ export const concepts: Concept[] = [
       }
     },
     "realWorldExample": {
-      "title": "Enterprise agent platforms",
-      "story": "Kits standardize how teams ship internal agents.",
-      "takeaway": "Shared scaffolding beats one-offs."
+      "title": "IT helpdesk agent template",
+      "story": "Campus IT uses a kit to standardize how every department ships an internal ChatGPT-like agent with the same logging and deploy path.",
+      "takeaway": "Shared scaffolding beats one-off notebooks."
+    },
+    "chatGptLens": {
+      "setting": "You’re scaffolding a ChatGPT-like campus helpdesk agent with an ADK-style kit.",
+      "userInput": "My Wi-Fi won’t connect in Hostel B.",
+      "insideTheModel": "ADK-shaped app: auth → ticket tool → model reply → traces to cloud logs; the user still just types in a chat box.",
+      "modelOutput": "Try forgetting the network and reconnecting. If it fails, I opened ticket #4821 for Hostel B Wi-Fi."
     },
     "quiz": [
       {
@@ -1995,27 +2030,27 @@ export const concepts: Concept[] = [
       },
       {
         "id": "google-adk-q3",
-        "prompt": "Portability…",
+        "prompt": "What should you remember about portability across agent kits?",
         "options": [
           {
             "id": "o0",
-            "text": "May vary by vendor kit"
+            "text": "It may vary by vendor kit"
           },
           {
             "id": "o1",
-            "text": "Is always perfect"
+            "text": "It is always perfect everywhere"
           },
           {
             "id": "o2",
-            "text": "Is irrelevant"
+            "text": "It never matters in production"
           },
           {
             "id": "o3",
-            "text": "Means no logs"
+            "text": "It means you should ban all logs"
           }
         ],
         "correctOptionId": "o0",
-        "explanation": "Mind lock-in."
+        "explanation": "Kits speed delivery but can increase lock-in."
       }
     ],
     "prevConceptId": "autogen",
@@ -2031,26 +2066,26 @@ export const concepts: Concept[] = [
     "prerequisites": [
       "google-adk"
     ],
-    "laymanSummary": "LiteLLM provides a unified API layer to call many LLM vendors with similar request shapes. Conceptually it reduces glue code when you want provider failover, routing, or simpler swaps—while you still handle prompts and safety.",
-    "analogy": "A universal remote that speaks many TV brands’ dialects.",
+    "laymanSummary": "LiteLLM gives one common way to call many model vendors (OpenAI-style, Anthropic, and others). Your ChatGPT-like campus app can switch or fail over without rewriting every call.",
+    "analogy": "A universal remote that speaks many TV brands so you keep one button layout.",
     "explanation": [
-      "Normalize chat completion calls.",
-      "Route across providers.",
-      "Helpful for failover and cost routing.",
-      "Does not solve evaluation by itself."
+      "Your code calls one chat-completion-style API shape.",
+      "LiteLLM routes the request to the chosen provider.",
+      "Handy for failover when one vendor rate-limits.",
+      "It does not replace prompts, safety, or evals."
     ],
     "keyTerms": [
       {
         "term": "Provider",
-        "definition": "Model vendor/API"
+        "definition": "Model vendor or hosted API"
       },
       {
         "term": "Routing",
-        "definition": "Choose which model/endpoint"
+        "definition": "Choosing which model endpoint"
       },
       {
         "term": "Failover",
-        "definition": "Switch on errors"
+        "definition": "Switching after errors or limits"
       }
     ],
     "visualization": {
@@ -2277,9 +2312,15 @@ export const concepts: Concept[] = [
       }
     },
     "realWorldExample": {
-      "title": "Multi-cloud copilots",
-      "story": "Teams fail over when one vendor rate-limits.",
-      "takeaway": "Indirection buys resilience."
+      "title": "Exam-week failover",
+      "story": "Primary vendor hits rate limits; LiteLLM routes new campus chat traffic to a backup model with the same app code.",
+      "takeaway": "A thin API layer buys resilience."
+    },
+    "chatGptLens": {
+      "setting": "Your ChatGPT-like campus app calls models through a LiteLLM-style router.",
+      "userInput": "Explain Big-O of binary search in two sentences.",
+      "insideTheModel": "App → unified LiteLLM call → router picks Vendor A (or fails over to B) → normalized tokens stream back to the chat UI.",
+      "modelOutput": "Binary search is O(log n): each step halves the sorted list until the item is found or ruled out."
     },
     "quiz": [
       {
@@ -2332,27 +2373,27 @@ export const concepts: Concept[] = [
       },
       {
         "id": "litellm-q3",
-        "prompt": "You still must…",
+        "prompt": "Even with LiteLLM-style routing, what must your team still design?",
         "options": [
           {
             "id": "o0",
-            "text": "Design prompts and safety"
+            "text": "Prompts, safety, and product logic"
           },
           {
             "id": "o1",
-            "text": "Do nothing"
+            "text": "Nothing—routing solves everything"
           },
           {
             "id": "o2",
-            "text": "Ban logging"
+            "text": "A ban on all logging"
           },
           {
             "id": "o3",
-            "text": "Ignore costs"
+            "text": "Ignoring token costs forever"
           }
         ],
         "correctOptionId": "o0",
-        "explanation": "App logic remains."
+        "explanation": "Unified APIs don’t replace app responsibility."
       }
     ],
     "prevConceptId": "google-adk",
@@ -2368,19 +2409,18 @@ export const concepts: Concept[] = [
     "prerequisites": [
       "litellm"
     ],
-    "laymanSummary": "Pick frameworks by your bottleneck: raw SDK for control, LangChain for composable prototypes, LangGraph for durable agent graphs, LlamaIndex for data/RAG-centric apps, multi-agent kits for role workflows, LiteLLM for provider portability. The winning choice is the thinnest stack you can operate.",
-    "analogy": "Choosing kitchen tools: a chef’s knife covers most jobs; buy a pasta machine only if you make pasta weekly.",
+    "laymanSummary": "Pick frameworks by the job: thin SDKs for control, LangChain for quick glue, LangGraph for stateful agents, LlamaIndex for docs, crews/AutoGen for multi-role work, LiteLLM for multi-provider routing. The winner is the thinnest stack your team can run.",
+    "analogy": "Kitchen tools: a chef’s knife covers most jobs; buy a pasta machine only if you make pasta every week.",
     "explanation": [
-      "Start from the problem.",
-      "Prefer thin wrappers early.",
-      "Add orchestration when state gets hard.",
-      "Standardize observability regardless of framework.",
-      "Re-evaluate when requirements change."
+      "Start from the user job (FAQ chat, HITL agent, multi-cloud).",
+      "Prefer thin wrappers until orchestration pain is real.",
+      "Add graphs or multi-agent only when state gets hard.",
+      "Keep observability no matter which framework you choose."
     ],
     "keyTerms": [
       {
         "term": "Thin stack",
-        "definition": "Fewer abstractions"
+        "definition": "Fewer layers between you and APIs"
       },
       {
         "term": "Bottleneck",
@@ -2388,7 +2428,7 @@ export const concepts: Concept[] = [
       },
       {
         "term": "Operability",
-        "definition": "Can your team run it?"
+        "definition": "Whether your team can run it"
       }
     ],
     "visualization": {
@@ -2615,9 +2655,15 @@ export const concepts: Concept[] = [
       }
     },
     "realWorldExample": {
-      "title": "Student capstone choices",
-      "story": "RAG FAQ → LlamaIndex/light RAG; HITL agent → graph; multi-provider → LiteLLM.",
-      "takeaway": "Match tool to task."
+      "title": "Capstone tool picks",
+      "story": "FAQ over PDFs → LlamaIndex; approval workflow → LangGraph; vendor failover → LiteLLM—same ChatGPT-like UI, different guts.",
+      "takeaway": "Match the tool to the bottleneck, not the hype."
+    },
+    "chatGptLens": {
+      "setting": "You’re choosing tools for a ChatGPT-like campus app before writing code.",
+      "userInput": "Product brief: answer syllabus FAQs; fail over if OpenAI is down.",
+      "insideTheModel": "Decision: LlamaIndex (or light RAG) for docs + LiteLLM for provider routing; skip a heavy multi-agent crew for a simple FAQ.",
+      "modelOutput": "Architecture note to the team: “RAG index + unified model router; one chat endpoint for students.”"
     },
     "quiz": [
       {
@@ -2670,27 +2716,27 @@ export const concepts: Concept[] = [
       },
       {
         "id": "framework-comparison-q3",
-        "prompt": "Observability should be…",
+        "prompt": "Regardless of which framework you pick, what should still be present?",
         "options": [
           {
             "id": "o0",
-            "text": "Present regardless of framework"
+            "text": "Observability for debugging and ops"
           },
           {
             "id": "o1",
-            "text": "Optional forever"
+            "text": "Zero visibility forever"
           },
           {
             "id": "o2",
-            "text": "Replaced by vibes"
+            "text": "Only vibes-based shipping"
           },
           {
             "id": "o3",
-            "text": "Banned"
+            "text": "A ban on all monitoring"
           }
         ],
         "correctOptionId": "o0",
-        "explanation": "Always."
+        "explanation": "You need traces and metrics in any stack."
       }
     ],
     "prevConceptId": "litellm"

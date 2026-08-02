@@ -1,18 +1,37 @@
-import { useMemo, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import type { QuizQuestion } from '../../types/content';
 
 type Props = {
+  conceptId: string;
   questions: QuizQuestion[];
   onComplete: (score: number, total: number) => void;
 };
 
-export function Quiz({ questions, onComplete }: Props) {
+export function Quiz({ conceptId, questions, onComplete }: Props) {
   const [answers, setAnswers] = useState<Record<string, string>>({});
   const [submitted, setSubmitted] = useState(false);
+
+  // Reset when navigating to another concept (component instance can be reused).
+  useEffect(() => {
+    setAnswers({});
+    setSubmitted(false);
+  }, [conceptId]);
+
+  const answeredCount = questions.filter((q) => Boolean(answers[q.id])).length;
+  const allAnswered = answeredCount >= questions.length && questions.length > 0;
 
   const score = useMemo(() => {
     return questions.reduce((acc, q) => acc + (answers[q.id] === q.correctOptionId ? 1 : 0), 0);
   }, [answers, questions]);
+
+  if (questions.length === 0) {
+    return (
+      <section className="panel stack" id="quiz">
+        <h2>Quick check quiz</h2>
+        <p className="muted">No quiz questions for this concept yet.</p>
+      </section>
+    );
+  }
 
   return (
     <section className="panel stack" id="quiz">
@@ -32,6 +51,8 @@ export function Quiz({ questions, onComplete }: Props) {
               if (submitted) {
                 if (opt.id === q.correctOptionId) cls += ' correct';
                 else if (chosen === opt.id) cls += ' wrong';
+              } else if (chosen === opt.id) {
+                cls += ' selected';
               }
               return (
                 <button
@@ -54,7 +75,7 @@ export function Quiz({ questions, onComplete }: Props) {
         <button
           type="button"
           className="btn btn-primary"
-          disabled={Object.keys(answers).length < questions.length}
+          disabled={!allAnswered}
           onClick={() => {
             const finalScore = questions.reduce(
               (acc, q) => acc + (answers[q.id] === q.correctOptionId ? 1 : 0),
@@ -64,15 +85,27 @@ export function Quiz({ questions, onComplete }: Props) {
             onComplete(finalScore, questions.length);
           }}
         >
-          Submit answers
+          Submit answers{allAnswered ? '' : ` (${answeredCount}/${questions.length})`}
         </button>
       ) : (
-        <p>
-          Score: <strong>{score}/{questions.length}</strong>
-          {score / questions.length >= 0.67
-            ? ' — Nice work. This concept can count as complete.'
-            : ' — Review the explanations and try again after revisiting the lab.'}
-        </p>
+        <div className="stack" style={{ gap: '0.75rem' }}>
+          <p>
+            Score: <strong>{score}/{questions.length}</strong>
+            {score / questions.length >= 0.67
+              ? ' — Nice work. This concept can count as complete.'
+              : ' — Review the explanations, then try again.'}
+          </p>
+          <button
+            type="button"
+            className="btn btn-secondary"
+            onClick={() => {
+              setAnswers({});
+              setSubmitted(false);
+            }}
+          >
+            Try again
+          </button>
+        </div>
       )}
     </section>
   );

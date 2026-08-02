@@ -9,27 +9,27 @@ export const concepts: Concept[] = [
     "difficulty": "beginner",
     "estimatedMinutes": 7,
     "prerequisites": [],
-    "laymanSummary": "Retrieval-Augmented Generation (RAG) fetches relevant documents at query time and conditions the model on that evidence. It reduces reliance on parametric memory for private or changing facts and makes citations possible.",
-    "analogy": "An open-book exam: instead of memorizing every page, look up the chapter you need, then write the answer.",
+    "laymanSummary": "RAG means the chatbot looks up your documents first, then answers from those pages—not only from what it memorized in training. That helps with private handbooks, fresh policies, and answers you can point back to a source.",
+    "analogy": "An open-book exam: grab the right chapter, then write—don’t rely only on memory.",
     "explanation": [
-      "LLMs have stale or missing private knowledge.",
-      "Retrieve first, then generate.",
-      "Enables citations and updates without full retraining.",
-      "Still fails if retrieval misses or context is misused."
+      "Plain ChatGPT may not know your private or brand-new docs.",
+      "RAG searches a knowledge base, then pastes useful snippets into the prompt.",
+      "You can update the docs without retraining the whole model.",
+      "It still fails if the wrong pages are fetched or the model ignores them.",
     ],
     "keyTerms": [
       {
         "term": "RAG",
-        "definition": "Retrieve then generate"
+        "definition": "Look up docs, then write the answer"
       },
       {
         "term": "Parametric knowledge",
-        "definition": "Facts stored in weights"
+        "definition": "Facts the model memorized in training"
       },
       {
         "term": "Grounding",
-        "definition": "Basing answers on evidence"
-      }
+        "definition": "Basing the reply on retrieved evidence"
+      },
     ],
     "visualization": {
       "kind": "stepped",
@@ -255,9 +255,15 @@ export const concepts: Concept[] = [
       }
     },
     "realWorldExample": {
-      "title": "HR policy assistant",
-      "story": "Employees ask about leave; answers come from the latest handbook chunks.",
-      "takeaway": "Update docs without retraining the LLM."
+      "title": "HR leave-policy chat",
+      "story": "An employee asks ChatGPT-style HR bot, “How many casual leaves can I take in a year?” The system pulls the latest handbook section and answers from that page, with a citation—not a guess from old training data.",
+      "takeaway": "Update the handbook file; the bot can stay current without retraining."
+    },
+    "chatGptLens": {
+      "setting": "Company ChatGPT with access to the HR handbook (RAG).",
+      "userInput": "How many casual leaves can I take this year?",
+      "insideTheModel": "Before answering, the app searches handbook chunks for “casual leave,” pastes the matching section into the prompt, then ChatGPT writes from that evidence.",
+      "modelOutput": "“Per the 2026 handbook, you get 12 casual leaves per calendar year. Source: Leave Policy §3.”"
     },
     "quiz": [
       {
@@ -310,27 +316,27 @@ export const concepts: Concept[] = [
       },
       {
         "id": "why-rag-q3",
-        "prompt": "RAG guarantees no hallucinations.",
+        "prompt": "Does RAG guarantee the model will never hallucinate?",
         "options": [
           {
             "id": "o0",
-            "text": "True"
+            "text": "Yes—retrieval always blocks wrong answers"
           },
           {
             "id": "o1",
-            "text": "False"
+            "text": "No—bad or missing docs can still mislead it"
           },
           {
             "id": "o2",
-            "text": "Only on Fridays"
+            "text": "Yes—but only on Fridays"
           },
           {
             "id": "o3",
-            "text": "Only offline"
-          }
+            "text": "Yes—if you turn Wi‑Fi off"
+          },
         ],
         "correctOptionId": "o1",
-        "explanation": "Bad retrieval still fails."
+        "explanation": "RAG helps grounding, but wrong retrieval or ignored evidence still fails."
       }
     ],
     "nextConceptId": "chunking"
@@ -345,27 +351,27 @@ export const concepts: Concept[] = [
     "prerequisites": [
       "why-rag"
     ],
-    "laymanSummary": "Chunking splits documents into passages sized for embedding and context budgets. Too large and retrieval is noisy; too small and meaning fragments. Overlap and structure-aware splits (headings, code functions) often help.",
-    "analogy": "Indexing a textbook by coherent sections instead of one giant blob or single sentences with no context.",
+    "laymanSummary": "Chunking cuts long PDFs into smaller passages so search can find the right paragraph. Chunks that are too big are noisy; chunks that are too tiny lose meaning—overlap and heading-aware splits help.",
+    "analogy": "Indexing a textbook by coherent sections, not one giant blob or random half-sentences.",
     "explanation": [
-      "Choose chunk size for embedder and LLM.",
-      "Preserve semantic boundaries.",
-      "Overlap reduces boundary loss.",
-      "Metadata keeps source trail."
+      "Pick a chunk size that fits your search model and ChatGPT’s context window.",
+      "Prefer splits at headings, lists, or code functions when you can.",
+      "A little overlap between neighbors stops ideas from getting cut in half.",
+      "Keep metadata (file, page, section) so answers can cite the source.",
     ],
     "keyTerms": [
       {
         "term": "Chunk",
-        "definition": "A retrievable text passage"
+        "definition": "A short passage ready to search"
       },
       {
         "term": "Overlap",
-        "definition": "Shared text between adjacent chunks"
+        "definition": "Shared text between neighboring chunks"
       },
       {
         "term": "Metadata",
-        "definition": "Source, page, section labels"
-      }
+        "definition": "Labels like file, page, or section"
+      },
     ],
     "visualization": {
       "kind": "stepped",
@@ -591,9 +597,15 @@ export const concepts: Concept[] = [
       }
     },
     "realWorldExample": {
-      "title": "API docs RAG",
-      "story": "Split by endpoint sections so retrieval returns whole endpoint explanations.",
-      "takeaway": "Structure-aware chunks win."
+      "title": "API docs assistant",
+      "story": "A team splits API docs by endpoint (“POST /refunds”, “GET /orders”). When a developer asks about refunds in ChatGPT, retrieval returns the whole refund section—not a random mid-page fragment.",
+      "takeaway": "Structure-aware chunks make ChatGPT answers more precise."
+    },
+    "chatGptLens": {
+      "setting": "ChatGPT over your product docs with RAG indexing.",
+      "userInput": "How do I call the refunds endpoint?",
+      "insideTheModel": "The docs were pre-split into chunks. Search finds the “Refunds API” chunk (not the whole 200-page PDF) and that text is stuffed into the prompt.",
+      "modelOutput": "Step-by-step for POST /refunds with required fields, citing the Refunds API section."
     },
     "quiz": [
       {
@@ -646,27 +658,27 @@ export const concepts: Concept[] = [
       },
       {
         "id": "chunking-q3",
-        "prompt": "Metadata helps…",
+        "prompt": "Why keep metadata on each chunk?",
         "options": [
           {
             "id": "o0",
-            "text": "Cite and filter sources"
+            "text": "So you can cite and filter sources"
           },
           {
             "id": "o1",
-            "text": "Heat the room"
+            "text": "So the GPU runs hotter"
           },
           {
             "id": "o2",
-            "text": "Bold fonts"
+            "text": "So fonts become bold"
           },
           {
             "id": "o3",
-            "text": "Route Ethernet"
-          }
+            "text": "So Ethernet cables route faster"
+          },
         ],
         "correctOptionId": "o0",
-        "explanation": "Provenance."
+        "explanation": "Metadata preserves provenance for citations and filters."
       }
     ],
     "prevConceptId": "why-rag",
@@ -682,28 +694,27 @@ export const concepts: Concept[] = [
     "prerequisites": [
       "chunking"
     ],
-    "laymanSummary": "Retrieval embeddings map queries and document chunks into a shared vector space so similar meanings neighbor each other. Embedding model choice, domain fit, and instruction formats strongly affect recall.",
-    "analogy": "Library call numbers for meaning: related books shelved near each other so you can walk to the right aisle.",
+    "laymanSummary": "Embeddings turn questions and document chunks into number lists so similar meanings sit near each other. ChatGPT-style search embeds your query, then finds chunks whose vectors are close—even if the wording differs.",
+    "analogy": "Library call numbers for meaning: related ideas shelved in the same aisle.",
     "explanation": [
-      "Embed chunks offline.",
-      "Embed query online.",
-      "Compare vectors by similarity.",
-      "Domain mismatch hurts recall.",
-      "Re-embed when chunking changes."
+      "Offline: each chunk becomes a vector and is stored in an index.",
+      "Online: your ChatGPT question is embedded the same way.",
+      "Nearby vectors mean “similar meaning,” so paraphrases can still match.",
+      "If you change chunking or the embedder, re-embed so the index stays consistent.",
     ],
     "keyTerms": [
       {
         "term": "Retrieval embedding",
-        "definition": "Vector used for search"
+        "definition": "Vector used to search for chunks"
       },
       {
         "term": "Recall",
-        "definition": "Did we fetch the needed evidence?"
+        "definition": "Whether the needed evidence was found"
       },
       {
         "term": "Domain fit",
-        "definition": "Match between embedder and corpus"
-      }
+        "definition": "How well the embedder matches your docs"
+      },
     ],
     "visualization": {
       "kind": "stepped",
@@ -952,9 +963,15 @@ export const concepts: Concept[] = [
       }
     },
     "realWorldExample": {
-      "title": "Bug tracker search",
-      "story": "Semantic search finds issues describing the same crash with different words.",
-      "takeaway": "Meaning beats keywords alone."
+      "title": "Bug-tracker semantic search",
+      "story": "A support bot looks up past tickets. A user writes “app dies when I upload a photo”; embeddings match an older ticket titled “crash on image attach” even though the words differ.",
+      "takeaway": "Meaning match beats exact keyword match alone."
+    },
+    "chatGptLens": {
+      "setting": "Internal ChatGPT that searches past support tickets.",
+      "userInput": "Users say the app dies when uploading a photo—seen this?",
+      "insideTheModel": "Your sentence becomes an embedding. The system finds ticket chunks with nearby vectors (same crash idea, different words) and feeds them to ChatGPT.",
+      "modelOutput": "“Yes—similar to ticket #4821: crash on image attach. Likely null EXIF on Android 14; fix shipped in v3.2.”"
     },
     "quiz": [
       {
@@ -1007,27 +1024,27 @@ export const concepts: Concept[] = [
       },
       {
         "id": "embeddings-for-retrieval-q3",
-        "prompt": "Changing chunking usually means…",
+        "prompt": "After you change how documents are chunked, you usually should…",
         "options": [
           {
             "id": "o0",
-            "text": "Re-embedding"
+            "text": "Re-embed the new chunks"
           },
           {
             "id": "o1",
-            "text": "Never updating vectors"
+            "text": "Never update any vectors"
           },
           {
             "id": "o2",
-            "text": "Deleting the LLM"
+            "text": "Delete the language model"
           },
           {
             "id": "o3",
-            "text": "Banning metadata"
-          }
+            "text": "Ban all metadata"
+          },
         ],
         "correctOptionId": "o0",
-        "explanation": "Keep index consistent."
+        "explanation": "The index must match the text you actually store."
       }
     ],
     "prevConceptId": "chunking",
@@ -1043,19 +1060,18 @@ export const concepts: Concept[] = [
     "prerequisites": [
       "embeddings-for-retrieval"
     ],
-    "laymanSummary": "A vector database stores embeddings plus metadata and supports nearest-neighbor search at scale. It is the index behind most RAG stacks. Think retrieval engine, not a replacement for your system of record.",
-    "analogy": "A specialized card catalog for coordinates of meaning, with filters for author and date.",
+    "laymanSummary": "A vector database stores those embeddings plus tags (file, team, date) and finds nearest neighbors fast. Think of it as the search engine behind RAG—not the place that permanently replaces your original docs.",
+    "analogy": "A card catalog for “coordinates of meaning,” with filters for author and date.",
     "explanation": [
-      "Upsert vectors with IDs and metadata.",
-      "Query by nearest neighbors.",
-      "Filter with metadata.",
-      "ANN algorithms trade exactness for speed.",
-      "Still need the original text store."
+      "You upsert each chunk’s vector with an ID and metadata.",
+      "A query embedding asks: “which stored vectors are nearest?”",
+      "Metadata filters can limit results (e.g., only HR docs you can see).",
+      "ANN search trades a tiny bit of exactness for speed at scale.",
     ],
     "keyTerms": [
       {
         "term": "ANN",
-        "definition": "Approximate nearest neighbor search"
+        "definition": "Fast approximate nearest-neighbor search"
       },
       {
         "term": "Upsert",
@@ -1063,8 +1079,8 @@ export const concepts: Concept[] = [
       },
       {
         "term": "Metadata filter",
-        "definition": "Constrain search by fields"
-      }
+        "definition": "Narrow search by tagged fields"
+      },
     ],
     "visualization": {
       "kind": "stepped",
@@ -1291,8 +1307,14 @@ export const concepts: Concept[] = [
     },
     "realWorldExample": {
       "title": "Enterprise knowledge base",
-      "story": "Teams store millions of chunk vectors with ACL metadata filters.",
-      "takeaway": "Scale and permissions meet."
+      "story": "A company stores millions of handbook and wiki chunk vectors. When you ask ChatGPT about expense limits, the vector DB returns nearby chunks filtered to Finance docs you’re allowed to see.",
+      "takeaway": "Scale and permissions meet at the vector index."
+    },
+    "chatGptLens": {
+      "setting": "Work ChatGPT backed by a vector DB of company wiki chunks.",
+      "userInput": "What’s our meal stipend for overnight travel?",
+      "insideTheModel": "Your question is embedded; the vector DB returns top matching chunk IDs (optionally filtered by “Finance / Travel”), then those texts go into ChatGPT’s prompt.",
+      "modelOutput": "“Overnight travel meal stipend is ₹1,500/day (Travel Policy 2025). Here’s the cited paragraph.”"
     },
     "quiz": [
       {
@@ -1345,27 +1367,27 @@ export const concepts: Concept[] = [
       },
       {
         "id": "vector-db-concept-q3",
-        "prompt": "Vector DB replaces your source docs store.",
+        "prompt": "Does a vector DB replace your original document store?",
         "options": [
           {
             "id": "o0",
-            "text": "True"
+            "text": "Yes—delete all source files afterward"
           },
           {
             "id": "o1",
-            "text": "False"
+            "text": "No—it indexes; sources stay elsewhere"
           },
           {
             "id": "o2",
-            "text": "Only Sundays"
+            "text": "Yes—but only on Sundays"
           },
           {
             "id": "o3",
-            "text": "Only in YAML"
-          }
+            "text": "Yes—if you store them in YAML"
+          },
         ],
         "correctOptionId": "o1",
-        "explanation": "It indexes; source of truth remains elsewhere."
+        "explanation": "Vector DBs index for search; the system of record remains your docs."
       }
     ],
     "prevConceptId": "embeddings-for-retrieval",
@@ -1381,28 +1403,27 @@ export const concepts: Concept[] = [
     "prerequisites": [
       "vector-db-concept"
     ],
-    "laymanSummary": "Similarity search ranks stored vectors by closeness to the query embedding using metrics like cosine similarity or inner product. Top-k results become candidate passages for the LLM.",
-    "analogy": "Standing at a map pin and asking who is closest to me.",
+    "laymanSummary": "Similarity search ranks stored chunk vectors by how close they are to your question’s vector. The top few passages become the “open book” pages ChatGPT reads before answering.",
+    "analogy": "Standing on a map pin and asking who is closest to you.",
     "explanation": [
-      "Embed the query.",
-      "Score against index.",
-      "Take top-k.",
-      "Optionally threshold.",
-      "Feed texts downstream."
+      "Embed the user question the same way you embedded the chunks.",
+      "Score closeness (often cosine similarity or inner product).",
+      "Keep the top-k neighbors as candidate passages.",
+      "Optionally drop weak matches below a score threshold, then send texts to ChatGPT.",
     ],
     "keyTerms": [
       {
         "term": "Top-k",
-        "definition": "Return k nearest items"
+        "definition": "Keep the k closest matching chunks"
       },
       {
         "term": "Cosine similarity",
-        "definition": "Angle-based score"
+        "definition": "Score based on vector direction"
       },
       {
         "term": "Candidate set",
-        "definition": "Retrieved passages before rerank"
-      }
+        "definition": "Passages retrieved before any re-rank"
+      },
     ],
     "visualization": {
       "kind": "stepped",
@@ -1651,9 +1672,15 @@ export const concepts: Concept[] = [
       }
     },
     "realWorldExample": {
-      "title": "FAQ deflection",
-      "story": "Similar past answers retrieved for new tickets.",
-      "takeaway": "Neighbors suggest solutions."
+      "title": "FAQ ticket deflection",
+      "story": "A new ticket says “password reset email never arrives.” Similarity search pulls the three closest FAQ chunks; ChatGPT drafts a reply from those, not from thin air.",
+      "takeaway": "Nearest neighbors suggest the right help article."
+    },
+    "chatGptLens": {
+      "setting": "Helpdesk ChatGPT with an FAQ vector index.",
+      "userInput": "Password reset email never arrives—what should I tell the user?",
+      "insideTheModel": "The query vector is compared to all FAQ vectors; top-k articles (spam folder, SSO delay, rate limits) are pasted into the prompt for ChatGPT.",
+      "modelOutput": "A short agent reply: check spam, wait 10 minutes for SSO, then escalate—with FAQ links."
     },
     "quiz": [
       {
@@ -1706,27 +1733,27 @@ export const concepts: Concept[] = [
       },
       {
         "id": "similarity-search-q3",
-        "prompt": "Cosine similarity cares a lot about…",
+        "prompt": "Cosine similarity mainly cares about…",
         "options": [
           {
             "id": "o0",
-            "text": "Vector direction"
+            "text": "The direction of the vectors"
           },
           {
             "id": "o1",
-            "text": "Cable color"
+            "text": "The color of network cables"
           },
           {
             "id": "o2",
-            "text": "Fan stickers"
+            "text": "Fan stickers on the server"
           },
           {
             "id": "o3",
-            "text": "Mouse DPI"
-          }
+            "text": "Mouse DPI settings"
+          },
         ],
         "correctOptionId": "o0",
-        "explanation": "Direction/angle."
+        "explanation": "Cosine looks at angle/direction more than raw length."
       }
     ],
     "prevConceptId": "vector-db-concept",
@@ -1742,28 +1769,27 @@ export const concepts: Concept[] = [
     "prerequisites": [
       "similarity-search"
     ],
-    "laymanSummary": "Hybrid search blends lexical matching (BM25/keywords) with vector similarity. Keywords catch exact IDs and rare terms; vectors catch paraphrases. Fusion methods merge ranked lists into a stronger candidate set.",
-    "analogy": "Using both the index at the back of a book and a librarian who understands meaning.",
+    "laymanSummary": "Hybrid search mixes keyword matching with vector similarity. Keywords catch exact IDs and rare codes; vectors catch the same idea said in different words—then the lists are fused.",
+    "analogy": "Using both the back-of-book index and a librarian who understands meaning.",
     "explanation": [
-      "Run keyword and vector retrieval.",
-      "Fuse rankings.",
-      "Boost exact SKUs and codes.",
-      "Tune weights per corpus.",
-      "Often beats either alone."
+      "Run a keyword search (e.g., BM25) and a vector search in parallel.",
+      "Fuse the ranked lists so strong hits from either side survive.",
+      "Exact SKUs, error codes, and order IDs often need keywords.",
+      "Paraphrased symptoms (“won’t turn on” vs “no power”) need vectors.",
     ],
     "keyTerms": [
       {
         "term": "BM25",
-        "definition": "Classic lexical ranking"
+        "definition": "Classic keyword ranking for text search"
       },
       {
         "term": "Fusion",
-        "definition": "Combine ranked lists"
+        "definition": "Merge two ranked result lists"
       },
       {
         "term": "Exact match",
-        "definition": "Literal string hits"
-      }
+        "definition": "Hit on the literal string or ID"
+      },
     ],
     "visualization": {
       "kind": "stepped",
@@ -1989,9 +2015,15 @@ export const concepts: Concept[] = [
       }
     },
     "realWorldExample": {
-      "title": "E-commerce support",
-      "story": "Order IDs need keywords; fuzzy symptom descriptions need vectors.",
-      "takeaway": "Hybrid covers both."
+      "title": "E-commerce support bot",
+      "story": "A shopper asks ChatGPT, “Order A12-9941 won’t charge my card—declined at checkout.” Keywords lock onto A12-9941; vectors find “payment declined” troubleshooting guides; fusion feeds both to the model.",
+      "takeaway": "Hybrid covers exact IDs and fuzzy wording."
+    },
+    "chatGptLens": {
+      "setting": "Store support ChatGPT with hybrid retrieval.",
+      "userInput": "Order A12-9941 payment declined at checkout—help?",
+      "insideTheModel": "Keyword search grabs the order-ID doc; vector search grabs “card declined” guides; fusion merges them; ChatGPT answers from the combined snippets.",
+      "modelOutput": "Checks for that order plus steps for declined cards (billing address, 3DS, retry)—with sources."
     },
     "quiz": [
       {
@@ -2044,27 +2076,27 @@ export const concepts: Concept[] = [
       },
       {
         "id": "hybrid-search-q3",
-        "prompt": "Vectors help with…",
+        "prompt": "When do vector results help most in hybrid search?",
         "options": [
           {
             "id": "o0",
-            "text": "Paraphrases"
+            "text": "When the user paraphrases the same idea"
           },
           {
             "id": "o1",
-            "text": "Only identical strings"
+            "text": "Only when strings are identical"
           },
           {
             "id": "o2",
-            "text": "HDMI hotplug"
+            "text": "Only for HDMI cable problems"
           },
           {
             "id": "o3",
-            "text": "CSS :hover"
-          }
+            "text": "Only for CSS :hover bugs"
+          },
         ],
         "correctOptionId": "o0",
-        "explanation": "Meaning."
+        "explanation": "Vectors match meaning across different wording."
       }
     ],
     "prevConceptId": "similarity-search",
@@ -2080,28 +2112,27 @@ export const concepts: Concept[] = [
     "prerequisites": [
       "hybrid-search"
     ],
-    "laymanSummary": "Re-ranking takes a broader candidate set from cheap retrieval and scores each query-document pair with a stronger model. It improves precision before the LLM sees context, at extra compute cost.",
-    "analogy": "A first pass grabs 50 library books quickly; an expert skims and keeps the best 5.",
+    "laymanSummary": "Re-ranking is a second pass: cheap search grabs many candidates, then a stronger scorer sorts which ones truly fit the question. ChatGPT then sees a short, cleaner shortlist instead of a noisy pile of pages.",
+    "analogy": "Grab 50 library books quickly, then have an expert skim and keep the best five.",
     "explanation": [
-      "Retrieve many candidates cheaply.",
-      "Score pairs with a cross-encoder or LLM judge.",
-      "Keep top n.",
-      "Trade latency for precision.",
-      "Garbage in still limits quality."
+      "First stage retrieves a broad set (say top 50) cheaply.",
+      "A cross-encoder or judge scores each query–chunk pair more carefully.",
+      "You keep only the top few for ChatGPT’s prompt.",
+      "You trade a bit of latency for higher precision—and still need decent first-stage recall.",
     ],
     "keyTerms": [
       {
         "term": "Cross-encoder",
-        "definition": "Model scoring a query-doc pair together"
+        "definition": "Model that scores a query and doc together"
       },
       {
         "term": "Precision",
-        "definition": "Are top results relevant?"
+        "definition": "How relevant the top results are"
       },
       {
         "term": "Candidate generation",
-        "definition": "First-stage retrieval"
-      }
+        "definition": "Cheap first-stage retrieval pass"
+      },
     ],
     "visualization": {
       "kind": "stepped",
@@ -2327,9 +2358,15 @@ export const concepts: Concept[] = [
       }
     },
     "realWorldExample": {
-      "title": "Legal research assistants",
-      "story": "Re-rankers prioritize truly on-point case passages.",
-      "takeaway": "Precision matters under liability."
+      "title": "Legal research assistant",
+      "story": "A lawyer asks ChatGPT about a contract clause. Search returns 40 vaguely related passages; a re-ranker promotes the five truly on-point case excerpts into the prompt.",
+      "takeaway": "Precision of context matters when mistakes are costly."
+    },
+    "chatGptLens": {
+      "setting": "Legal ChatGPT with retrieve → re-rank → answer.",
+      "userInput": "Does force majeure cover pandemic lockdowns in our vendor MSA?",
+      "insideTheModel": "Hybrid search pulls ~40 chunks; a re-ranker scores each against the question and keeps the top 5 for ChatGPT—dropping near-miss contract noise.",
+      "modelOutput": "A careful yes/no with quoted MSA lines and case cites from the re-ranked set."
     },
     "quiz": [
       {
@@ -2382,27 +2419,27 @@ export const concepts: Concept[] = [
       },
       {
         "id": "re-ranking-q3",
-        "prompt": "Goal is higher…",
+        "prompt": "What is the main goal of re-ranking before ChatGPT answers?",
         "options": [
           {
             "id": "o0",
-            "text": "Precision of context"
+            "text": "Higher precision of the context shown"
           },
           {
             "id": "o1",
-            "text": "Temperature"
+            "text": "Raising the model temperature"
           },
           {
             "id": "o2",
-            "text": "Fan noise"
+            "text": "Making server fans louder"
           },
           {
             "id": "o3",
-            "text": "Token prices always"
-          }
+            "text": "Always increasing token prices"
+          },
         ],
         "correctOptionId": "o0",
-        "explanation": "Better top docs."
+        "explanation": "Re-ranking improves which docs reach the prompt."
       }
     ],
     "prevConceptId": "hybrid-search",
@@ -2418,28 +2455,27 @@ export const concepts: Concept[] = [
     "prerequisites": [
       "re-ranking"
     ],
-    "laymanSummary": "The context budget is how many tokens you can afford for instructions, history, retrieved chunks, and the answer. RAG quality often hinges on what you include and exclude under that budget.",
+    "laymanSummary": "ChatGPT only fits a limited number of tokens: instructions, chat history, retrieved chunks, and room for the answer. RAG quality often means choosing the highest-signal snippets and leaving space—not pasting everything.",
     "analogy": "A fixed-size suitcase: folding and choosing beats bringing the whole closet.",
     "explanation": [
-      "Measure token costs of each section.",
-      "Prefer high-signal chunks.",
-      "Compress or omit low-value history.",
-      "Leave room for the answer.",
-      "Monitor truncation bugs."
+      "Count tokens for system rules, history, retrieved text, and the reply.",
+      "Prefer high-signal chunks that actually change the answer.",
+      "Trim low-value history or duplicate passages when space is tight.",
+      "Watch for silent truncation that drops the important evidence.",
     ],
     "keyTerms": [
       {
         "term": "Budget",
-        "definition": "Token capacity allocation"
+        "definition": "How you allocate limited tokens"
       },
       {
         "term": "Truncation",
-        "definition": "Cutting overflow"
+        "definition": "Cutting text that exceeds the limit"
       },
       {
         "term": "High-signal",
         "definition": "Evidence that changes the answer"
-      }
+      },
     ],
     "visualization": {
       "kind": "stepped",
@@ -2665,9 +2701,15 @@ export const concepts: Concept[] = [
       }
     },
     "realWorldExample": {
-      "title": "Mobile support bots",
-      "story": "Smaller windows force aggressive chunk selection.",
-      "takeaway": "Budget discipline is product quality."
+      "title": "Mobile support bot",
+      "story": "A phone chat UI has a smaller context window. The bot ranks refund-policy chunks, keeps the top two paragraphs, and reserves tokens so ChatGPT can still write a full reply.",
+      "takeaway": "Budget discipline is product quality, not a side detail."
+    },
+    "chatGptLens": {
+      "setting": "Mobile ChatGPT support widget with a tight token limit.",
+      "userInput": "Can I return shoes bought 28 days ago without the box?",
+      "insideTheModel": "Many related FAQ chunks exist, but the app only packs the top-ranked return rules plus a little history—leaving room for ChatGPT’s answer tokens.",
+      "modelOutput": "A clear yes/no from the packed policy lines, without dumping the entire returns PDF."
     },
     "quiz": [
       {
@@ -2720,27 +2762,27 @@ export const concepts: Concept[] = [
       },
       {
         "id": "context-budget-q3",
-        "prompt": "Low-signal chunks should be…",
+        "prompt": "What should you usually do with low-signal retrieved chunks?",
         "options": [
           {
             "id": "o0",
-            "text": "Deprioritized"
+            "text": "Deprioritize or drop them under the budget"
           },
           {
             "id": "o1",
-            "text": "Always included first"
+            "text": "Always paste them first"
           },
           {
             "id": "o2",
-            "text": "Used to replace instructions"
+            "text": "Use them to replace system instructions"
           },
           {
             "id": "o3",
-            "text": "Printed"
-          }
+            "text": "Print them on paper only"
+          },
         ],
         "correctOptionId": "o0",
-        "explanation": "Prioritize signal."
+        "explanation": "Spend limited tokens on evidence that matters."
       }
     ],
     "prevConceptId": "re-ranking",
@@ -2756,28 +2798,27 @@ export const concepts: Concept[] = [
     "prerequisites": [
       "context-budget"
     ],
-    "laymanSummary": "A retrieval pipeline chains ingest, chunk, embed, index, retrieve, (rerank), prompt assembly, generate, and cite. Production RAG is this pipeline plus evaluation and access control—not a single API call.",
-    "analogy": "A newsroom workflow: archive stories, index them, research for a question, then write with sources.",
+    "laymanSummary": "A retrieval pipeline is the full path: ingest docs, chunk, embed, index, retrieve, (re-rank), build the prompt, generate, and cite. Production RAG is this pipeline plus evals and access control—not a single magic ChatGPT call.",
+    "analogy": "A newsroom: archive stories, index them, research for a question, then write with sources.",
     "explanation": [
-      "Offline path builds the index.",
-      "Online path answers a query.",
-      "Assembly builds the grounded prompt.",
-      "Citations map claims to chunks.",
-      "Evals measure retrieval and answer quality."
+      "Offline path: ingest → chunk → embed → index as docs change.",
+      "Online path: user question → retrieve → optional re-rank → prompt assembly.",
+      "ChatGPT (or another LLM) generates from the assembled grounded prompt.",
+      "Citations and evals check that answers map back to real chunks.",
     ],
     "keyTerms": [
       {
         "term": "Ingest",
-        "definition": "Load source documents"
+        "definition": "Load source documents into the system"
       },
       {
         "term": "Prompt assembly",
-        "definition": "Build the grounded context"
+        "definition": "Build the grounded context for the model"
       },
       {
         "term": "Citation",
-        "definition": "Link answer spans to sources"
-      }
+        "definition": "Link answer claims back to sources"
+      },
     ],
     "visualization": {
       "kind": "flagship",
@@ -3009,8 +3050,14 @@ export const concepts: Concept[] = [
     },
     "realWorldExample": {
       "title": "Internal wiki assistant",
-      "story": "Pipeline refreshes nightly as wiki pages change.",
-      "takeaway": "Fresh index, same generator."
+      "story": "Every night the pipeline refreshes wiki pages into chunks and embeddings. Next day, teammates ask ChatGPT “How do we request a laptop?” and get a grounded answer from today’s wiki.",
+      "takeaway": "Fresh index, same generator model."
+    },
+    "chatGptLens": {
+      "setting": "Company ChatGPT wired to the full RAG pipeline.",
+      "userInput": "How do I request a work laptop?",
+      "insideTheModel": "Query hits retrieve → (re-rank) → assemble prompt with IT wiki chunks → ChatGPT writes steps and attaches citations from those chunks.",
+      "modelOutput": "Numbered steps from the IT wiki, plus links/IDs to the source pages."
     },
     "quiz": [
       {
@@ -3063,15 +3110,15 @@ export const concepts: Concept[] = [
       },
       {
         "id": "retrieval-pipeline-q3",
-        "prompt": "Citations connect…",
+        "prompt": "What do citations connect in a RAG pipeline?",
         "options": [
           {
             "id": "o0",
-            "text": "Answers to sources"
+            "text": "Answer claims to source chunks"
           },
           {
             "id": "o1",
-            "text": "Fans to cases"
+            "text": "Fans to computer cases"
           },
           {
             "id": "o2",
@@ -3079,11 +3126,11 @@ export const concepts: Concept[] = [
           },
           {
             "id": "o3",
-            "text": "Pods to CSS"
-          }
+            "text": "Pods to CSS files"
+          },
         ],
         "correctOptionId": "o0",
-        "explanation": "Provenance."
+        "explanation": "Citations show provenance from answer to evidence."
       }
     ],
     "prevConceptId": "context-budget",
@@ -3099,28 +3146,27 @@ export const concepts: Concept[] = [
     "prerequisites": [
       "retrieval-pipeline"
     ],
-    "laymanSummary": "Agentic RAG lets the model decide when and what to retrieve, possibly running multiple search steps, comparing sources, or asking clarifying questions. It is more flexible than one-shot retrieve-then-read, and more failure-prone without limits.",
-    "analogy": "A researcher who searches, reads, realizes a gap, searches again, then writes—not a single Google query.",
+    "laymanSummary": "Agentic RAG lets ChatGPT decide when to search again—maybe several lookups—before finishing the answer. It’s more flexible than one-shot retrieve-then-read, but needs limits so it doesn’t loop forever.",
+    "analogy": "A researcher who searches, reads, notices a gap, searches again, then writes—not one Google query.",
     "explanation": [
-      "Plan information needs.",
-      "Retrieve in loops.",
-      "Stop when enough evidence.",
-      "Needs tool budgets and audits.",
-      "Great for multi-hop questions."
+      "The model plans what information is still missing.",
+      "It can call search tools in a loop until evidence is enough.",
+      "Stop conditions and tool budgets prevent endless spinning.",
+      "Best for multi-hop questions that need several facts chained together.",
     ],
     "keyTerms": [
       {
         "term": "Multi-hop",
-        "definition": "Needs several facts chained"
+        "definition": "Needs several facts chained together"
       },
       {
         "term": "Tool budget",
-        "definition": "Max retrieval/actions"
+        "definition": "Max searches or actions allowed"
       },
       {
         "term": "Stop condition",
-        "definition": "When to answer"
-      }
+        "definition": "Rule for when to finally answer"
+      },
     ],
     "visualization": {
       "kind": "stepped",
@@ -3348,9 +3394,15 @@ export const concepts: Concept[] = [
       }
     },
     "realWorldExample": {
-      "title": "Competitive research briefs",
-      "story": "Agent pulls market notes then pricing pages before drafting.",
-      "takeaway": "Iteration finds multi-hop facts."
+      "title": "Competitive research brief",
+      "story": "You ask ChatGPT for a rival’s pricing vs last quarter. The agent pulls a market note, realizes pricing is missing, searches the pricing page, then drafts a short brief with both sources.",
+      "takeaway": "Iteration finds facts that one search misses."
+    },
+    "chatGptLens": {
+      "setting": "ChatGPT agent with a docs search tool (agentic RAG).",
+      "userInput": "Compare RivalCo’s list price this quarter vs last quarter.",
+      "insideTheModel": "First search finds a market note (no prices). The agent plans a second query for the pricing page, combines both, then answers—within a max tool-call budget.",
+      "modelOutput": "A short comparison table with both figures and the two sources it retrieved."
     },
     "quiz": [
       {
@@ -3403,27 +3455,27 @@ export const concepts: Concept[] = [
       },
       {
         "id": "agentic-rag-intro-q3",
-        "prompt": "Multi-hop questions often need…",
+        "prompt": "Why do multi-hop questions often need agentic RAG?",
         "options": [
           {
             "id": "o0",
-            "text": "Multiple retrievals"
+            "text": "They need multiple retrievals chained together"
           },
           {
             "id": "o1",
-            "text": "One keyword only"
+            "text": "One keyword search is always enough"
           },
           {
             "id": "o2",
-            "text": "No docs"
+            "text": "They never need documents"
           },
           {
             "id": "o3",
-            "text": "CSS only"
-          }
+            "text": "They only need CSS files"
+          },
         ],
         "correctOptionId": "o0",
-        "explanation": "Several facts."
+        "explanation": "Several linked facts often require more than one search."
       }
     ],
     "prevConceptId": "retrieval-pipeline",
@@ -3439,28 +3491,27 @@ export const concepts: Concept[] = [
     "prerequisites": [
       "agentic-rag-intro"
     ],
-    "laymanSummary": "RAG fails when chunking is bad, embeddings miss, filters exclude the truth, context is noisy, the model ignores evidence, or citations are fabricated. Evaluate retrieval and generation separately.",
-    "analogy": "An open-book exam where you grab the wrong chapter, or read the right chapter and still misquote it.",
+    "laymanSummary": "RAG can still fail: wrong chunks, messy context, stale indexes, or ChatGPT ignoring the evidence (even inventing citations). Check retrieval and generation separately so you know which stage broke.",
+    "analogy": "An open-book exam where you grab the wrong chapter—or read the right one and still misquote it.",
     "explanation": [
-      "Missed retrieval: answer has no chance.",
-      "Noisy context: model gets distracted.",
-      "Refusal to use evidence: ungrounded prose.",
-      "Stale indexes: outdated truth.",
-      "Measure recall@k and groundedness."
+      "Missed retrieval: the answer never had a chance.",
+      "Noisy or conflicting context distracts the model.",
+      "The model may ignore good evidence or invent citations.",
+      "Stale indexes serve yesterday’s truth—measure recall@k and groundedness.",
     ],
     "keyTerms": [
       {
         "term": "Recall@k",
-        "definition": "Was the needed chunk in top k?"
+        "definition": "Was the needed chunk in the top k?"
       },
       {
         "term": "Groundedness",
-        "definition": "Claims supported by context"
+        "definition": "Claims supported by the given context"
       },
       {
         "term": "Index freshness",
-        "definition": "How up to date the store is"
-      }
+        "definition": "How up to date the search store is"
+      },
     ],
     "visualization": {
       "kind": "stepped",
@@ -3687,8 +3738,14 @@ export const concepts: Concept[] = [
     },
     "realWorldExample": {
       "title": "Wrong policy version served",
-      "story": "Index lagged after handbook update; bot cited old leave days.",
-      "takeaway": "Freshness is a reliability feature."
+      "story": "HR updated casual leave from 10 to 12 days, but the index lagged. Employees asking ChatGPT still got “10 days” with a confident citation to the old chunk.",
+      "takeaway": "Freshness is a reliability feature, not optional polish."
+    },
+    "chatGptLens": {
+      "setting": "HR ChatGPT with a lagged RAG index after a policy update.",
+      "userInput": "How many casual leaves do we get now?",
+      "insideTheModel": "Search still ranks the old “10 days” chunk highest. ChatGPT faithfully answers from that stale evidence—grounded to the wrong version.",
+      "modelOutput": "“You get 10 casual leaves (handbook).” — confident, cited, and outdated until the index refreshes."
     },
     "quiz": [
       {
@@ -3741,27 +3798,27 @@ export const concepts: Concept[] = [
       },
       {
         "id": "rag-failure-modes-q3",
-        "prompt": "Fabricated citations are…",
+        "prompt": "Why are fabricated citations a serious RAG failure mode?",
         "options": [
           {
             "id": "o0",
-            "text": "A known failure mode"
+            "text": "They look trustworthy but point to nothing real"
           },
           {
             "id": "o1",
-            "text": "Impossible"
+            "text": "They are impossible with any LLM"
           },
           {
             "id": "o2",
-            "text": "Required"
+            "text": "They are required for every answer"
           },
           {
             "id": "o3",
-            "text": "A vector metric"
-          }
+            "text": "They are just another vector metric"
+          },
         ],
         "correctOptionId": "o0",
-        "explanation": "Must check."
+        "explanation": "Fake citations create false confidence—always verify links to real chunks."
       }
     ],
     "prevConceptId": "agentic-rag-intro"

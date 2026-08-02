@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState } from 'react';
+import { useCallback, useEffect, useSyncExternalStore } from 'react';
 
 export type ConceptProgress = {
   completed: boolean;
@@ -22,27 +22,63 @@ function readStorage(): ProgressState {
 }
 
 function writeStorage(state: ProgressState) {
-  localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+  try {
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+  } catch {
+    // Quota / private mode — keep in-memory progress for this session.
+  }
+}
+
+/** Shared store so every page sees the same progress after Mark understood / quiz submit. */
+let progressState: ProgressState = typeof localStorage !== 'undefined' ? readStorage() : {};
+const listeners = new Set<() => void>();
+
+function emit() {
+  for (const listener of listeners) listener();
+}
+
+function getSnapshot() {
+  return progressState;
+}
+
+function subscribe(listener: () => void) {
+  listeners.add(listener);
+  return () => {
+    listeners.delete(listener);
+  };
+}
+
+function setProgressState(next: ProgressState) {
+  progressState = next;
+  writeStorage(next);
+  emit();
 }
 
 export function useProgress() {
-  const [progress, setProgress] = useState<ProgressState>({});
+  const progress = useSyncExternalStore(subscribe, getSnapshot, (): ProgressState => ({}));
 
+  // Keep in sync if another tab updates localStorage.
   useEffect(() => {
-    setProgress(readStorage());
+    const onStorage = (event: StorageEvent) => {
+      if (event.key !== STORAGE_KEY) return;
+      progressState = readStorage();
+      emit();
+    };
+    window.addEventListener('storage', onStorage);
+    return () => window.removeEventListener('storage', onStorage);
   }, []);
 
   const persist = useCallback((next: ProgressState) => {
-    setProgress(next);
-    writeStorage(next);
+    setProgressState(next);
   }, []);
 
   const markUnderstood = useCallback(
     (conceptId: string) => {
+      const current = { ...progressState };
       const next = {
-        ...readStorage(),
+        ...current,
         [conceptId]: {
-          ...readStorage()[conceptId],
+          ...current[conceptId],
           completed: true,
           understoodAt: new Date().toISOString(),
         },
@@ -54,16 +90,17 @@ export function useProgress() {
 
   const saveQuizResult = useCallback(
     (conceptId: string, score: number, total: number) => {
-      const passed = score / total >= 0.67;
-      const current = readStorage();
+      const passed = total > 0 && score / total >= 0.67;
+      const current = { ...progressState };
       const next = {
         ...current,
         [conceptId]: {
           ...current[conceptId],
           quizScore: score,
           quizTotal: total,
-          completed: current[conceptId]?.completed || passed,
-          understoodAt: current[conceptId]?.understoodAt ?? (passed ? new Date().toISOString() : undefined),
+          completed: Boolean(current[conceptId]?.completed) || passed,
+          understoodAt:
+            current[conceptId]?.understoodAt ?? (passed ? new Date().toISOString() : undefined),
         },
       };
       persist(next);

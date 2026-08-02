@@ -9,26 +9,26 @@ export const concepts: Concept[] = [
     "difficulty": "beginner",
     "estimatedMinutes": 7,
     "prerequisites": [],
-    "laymanSummary": "Serving an LLM app usually means your backend receives user requests, applies auth and policies, builds prompts/context, calls a model endpoint, streams tokens back, and logs traces. The model may be hosted by you or a cloud provider.",
-    "analogy": "A restaurant: customers talk to waiters (your API), kitchen (model) cooks, food comes out in courses (streams).",
+    "laymanSummary": "A ChatGPT-like campus app rarely talks to the model from the browser. Your backend takes the message, checks auth, builds context, calls a model, and streams the reply back.",
+    "analogy": "A restaurant: diners talk to waiters (your API); the kitchen (model) cooks; food arrives course by course (streams).",
     "explanation": [
-      "Client → API → orchestration → model.",
-      "Keep secrets server-side.",
-      "Separate product logic from model vendor.",
-      "Design for timeouts and partial failures."
+      "Flow: client → your API → orchestration → model → stream back.",
+      "Keep API keys and secrets on the server, never in the frontend.",
+      "Separate product logic from whichever model vendor you use.",
+      "Plan for timeouts and half-finished replies."
     ],
     "keyTerms": [
       {
         "term": "Endpoint",
-        "definition": "Network API your clients call"
+        "definition": "URL your clients call"
       },
       {
         "term": "Orchestration",
-        "definition": "Prompt/RAG/tool logic"
+        "definition": "Prompt, RAG, and tool logic"
       },
       {
         "term": "Model inference",
-        "definition": "Generating tokens"
+        "definition": "Generating reply tokens"
       }
     ],
     "visualization": {
@@ -256,8 +256,14 @@ export const concepts: Concept[] = [
     },
     "realWorldExample": {
       "title": "Campus tutor SaaS",
-      "story": "Web UI hits a FastAPI service that calls a hosted LLM with RAG.",
-      "takeaway": "Your app is the product boundary."
+      "story": "Web UI posts to `/chat`; FastAPI builds a RAG prompt, calls a hosted LLM, and streams tokens into the chat bubble.",
+      "takeaway": "Your app is the product boundary students trust."
+    },
+    "chatGptLens": {
+      "setting": "A student uses your ChatGPT-like campus web app in the browser.",
+      "userInput": "Explain mutex vs semaphore with one campus example.",
+      "insideTheModel": "Browser → your API (auth) → build prompt/RAG → call model → stream tokens; keys never leave the server.",
+      "modelOutput": "Tokens appear in the bubble: mutex = one bathroom key; semaphore = N lab seats…"
     },
     "quiz": [
       {
@@ -310,27 +316,27 @@ export const concepts: Concept[] = [
       },
       {
         "id": "llm-app-serving-q3",
-        "prompt": "Orchestration includes…",
+        "prompt": "What does orchestration usually include in an LLM app?",
         "options": [
           {
             "id": "o0",
-            "text": "Prompt/RAG/tool logic"
+            "text": "Prompt, RAG, and tool logic"
           },
           {
             "id": "o1",
-            "text": "Only HDMI"
+            "text": "Only HDMI cable setup"
           },
           {
             "id": "o2",
-            "text": "Only fonts"
+            "text": "Only choosing website fonts"
           },
           {
             "id": "o3",
-            "text": "Only fan curves"
+            "text": "Only GPU fan curves"
           }
         ],
         "correctOptionId": "o0",
-        "explanation": "App brain."
+        "explanation": "Orchestration is the app brain around the model."
       }
     ],
     "nextConceptId": "fastapi-role"
@@ -345,23 +351,22 @@ export const concepts: Concept[] = [
     "prerequisites": [
       "llm-app-serving"
     ],
-    "laymanSummary": "FastAPI is a popular Python web framework for building async APIs—commonly used as the orchestration layer for LLM apps: routes, auth, validation, and streaming responses. Conceptually any solid API framework can play this role.",
-    "analogy": "The waiter station: takes orders in a standard format and coordinates the kitchen.",
+    "laymanSummary": "FastAPI is a common Python web framework for the “waiter” layer: routes, validation, auth, and streaming chat replies. Any solid API framework can play this role for a ChatGPT-like campus app.",
+    "analogy": "The waiter station: takes orders in a standard form and coordinates the kitchen (model).",
     "explanation": [
-      "Define request/response schemas.",
-      "Implement orchestration routes.",
-      "Stream tokens over HTTP.",
-      "Validate inputs.",
-      "Not the model itself—just the app layer."
+      "Define typed request/response shapes for `/chat`.",
+      "Routes run orchestration then call the model provider.",
+      "Streaming responses push tokens as they arrive.",
+      "FastAPI is the app server—not the LLM itself."
     ],
     "keyTerms": [
       {
         "term": "Route",
-        "definition": "URL handler"
+        "definition": "URL path handler in the API"
       },
       {
         "term": "Pydantic model",
-        "definition": "Request validation schema"
+        "definition": "Schema that validates requests"
       },
       {
         "term": "Streaming response",
@@ -592,9 +597,15 @@ export const concepts: Concept[] = [
       }
     },
     "realWorldExample": {
-      "title": "Hackathon backends",
-      "story": "Students expose /ask endpoints wrapping OpenAI-compatible APIs.",
-      "takeaway": "Fast iteration API layer."
+      "title": "Hackathon `/ask` endpoint",
+      "story": "Students expose a typed FastAPI route that wraps an OpenAI-compatible API and returns streamed tutor answers.",
+      "takeaway": "A thin typed API is enough to start shipping chat."
+    },
+    "chatGptLens": {
+      "setting": "Your ChatGPT-like campus frontend calls a FastAPI `/chat` route.",
+      "userInput": "JSON body: { \"message\": \"Quiz me on HTTP status codes\" }",
+      "insideTheModel": "FastAPI validates the body, runs your prompt logic, calls the model, and streams SSE chunks back to the UI.",
+      "modelOutput": "Streamed quiz: “Q1: What does 404 mean?” … appearing live in the chat."
     },
     "quiz": [
       {
@@ -647,27 +658,27 @@ export const concepts: Concept[] = [
       },
       {
         "id": "fastapi-role-q3",
-        "prompt": "Streaming responses help…",
+        "prompt": "How do streaming responses help a ChatGPT-like UI?",
         "options": [
           {
             "id": "o0",
-            "text": "Perceived latency"
+            "text": "They improve perceived latency"
           },
           {
             "id": "o1",
-            "text": "Delete logs"
+            "text": "They delete server logs"
           },
           {
             "id": "o2",
-            "text": "Ban JSON"
+            "text": "They ban JSON entirely"
           },
           {
             "id": "o3",
-            "text": "Cool rooms"
+            "text": "They cool the server room"
           }
         ],
         "correctOptionId": "o0",
-        "explanation": "UX."
+        "explanation": "Users see tokens early instead of waiting for the full reply."
       }
     ],
     "prevConceptId": "llm-app-serving",
@@ -683,27 +694,26 @@ export const concepts: Concept[] = [
     "prerequisites": [
       "fastapi-role"
     ],
-    "laymanSummary": "Docker packages your application, runtime, and dependencies into images that run as containers. For LLM apps, containers make API services portable across laptops and clouds—while model weights may still live on volumes or remote APIs.",
-    "analogy": "A shipping container for software: same box runs on different ships (machines).",
+    "laymanSummary": "Docker packs your ChatGPT-like API, Python version, and libraries into an image that runs the same on a laptop or in the cloud. Model weights may still live elsewhere; the container carries the app.",
+    "analogy": "A shipping container for software: the same box runs on different ships (machines).",
     "explanation": [
-      "Write a Dockerfile.",
-      "Build an image.",
-      "Run a container.",
-      "Pin dependency versions.",
-      "Keep secrets out of images."
+      "A Dockerfile is the recipe for your app image.",
+      "Build once, run as a container anywhere Docker works.",
+      "Pin dependency versions so classmates get the same env.",
+      "Inject secrets at runtime—never bake API keys into images."
     ],
     "keyTerms": [
       {
         "term": "Image",
-        "definition": "Immutable package"
+        "definition": "Immutable package of your app"
       },
       {
         "term": "Container",
-        "definition": "Running instance"
+        "definition": "Running instance of an image"
       },
       {
         "term": "Dockerfile",
-        "definition": "Build recipe"
+        "definition": "Build recipe for the image"
       }
     ],
     "visualization": {
@@ -930,9 +940,15 @@ export const concepts: Concept[] = [
       }
     },
     "realWorldExample": {
-      "title": "Identical tutor API envs",
-      "story": "“Works on my machine” fades when classmates run the same image.",
-      "takeaway": "Portability aids teamwork."
+      "title": "Identical tutor API for the club",
+      "story": "“Works on my machine” disappears when every teammate runs the same Docker image for the campus chat API.",
+      "takeaway": "Containers make teamwork and deploys predictable."
+    },
+    "chatGptLens": {
+      "setting": "You’re deploying the backend of a ChatGPT-like campus app with Docker.",
+      "userInput": "Student still types: “Help me revise DBMS normalization.”",
+      "insideTheModel": "Same containerized API handles the request on laptop or cloud—deps match; model call happens inside the containerized service.",
+      "modelOutput": "Normal chat reply about 1NF/2NF/3NF—user never sees Docker, but ops stays reliable."
     },
     "quiz": [
       {
@@ -985,27 +1001,27 @@ export const concepts: Concept[] = [
       },
       {
         "id": "docker-q3",
-        "prompt": "Containers help…",
+        "prompt": "What is a main ops benefit of containers for LLM apps?",
         "options": [
           {
             "id": "o0",
-            "text": "Portable deploys"
+            "text": "Portable, repeatable deploys"
           },
           {
             "id": "o1",
-            "text": "Guaranteed model quality"
+            "text": "Guaranteed perfect model quality"
           },
           {
             "id": "o2",
-            "text": "Infinite context"
+            "text": "Infinite context windows"
           },
           {
             "id": "o3",
-            "text": "Free GPUs"
+            "text": "Free unlimited GPUs"
           }
         ],
         "correctOptionId": "o0",
-        "explanation": "Ops portability."
+        "explanation": "Containers standardize how the app runs across machines."
       }
     ],
     "prevConceptId": "fastapi-role",
@@ -1021,14 +1037,13 @@ export const concepts: Concept[] = [
     "prerequisites": [
       "docker"
     ],
-    "laymanSummary": "Kubernetes (K8s) schedules and manages containers across machines: deploy replicas, restart crashes, expose services, and scale. LLM apps may put API replicas on K8s while inference runs on GPU nodes or external APIs.",
-    "analogy": "An air-traffic control system for containers—landing, scaling, and restarting workloads.",
+    "laymanSummary": "Kubernetes runs and scales many containers: restart crashes, expose services, add replicas under load. Your ChatGPT-like campus API can sit on K8s while inference uses GPU nodes or an external model API.",
+    "analogy": "Air-traffic control for containers—landing, scaling, and restarting workloads across machines.",
     "explanation": [
-      "Pods run containers.",
-      "Deployments manage replicas.",
-      "Services provide networking.",
-      "Autoscaling reacts to load.",
-      "Complexity must be justified."
+      "Pods run your containerized chat API.",
+      "Deployments keep N replicas healthy.",
+      "Services give a stable network name for clients.",
+      "Use K8s when scale justifies the complexity—not for a tiny static site."
     ],
     "keyTerms": [
       {
@@ -1037,7 +1052,7 @@ export const concepts: Concept[] = [
       },
       {
         "term": "Deployment",
-        "definition": "Replica management"
+        "definition": "Manages replicas of your pods"
       },
       {
         "term": "Service",
@@ -1268,9 +1283,15 @@ export const concepts: Concept[] = [
       }
     },
     "realWorldExample": {
-      "title": "Campus cloud club",
-      "story": "API autoscales during exam week traffic spikes.",
-      "takeaway": "Orchestration absorbs load."
+      "title": "Exam-week autoscaling",
+      "story": "Campus chat API pods scale from 2→10 during finals so tutor latency stays usable.",
+      "takeaway": "Orchestration absorbs traffic spikes."
+    },
+    "chatGptLens": {
+      "setting": "Hundreds of students hit your ChatGPT-like tutor during midterms.",
+      "userInput": "Explain polymorphism with a short Java example.",
+      "insideTheModel": "K8s load-balances the request to a healthy API pod replica; that pod calls the model and streams the answer.",
+      "modelOutput": "Normal streamed explanation—extra pods keep wait time low under load."
     },
     "quiz": [
       {
@@ -1323,27 +1344,27 @@ export const concepts: Concept[] = [
       },
       {
         "id": "kubernetes-overview-q3",
-        "prompt": "Use K8s when…",
+        "prompt": "When is Kubernetes a reasonable choice for an LLM app API?",
         "options": [
           {
             "id": "o0",
-            "text": "You need scalable container ops"
+            "text": "When you need scalable container operations"
           },
           {
             "id": "o1",
-            "text": "You only have a static HTML file"
+            "text": "When you only host one static HTML file"
           },
           {
             "id": "o2",
-            "text": "You hate logs"
+            "text": "When you want to avoid all logs"
           },
           {
             "id": "o3",
-            "text": "You need no networking"
+            "text": "When you need no networking at all"
           }
         ],
         "correctOptionId": "o0",
-        "explanation": "Justify complexity."
+        "explanation": "Justify K8s complexity with real scale needs."
       }
     ],
     "prevConceptId": "docker",
@@ -1359,13 +1380,13 @@ export const concepts: Concept[] = [
     "prerequisites": [
       "kubernetes-overview"
     ],
-    "laymanSummary": "Amazon Bedrock is a managed service to call foundation models via AWS APIs without self-hosting GPUs. Conceptually: provider-hosted inference with cloud IAM, networking, and billing integrated into AWS.",
-    "analogy": "Ordering kitchen output from a hotel that already runs industrial kitchens—you bring recipes (prompts), they run stoves.",
+    "laymanSummary": "Amazon Bedrock is managed model access on AWS—you call foundation models via AWS APIs without running your own GPUs. Your ChatGPT-like campus app still owns prompts, RAG, and the chat UI.",
+    "analogy": "Ordering food from a hotel that already runs industrial kitchens: you bring the recipe (prompt); they run the stoves.",
     "explanation": [
-      "Invoke models through AWS APIs.",
-      "IAM controls access.",
-      "Useful when already on AWS.",
-      "Still build your orchestration and RAG."
+      "Invoke models through AWS APIs with IAM access control.",
+      "Fits teams already living in the AWS ecosystem.",
+      "Billing and networking integrate with other AWS services.",
+      "You still build orchestration, RAG, and product safety."
     ],
     "keyTerms": [
       {
@@ -1378,7 +1399,7 @@ export const concepts: Concept[] = [
       },
       {
         "term": "Invocation",
-        "definition": "API call to generate"
+        "definition": "API call that generates text"
       }
     ],
     "visualization": {
@@ -1605,9 +1626,15 @@ export const concepts: Concept[] = [
       }
     },
     "realWorldExample": {
-      "title": "Enterprise AWS shops",
-      "story": "Teams adopt Bedrock to stay inside existing AWS controls.",
-      "takeaway": "Cloud gravity matters."
+      "title": "AWS-heavy university stack",
+      "story": "Campus cloud team keeps keys and network rules in AWS; the student chat app calls Bedrock for generations.",
+      "takeaway": "Cloud gravity often picks the model host."
+    },
+    "chatGptLens": {
+      "setting": "Your ChatGPT-like campus API uses Bedrock for the model call.",
+      "userInput": "Draft a polite email to reschedule my advisor meeting.",
+      "insideTheModel": "API authenticates with AWS IAM → Bedrock invoke → tokens return → your app streams them to the chat UI.",
+      "modelOutput": "A polite reschedule email draft the student can copy—no self-hosted GPU involved."
     },
     "quiz": [
       {
@@ -1660,7 +1687,7 @@ export const concepts: Concept[] = [
       },
       {
         "id": "bedrock-q3",
-        "prompt": "Access is typically governed by…",
+        "prompt": "What typically governs access to Bedrock model calls?",
         "options": [
           {
             "id": "o0",
@@ -1668,19 +1695,19 @@ export const concepts: Concept[] = [
           },
           {
             "id": "o1",
-            "text": "Wallpaper color"
+            "text": "Desktop wallpaper color"
           },
           {
             "id": "o2",
-            "text": "Fan stickers"
+            "text": "Laptop fan stickers"
           },
           {
             "id": "o3",
-            "text": "Mouse DPI"
+            "text": "Mouse DPI setting"
           }
         ],
         "correctOptionId": "o0",
-        "explanation": "IAM."
+        "explanation": "AWS IAM controls who can invoke models."
       }
     ],
     "prevConceptId": "kubernetes-overview",
@@ -1696,26 +1723,26 @@ export const concepts: Concept[] = [
     "prerequisites": [
       "bedrock"
     ],
-    "laymanSummary": "Vertex AI is Google Cloud’s platform for ML and generative AI services—model APIs, tooling, and MLOps integrations. Conceptually similar tradeoff: managed capabilities inside a cloud ecosystem versus self-hosting.",
+    "laymanSummary": "Vertex AI is Google Cloud’s platform for ML and generative APIs—hosted models plus nearby MLOps tools. Same idea as other clouds: managed inference, your ChatGPT-like app still does product logic.",
     "analogy": "A city workshop district with shared power tools—you build products using the district’s infrastructure.",
     "explanation": [
-      "Managed generative APIs.",
-      "Ties into GCP IAM and networking.",
-      "MLOps tooling nearby.",
-      "Orchestration still your job."
+      "Call managed generative endpoints from your backend.",
+      "Uses GCP identity, networking, and billing.",
+      "MLOps and data tools sit in the same cloud.",
+      "Orchestration, RAG, and UX remain your job."
     ],
     "keyTerms": [
       {
         "term": "Vertex AI",
-        "definition": "GCP ML/GenAI platform"
+        "definition": "GCP ML and GenAI platform"
       },
       {
         "term": "Managed API",
-        "definition": "Hosted model endpoint"
+        "definition": "Hosted model endpoint you call"
       },
       {
         "term": "MLOps",
-        "definition": "Operate ML systems in prod"
+        "definition": "Operate ML systems in production"
       }
     ],
     "visualization": {
@@ -1942,9 +1969,15 @@ export const concepts: Concept[] = [
       }
     },
     "realWorldExample": {
-      "title": "GCP-native startups",
-      "story": "Use Vertex model APIs with BigQuery-stored logs.",
-      "takeaway": "Ecosystem integration."
+      "title": "GCP-native student startup",
+      "story": "Team hosts a ChatGPT-like study app on GCP, calls Vertex model APIs, and stores usage logs in BigQuery.",
+      "takeaway": "Ecosystem fit speeds integration."
+    },
+    "chatGptLens": {
+      "setting": "Your ChatGPT-like study app’s backend calls Vertex AI for replies.",
+      "userInput": "Make 5 flashcards from this paragraph on photosynthesis.",
+      "insideTheModel": "App → Vertex generative endpoint → model returns cards → app shows them in the chat/flashcard UI.",
+      "modelOutput": "Five Q/A flashcards grounded in the pasted paragraph."
     },
     "quiz": [
       {
@@ -1997,7 +2030,7 @@ export const concepts: Concept[] = [
       },
       {
         "id": "vertex-ai-q3",
-        "prompt": "Your app still handles…",
+        "prompt": "With managed Vertex-style endpoints, what does your app still handle?",
         "options": [
           {
             "id": "o0",
@@ -2005,19 +2038,19 @@ export const concepts: Concept[] = [
           },
           {
             "id": "o1",
-            "text": "Silicon design"
+            "text": "Designing GPU silicon"
           },
           {
             "id": "o2",
-            "text": "Ocean cooling"
+            "text": "Ocean cooling systems"
           },
           {
             "id": "o3",
-            "text": "Font casting"
+            "text": "Casting metal fonts"
           }
         ],
         "correctOptionId": "o0",
-        "explanation": "Product layer."
+        "explanation": "Managed models don’t replace your product layer."
       }
     ],
     "prevConceptId": "bedrock",
@@ -2033,18 +2066,18 @@ export const concepts: Concept[] = [
     "prerequisites": [
       "vertex-ai"
     ],
-    "laymanSummary": "Azure AI services provide managed model and AI capability APIs in Microsoft’s cloud, often attractive to enterprises already on Azure and Microsoft identity. Same mental model: managed inference plus your orchestration.",
+    "laymanSummary": "Azure AI offers managed model APIs inside Microsoft’s cloud—often chosen when the campus already uses Azure and Microsoft identity. Your ChatGPT-like app still owns chat UX, RAG, and policies.",
     "analogy": "Building inside an office park that already has power, security badges, and utilities.",
     "explanation": [
-      "Managed model endpoints.",
-      "Enterprise identity integrations.",
-      "Region and compliance options.",
-      "Your RAG/agents remain custom."
+      "Hosted model deployments you call from your backend.",
+      "Strong fit with enterprise identity (Entra ID).",
+      "Regions and compliance options matter for schools.",
+      "Custom RAG and agents stay in your code."
     ],
     "keyTerms": [
       {
         "term": "Azure OpenAI / Azure AI",
-        "definition": "Managed model offerings on Azure"
+        "definition": "Managed models on Azure"
       },
       {
         "term": "Entra ID",
@@ -2052,7 +2085,7 @@ export const concepts: Concept[] = [
       },
       {
         "term": "Compliance",
-        "definition": "Regional/policy constraints"
+        "definition": "Regional and policy constraints"
       }
     ],
     "visualization": {
@@ -2279,9 +2312,15 @@ export const concepts: Concept[] = [
       }
     },
     "realWorldExample": {
-      "title": "Corp Copilot add-ons",
-      "story": "Enterprises host approved deployments on Azure.",
-      "takeaway": "Identity and compliance drive cloud choice."
+      "title": "University Microsoft tenant",
+      "story": "Students sign in with campus Microsoft accounts; approved Azure model deployments power an internal ChatGPT-like advisor bot.",
+      "takeaway": "Identity and compliance often pick the cloud."
+    },
+    "chatGptLens": {
+      "setting": "A student signed in with campus Microsoft ID uses your ChatGPT-like advisor bot on Azure.",
+      "userInput": "What electives count toward the AI minor?",
+      "insideTheModel": "App checks Entra auth → calls Azure model deployment with RAG over the catalog → streams the answer.",
+      "modelOutput": "Lists approved electives from the catalog with links—access controlled by campus identity."
     },
     "quiz": [
       {
@@ -2334,27 +2373,27 @@ export const concepts: Concept[] = [
       },
       {
         "id": "azure-ai-q3",
-        "prompt": "Identity integrations help…",
+        "prompt": "How do identity integrations help Azure-hosted campus AI apps?",
         "options": [
           {
             "id": "o0",
-            "text": "Enterprise access control"
+            "text": "Enterprise access control for users"
           },
           {
             "id": "o1",
-            "text": "Bold fonts"
+            "text": "Making fonts bolder"
           },
           {
             "id": "o2",
-            "text": "Cool GPUs"
+            "text": "Cooling GPUs automatically"
           },
           {
             "id": "o3",
-            "text": "Shorter cables"
+            "text": "Shortening network cables"
           }
         ],
         "correctOptionId": "o0",
-        "explanation": "Access."
+        "explanation": "Campus SSO and policies gate who can use the bot."
       }
     ],
     "prevConceptId": "vertex-ai",
@@ -2370,23 +2409,22 @@ export const concepts: Concept[] = [
     "prerequisites": [
       "azure-ai"
     ],
-    "laymanSummary": "Streaming delivers tokens to clients as they are produced, improving perceived latency and enabling cancelation. Implement with server-sent events or websockets, and design UIs for partial answers.",
-    "analogy": "Reading a story as it’s being typed instead of waiting for the whole novel PDF.",
+    "laymanSummary": "Streaming sends tokens to the chat UI as soon as they are generated—like ChatGPT’s live typing. It feels faster and lets users hit Stop to cancel a long answer.",
+    "analogy": "Reading a story as it’s typed instead of waiting for the whole PDF to download.",
     "explanation": [
-      "Model emits tokens incrementally.",
-      "API streams to client.",
-      "UI renders partial text.",
-      "Users can stop early.",
-      "Handle disconnects cleanly."
+      "The model emits tokens one after another.",
+      "Your API forwards them (SSE or websockets) to the client.",
+      "The UI paints partial text immediately.",
+      "Cancelation stops generation and saves tokens."
     ],
     "keyTerms": [
       {
         "term": "SSE",
-        "definition": "Server-Sent Events"
+        "definition": "Server-Sent Events for streams"
       },
       {
         "term": "Time-to-first-token",
-        "definition": "Latency until first output"
+        "definition": "Wait until first output"
       },
       {
         "term": "Cancelation",
@@ -2617,9 +2655,15 @@ export const concepts: Concept[] = [
       }
     },
     "realWorldExample": {
-      "title": "Chat UIs",
-      "story": "Streaming makes tutors feel responsive during long explanations.",
-      "takeaway": "Perceived performance matters."
+      "title": "Live tutor explanations",
+      "story": "Long OS lecture answers appear word-by-word so students start reading while the rest is still generating.",
+      "takeaway": "Perceived speed matters as much as raw latency."
+    },
+    "chatGptLens": {
+      "setting": "Your ChatGPT-like campus UI shows tokens appearing live—just like ChatGPT.",
+      "userInput": "Explain TCP handshake in 6 short bullets.",
+      "insideTheModel": "Model streams tokens → API forwards SSE chunks → UI appends text; user can press Stop mid-reply.",
+      "modelOutput": "Bullets appear one by one: SYN → SYN-ACK → ACK… until done or canceled."
     },
     "quiz": [
       {
@@ -2672,7 +2716,7 @@ export const concepts: Concept[] = [
       },
       {
         "id": "streaming-q3",
-        "prompt": "Cancelation lets users…",
+        "prompt": "What does cancelation let users do during streaming?",
         "options": [
           {
             "id": "o0",
@@ -2680,19 +2724,19 @@ export const concepts: Concept[] = [
           },
           {
             "id": "o1",
-            "text": "Delete the cloud"
+            "text": "Delete the entire cloud account"
           },
           {
             "id": "o2",
-            "text": "Ban JSON"
+            "text": "Ban JSON from the API"
           },
           {
             "id": "o3",
-            "text": "Skip auth"
+            "text": "Skip authentication forever"
           }
         ],
         "correctOptionId": "o0",
-        "explanation": "Control."
+        "explanation": "Stop saves time and tokens on unwanted long replies."
       }
     ],
     "prevConceptId": "azure-ai",
@@ -2708,14 +2752,13 @@ export const concepts: Concept[] = [
     "prerequisites": [
       "streaming"
     ],
-    "laymanSummary": "Monitoring tracks request rates, latencies, error codes, token usage, and tool failures. Without it, LLM apps fail quietly and bills surprise you. Start with golden signals plus token economics.",
-    "analogy": "A car dashboard: speed, fuel, warning lights—not driving blind.",
+    "laymanSummary": "Monitoring watches whether your ChatGPT-like campus app is healthy: latency, errors, token spend, and broken tools. Without dashboards and alerts, outages and surprise bills sneak up on you.",
+    "analogy": "A car dashboard: speed, fuel, and warning lights—so you are not driving blind.",
     "explanation": [
-      "Latency and error rate.",
-      "Token/cost metrics.",
-      "Trace IDs across orchestration.",
-      "Alert on budgets.",
-      "Dashboards for debugging."
+      "Track latency and error rate on `/chat`.",
+      "Meter tokens and cost per request or per day.",
+      "Use trace IDs to follow one student request across steps.",
+      "Alert when budgets or error rates spike."
     ],
     "keyTerms": [
       {
@@ -2724,11 +2767,11 @@ export const concepts: Concept[] = [
       },
       {
         "term": "Trace ID",
-        "definition": "Correlates logs across steps"
+        "definition": "ID linking logs for one request"
       },
       {
         "term": "Token usage",
-        "definition": "Consumption meter"
+        "definition": "How many tokens you spent"
       }
     ],
     "visualization": {
@@ -2955,9 +2998,15 @@ export const concepts: Concept[] = [
       }
     },
     "realWorldExample": {
-      "title": "Exam-week spike",
-      "story": "Latency alerts reveal retrieval bottlenecks under load.",
-      "takeaway": "Metrics guide scaling."
+      "title": "Exam-week latency alert",
+      "story": "p95 latency jumps; dashboards show retrieval timeouts, not the model—team scales the vector DB.",
+      "takeaway": "Metrics tell you what to fix under load."
+    },
+    "chatGptLens": {
+      "setting": "Ops watches dashboards while students use your ChatGPT-like tutor.",
+      "userInput": "Any normal question—e.g. “Define ACID in databases.”",
+      "insideTheModel": "Each chat request emits latency, error, and token metrics with a trace ID; alerts fire if thresholds break.",
+      "modelOutput": "Student still gets a normal answer; ops sees “200 OK, 1.2s, 900 tokens” on the dashboard."
     },
     "quiz": [
       {
@@ -3010,27 +3059,27 @@ export const concepts: Concept[] = [
       },
       {
         "id": "monitoring-basics-q3",
-        "prompt": "Cost alerts prevent…",
+        "prompt": "What do cost alerts mainly help prevent?",
         "options": [
           {
             "id": "o0",
-            "text": "Bill shock"
+            "text": "Bill shock from runaway usage"
           },
           {
             "id": "o1",
-            "text": "Better fonts"
+            "text": "Better website fonts"
           },
           {
             "id": "o2",
-            "text": "Shorter cables"
+            "text": "Shorter network cables"
           },
           {
             "id": "o3",
-            "text": "Colder coffee automatically"
+            "text": "Automatically colder coffee"
           }
         ],
         "correctOptionId": "o0",
-        "explanation": "Budgets."
+        "explanation": "Budget alerts catch token spend before invoices explode."
       }
     ],
     "prevConceptId": "streaming"

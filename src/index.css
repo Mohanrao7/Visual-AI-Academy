@@ -1703,6 +1703,12 @@ select:focus-visible {
   cursor: pointer;
 }
 
+.quiz-option.selected {
+  border-color: var(--accent);
+  background: rgba(15, 138, 106, 0.08);
+  box-shadow: inset 0 0 0 1px rgba(15, 138, 106, 0.25);
+}
+
 .quiz-option.correct {
   border-color: var(--success);
   background: rgba(31, 138, 76, 0.1);
@@ -1711,6 +1717,65 @@ select:focus-visible {
 .quiz-option.wrong {
   border-color: var(--danger);
   background: rgba(194, 59, 59, 0.08);
+}
+
+.quiz-option:disabled {
+  cursor: default;
+}
+
+.how-it-works-list {
+  margin: 0;
+  padding-left: 1.25rem;
+  display: grid;
+  gap: 0.55rem;
+}
+
+.chatgpt-lens-grid {
+  display: grid;
+  gap: 0.85rem;
+  margin-top: 1rem;
+}
+
+@media (min-width: 900px) {
+  .chatgpt-lens-grid {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    align-items: stretch;
+  }
+}
+
+.chatgpt-lens-step {
+  display: flex;
+  flex-direction: column;
+  gap: 0.45rem;
+  min-width: 0;
+}
+
+.chatgpt-lens-label {
+  font-size: 0.78rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--ink-soft);
+}
+
+.chatgpt-lens-box {
+  margin: 0;
+  flex: 1;
+  padding: 0.9rem 1rem;
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--line);
+  background: rgba(19, 35, 44, 0.03);
+  line-height: 1.45;
+}
+
+.chatgpt-lens-input {
+  background: rgba(29, 111, 191, 0.08);
+  border-color: rgba(29, 111, 191, 0.28);
+}
+
+.chatgpt-lens-output {
+  background: rgba(15, 138, 106, 0.1);
+  border-color: rgba(15, 138, 106, 0.28);
 }
 
 .code-block {

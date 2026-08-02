@@ -9,26 +9,26 @@ export const concepts: Concept[] = [
     "difficulty": "beginner",
     "estimatedMinutes": 6,
     "prerequisites": [],
-    "laymanSummary": "Chat models are trained on roles: system sets policy and persona, user provides requests, assistant responds. Clear role separation improves control. System messages are powerful but not magical security boundaries.",
-    "analogy": "A play script: stage directions (system), audience request (user), actor lines (assistant).",
+    "laymanSummary": "ChatGPT chats use three roles: system (hidden rules), user (you), and assistant (the reply). Keeping those roles clear makes the bot behave more consistently.",
+    "analogy": "A play script: stage directions (system), the audience’s request (user), and the actor’s lines (assistant).",
     "explanation": [
-      "System steers global behavior.",
-      "User turns carry tasks.",
-      "Assistant turns are model outputs.",
-      "Do not treat system prompts as perfect sandboxing."
+      "System messages set tone, rules, and product policy for the whole chat.",
+      "User messages carry the actual question or task.",
+      "Assistant messages are what the model writes back.",
+      "System text steers behavior but is not a hard security lock."
     ],
     "keyTerms": [
       {
         "term": "System prompt",
-        "definition": "High-level instructions and policies"
+        "definition": "Hidden rules that steer the whole chat"
       },
       {
         "term": "User message",
-        "definition": "Human or app request"
+        "definition": "What you or the app ask"
       },
       {
         "term": "Assistant message",
-        "definition": "Model response"
+        "definition": "The model’s reply text"
       }
     ],
     "visualization": {
@@ -255,9 +255,15 @@ export const concepts: Concept[] = [
       }
     },
     "realWorldExample": {
-      "title": "Support bot persona",
-      "story": "System: be brief and cite policy; user asks refund question.",
-      "takeaway": "Roles encode product behavior."
+      "title": "Campus helpdesk chatbot",
+      "story": "Your college puts a system prompt: “Be brief, cite refund policy, never invent fees.” A student asks, “Can I get a hostel fee refund after week 3?” The assistant answers from that policy voice, not as a free-form essay writer.",
+      "takeaway": "Roles encode product behavior before the user even types."
+    },
+    "chatGptLens": {
+      "setting": "You’re building a polite study buddy in ChatGPT Custom Instructions / API system role.",
+      "userInput": "Explain photosynthesis in 5 bullet points for class 8.",
+      "insideTheModel": "The system role (“friendly tutor, short bullets, no fluff”) sits above your message. ChatGPT treats that as standing rules, then answers in the assistant role.",
+      "modelOutput": "Five short bullets on photosynthesis in a calm tutor tone—no long intro, because the system role asked for that style."
     },
     "quiz": [
       {
@@ -310,27 +316,27 @@ export const concepts: Concept[] = [
       },
       {
         "id": "roles-system-user-assistant-q3",
-        "prompt": "System prompts are perfect security.",
+        "prompt": "Why shouldn’t you treat a system prompt as perfect security?",
         "options": [
           {
             "id": "o0",
-            "text": "True"
+            "text": "Because users can often override or ignore it"
           },
           {
             "id": "o1",
-            "text": "False"
+            "text": "Because system prompts only work offline"
           },
           {
             "id": "o2",
-            "text": "Only on Mondays"
+            "text": "Because assistant messages delete system rules"
           },
           {
             "id": "o3",
-            "text": "Only in XML"
+            "text": "Because system prompts are never read"
           }
         ],
-        "correctOptionId": "o1",
-        "explanation": "Not a hard security boundary."
+        "correctOptionId": "o0",
+        "explanation": "System text steers behavior but is not a hard sandbox."
       }
     ],
     "nextConceptId": "zero-one-few-shot"
@@ -345,26 +351,26 @@ export const concepts: Concept[] = [
     "prerequisites": [
       "roles-system-user-assistant"
     ],
-    "laymanSummary": "Zero-shot asks the model to perform a task with instructions only. One-shot and few-shot provide example input-output pairs in the prompt so the model mirrors the pattern. Examples are a lightweight way to specify format and style without fine-tuning.",
-    "analogy": "Showing a worked example on the blackboard before asking students to do the next problem.",
+    "laymanSummary": "Zero-shot means you give only instructions. One-shot and few-shot add example input→output pairs so ChatGPT copies the pattern—handy for format and style without retraining.",
+    "analogy": "The teacher solves one homework problem on the board, then asks you to do the next one the same way.",
     "explanation": [
-      "Zero-shot: instructions alone.",
-      "Few-shot: demos in context.",
-      "Pick diverse, correct examples.",
-      "Too many demos can crowd the context window."
+      "Zero-shot: describe the task; give no examples.",
+      "One-shot / few-shot: paste correct demos, then ask for a new case.",
+      "Good examples teach labels, tone, and output shape quickly.",
+      "Too many or conflicting examples waste space and confuse the pattern."
     ],
     "keyTerms": [
       {
         "term": "Zero-shot",
-        "definition": "No examples in the prompt"
+        "definition": "Task with instructions only, no examples"
       },
       {
         "term": "Few-shot",
-        "definition": "Multiple in-context examples"
+        "definition": "Several examples shown in the prompt"
       },
       {
         "term": "In-context learning",
-        "definition": "Adapting from prompt examples"
+        "definition": "Learning the pattern from prompt demos"
       }
     ],
     "visualization": {
@@ -591,9 +597,15 @@ export const concepts: Concept[] = [
       }
     },
     "realWorldExample": {
-      "title": "Ticket triage labels",
-      "story": "Show three labeled tickets, then ask for the fourth label.",
-      "takeaway": "Examples specify the label taxonomy quickly."
+      "title": "Club email triage labels",
+      "story": "Your event club pastes three labeled emails—billing, venue, volunteer—then asks ChatGPT to label a new message. The model mirrors those labels instead of inventing random categories.",
+      "takeaway": "A few clean examples teach the taxonomy faster than a long rule essay."
+    },
+    "chatGptLens": {
+      "setting": "You’re sorting internship emails in ChatGPT.",
+      "userInput": "Label each email as Interview / Offer / Reject / Other.\nExample: “Please join us Tuesday at 3pm” → Interview\nExample: “We regret to inform you…” → Reject\nNow label: “Congratulations, we’d like to extend an offer.”",
+      "insideTheModel": "Few-shot demos show the exact label style. ChatGPT matches that pattern for the new email instead of guessing free-form categories.",
+      "modelOutput": "Offer"
     },
     "quiz": [
       {
@@ -646,27 +658,27 @@ export const concepts: Concept[] = [
       },
       {
         "id": "zero-one-few-shot-q3",
-        "prompt": "Bad examples usually…",
+        "prompt": "What usually happens if your few-shot examples are wrong or conflicting?",
         "options": [
           {
             "id": "o0",
-            "text": "Help always"
+            "text": "The model still invents a perfect taxonomy"
           },
           {
             "id": "o1",
-            "text": "Teach the wrong pattern"
+            "text": "The model learns the wrong pattern"
           },
           {
             "id": "o2",
-            "text": "Delete context"
+            "text": "Examples are ignored automatically"
           },
           {
             "id": "o3",
-            "text": "Fix hallucinations"
+            "text": "The chat becomes free forever"
           }
         ],
         "correctOptionId": "o1",
-        "explanation": "Demos are teachers."
+        "explanation": "Demos teach—good or bad."
       }
     ],
     "prevConceptId": "roles-system-user-assistant",
@@ -682,26 +694,26 @@ export const concepts: Concept[] = [
     "prerequisites": [
       "zero-one-few-shot"
     ],
-    "laymanSummary": "Chain-of-Thought (CoT) prompting asks the model to reason in intermediate steps before the final answer. For multi-step problems, visible reasoning often improves accuracy—though steps can also look convincing while being wrong.",
-    "analogy": "Show your work on a math quiz: intermediate lines catch arithmetic slips.",
+    "laymanSummary": "Chain-of-Thought asks ChatGPT to “show its work” in steps before the final answer. That often helps on multi-step problems, but neat-looking steps can still be wrong—so always check the math.",
+    "analogy": "Show your work on a math quiz: the middle lines help catch arithmetic slips.",
     "explanation": [
-      "Encourage stepwise reasoning.",
-      "Helps on multi-step tasks.",
-      "Does not guarantee correctness.",
-      "Can be combined with self-consistency or tools."
+      "Ask for step-by-step reasoning, then a clear final answer.",
+      "Most useful when the task needs several linked steps.",
+      "Steps improve odds—they do not guarantee truth.",
+      "You can pair CoT with voting or tools for harder tasks."
     ],
     "keyTerms": [
       {
         "term": "Chain of Thought",
-        "definition": "Intermediate reasoning tokens"
+        "definition": "Step-by-step reasoning before the answer"
       },
       {
         "term": "Final answer",
-        "definition": "The concluded result"
+        "definition": "The concluded result after the steps"
       },
       {
         "term": "Scratchpad",
-        "definition": "Working space for steps"
+        "definition": "Working space where steps are written"
       }
     ],
     "visualization": {
@@ -923,9 +935,15 @@ export const concepts: Concept[] = [
       }
     },
     "realWorldExample": {
-      "title": "Physics word problems",
-      "story": "Students prompt think step by step for unit conversions.",
-      "takeaway": "Process scaffolding lifts performance."
+      "title": "Physics homework helper",
+      "story": "A student asks ChatGPT to convert 72 km/h to m/s. With “think step by step,” it writes the unit factor, multiplies, then boxes 20 m/s. The student can spot a missed factor if a step looks off.",
+      "takeaway": "Visible steps make checking easier than a bare number."
+    },
+    "chatGptLens": {
+      "setting": "You’re stuck on a word problem in ChatGPT.",
+      "userInput": "A shop sells 12 pens for ₹180. How much for 5 pens? Think step by step, then give the final amount.",
+      "insideTheModel": "Chain-of-Thought nudges the model to write intermediate math (unit price, then multiply) instead of jumping straight to a guess.",
+      "modelOutput": "Step 1: ₹180 ÷ 12 = ₹15 per pen. Step 2: 5 × ₹15 = ₹75. Final answer: ₹75."
     },
     "quiz": [
       {
@@ -978,27 +996,27 @@ export const concepts: Concept[] = [
       },
       {
         "id": "chain-of-thought-q3",
-        "prompt": "CoT helps most when…",
+        "prompt": "When does Chain-of-Thought help the most?",
         "options": [
           {
             "id": "o0",
-            "text": "Tasks are multi-step"
+            "text": "When the task needs several linked steps"
           },
           {
             "id": "o1",
-            "text": "Tasks are single-token copies"
+            "text": "When you only need to copy one word"
           },
           {
             "id": "o2",
-            "text": "CSS is involved"
+            "text": "When you want shorter prompts always"
           },
           {
             "id": "o3",
-            "text": "DNS is down"
+            "text": "When the answer must stay hidden forever"
           }
         ],
         "correctOptionId": "o0",
-        "explanation": "Multi-step reasoning."
+        "explanation": "Multi-step reasoning benefits most."
       }
     ],
     "prevConceptId": "zero-one-few-shot",
@@ -1014,27 +1032,26 @@ export const concepts: Concept[] = [
     "prerequisites": [
       "chain-of-thought"
     ],
-    "laymanSummary": "Self-consistency samples several chain-of-thought trajectories (usually with temperature) and selects the most common final answer. Agreement across diverse paths often beats one greedy reasoning trace.",
-    "analogy": "Ask three study partners to solve independently, then trust the answer they converge on.",
+    "laymanSummary": "Self-consistency means sampling several step-by-step solutions and picking the answer that shows up most often. When one reasoning path is fragile, a majority vote is often safer than trusting a single try.",
+    "analogy": "Ask three classmates to solve the same problem alone, then trust the answer they agree on.",
     "explanation": [
-      "Sample multiple reasoning paths.",
-      "Extract final answers.",
-      "Majority vote.",
-      "Costs more tokens.",
-      "Helps when reasoning is brittle."
+      "Run the same question multiple times with varied reasoning.",
+      "Collect each run’s final answer.",
+      "Choose the majority (or most consistent) answer.",
+      "It costs more tokens, but helps when single traces slip."
     ],
     "keyTerms": [
       {
         "term": "Self-consistency",
-        "definition": "Vote over multiple sampled solutions"
+        "definition": "Vote across several sampled solutions"
       },
       {
         "term": "Diversity",
-        "definition": "Different reasoning paths"
+        "definition": "Different reasoning paths to try"
       },
       {
         "term": "Majority vote",
-        "definition": "Pick the most common answer"
+        "definition": "Pick the most common final answer"
       }
     ],
     "visualization": {
@@ -1261,9 +1278,15 @@ export const concepts: Concept[] = [
       }
     },
     "realWorldExample": {
-      "title": "Math contest practice",
-      "story": "Multiple samples reduce unlucky reasoning slips.",
-      "takeaway": "Compute trades for reliability."
+      "title": "Contest math double-check",
+      "story": "Before a quiz, you ask ChatGPT the same combinatorics problem five times with “think step by step.” Four runs say 120; one says 60. You keep 120—the consensus—and re-check the odd path later.",
+      "takeaway": "Extra samples buy reliability when one chain can slip."
+    },
+    "chatGptLens": {
+      "setting": "You’re verifying a tricky arithmetic answer with ChatGPT (or an API that can sample multiple times).",
+      "userInput": "A class has 8 students. How many ways to pick a president and vice-president (order matters)? Solve step by step. Final answer as a number.",
+      "insideTheModel": "Self-consistency samples several CoT paths (e.g. 8×7 vs mistaken 8×8). Your app (or you) compares final numbers and keeps the majority.",
+      "modelOutput": "Runs: 56, 56, 64, 56 → consensus answer: 56"
     },
     "quiz": [
       {
@@ -1316,27 +1339,27 @@ export const concepts: Concept[] = [
       },
       {
         "id": "self-consistency-q3",
-        "prompt": "It helps when…",
+        "prompt": "When is self-consistency most useful?",
         "options": [
           {
             "id": "o0",
-            "text": "Single traces are brittle"
+            "text": "When a single reasoning path often slips"
           },
           {
             "id": "o1",
-            "text": "The answer is a random GIF"
+            "text": "When you need the cheapest possible reply"
           },
           {
             "id": "o2",
-            "text": "Networking is off"
+            "text": "When the task is pure copy-paste"
           },
           {
             "id": "o3",
-            "text": "Fonts are bold"
+            "text": "When you refuse to read the answer"
           }
         ],
         "correctOptionId": "o0",
-        "explanation": "Brittle reasoning."
+        "explanation": "Voting helps brittle multi-step reasoning."
       }
     ],
     "prevConceptId": "chain-of-thought",
@@ -1352,27 +1375,26 @@ export const concepts: Concept[] = [
     "prerequisites": [
       "self-consistency"
     ],
-    "laymanSummary": "Tree of Thoughts explores multiple partial reasoning branches, evaluates them, and expands promising ones—more search-like than a single linear chain. It can improve hard planning problems at higher complexity and cost.",
-    "analogy": "A chess player considers several move trees, prunes weak lines, and deepens strong ones.",
+    "laymanSummary": "Tree of Thoughts tries several partial ideas, scores them, and deepens the promising branches—like search, not one straight chain. It can help hard planning tasks, but it costs more time and tokens.",
+    "analogy": "A chess player considers a few move trees, drops weak lines, and thinks deeper on the strong ones.",
     "explanation": [
-      "Propose multiple next thoughts.",
-      "Evaluate branches.",
-      "Expand the best candidates.",
-      "Prune weak paths.",
-      "Heavier than linear CoT."
+      "Propose several next “thoughts” (options) at each step.",
+      "Score or critique those branches.",
+      "Expand the best ones and prune weak paths.",
+      "Heavier than plain chain-of-thought—use when planning matters."
     ],
     "keyTerms": [
       {
         "term": "Branch",
-        "definition": "An alternative partial solution"
+        "definition": "One alternative partial solution path"
       },
       {
         "term": "Evaluation",
-        "definition": "Scoring intermediate thoughts"
+        "definition": "Scoring how good a partial thought is"
       },
       {
         "term": "Search",
-        "definition": "Exploring a tree of options"
+        "definition": "Exploring a tree of options on purpose"
       }
     ],
     "visualization": {
@@ -1599,9 +1621,15 @@ export const concepts: Concept[] = [
       }
     },
     "realWorldExample": {
-      "title": "Puzzle solving demos",
-      "story": "ToT-style search helps certain planning puzzles.",
-      "takeaway": "Search wrappers sit around the LLM."
+      "title": "Weekend trip planner",
+      "story": "You ask ChatGPT for a 2-day Goa plan under ₹8,000. Instead of one locked itinerary, you have it propose three Day-1 options, rate cost/fun, then expand only the top two into Day-2. Weak beach-only plans get pruned early.",
+      "takeaway": "Branching + scoring beats one linear guess on planning puzzles."
+    },
+    "chatGptLens": {
+      "setting": "You’re planning a weekend with ChatGPT using a tree-style prompt.",
+      "userInput": "I have ₹500 and 3 hours in the city. List 3 plan options. Score each 1–5 for fun and cost. Expand the best two into hour-by-hour schedules.",
+      "insideTheModel": "Tree of Thoughts keeps multiple partial plans alive, scores them, deepens winners, and drops weak branches—more like search than one chain.",
+      "modelOutput": "Options A/B/C with scores → expand A and B into hour schedules; drop C (over budget)."
     },
     "quiz": [
       {
@@ -1654,27 +1682,27 @@ export const concepts: Concept[] = [
       },
       {
         "id": "tree-of-thoughts-q3",
-        "prompt": "Pruning means…",
+        "prompt": "In Tree of Thoughts, what does pruning mean?",
         "options": [
           {
             "id": "o0",
-            "text": "Dropping weak branches"
+            "text": "Dropping weak branches so you don’t expand them"
           },
           {
             "id": "o1",
-            "text": "Deleting the model"
+            "text": "Deleting the model weights"
           },
           {
             "id": "o2",
-            "text": "Banning prompts"
+            "text": "Hiding the user’s question"
           },
           {
             "id": "o3",
-            "text": "Formatting JSON"
+            "text": "Turning every answer into JSON"
           }
         ],
         "correctOptionId": "o0",
-        "explanation": "Cut weak lines."
+        "explanation": "Cut weak lines early."
       }
     ],
     "prevConceptId": "self-consistency",
@@ -1690,27 +1718,26 @@ export const concepts: Concept[] = [
     "prerequisites": [
       "tree-of-thoughts"
     ],
-    "laymanSummary": "ReAct prompting structures outputs as interleaved Thought, Action, and Observation. The model plans, calls a tool, reads the result, and continues. It is a prompting pattern that later becomes the backbone of many agents.",
-    "analogy": "A lab notebook: hypothesize, run an experiment, record the observation, then decide the next step.",
+    "laymanSummary": "ReAct prompting mixes thinking with tool use: Thought → Action → Observation, then repeat. ChatGPT plans, calls a tool, reads the result, and only then answers—so facts come from tools, not guesses.",
+    "analogy": "A lab notebook: hypothesize, run the experiment, write what you saw, then decide the next step.",
     "explanation": [
-      "Think about what is needed.",
-      "Act with a tool or API.",
-      "Observe the result.",
-      "Repeat until answerable.",
-      "Reduces pure hallucination on lookup tasks."
+      "Thought: decide what info you still need.",
+      "Action: call a tool (search, calculator, API).",
+      "Observation: read the tool result and continue.",
+      "Loop until you can answer from real observations."
     ],
     "keyTerms": [
       {
         "term": "Thought",
-        "definition": "Internal plan text"
+        "definition": "Short plan for the next step"
       },
       {
         "term": "Action",
-        "definition": "Tool call"
+        "definition": "A tool or API call to run"
       },
       {
         "term": "Observation",
-        "definition": "Tool result"
+        "definition": "The tool’s result fed back in"
       }
     ],
     "visualization": {
@@ -1937,9 +1964,15 @@ export const concepts: Concept[] = [
       }
     },
     "realWorldExample": {
-      "title": "Weather plus outfit advice",
-      "story": "Thought needs weather; action calls API; observation guides clothing advice.",
-      "takeaway": "Tools ground the loop."
+      "title": "Weather then outfit advice",
+      "story": "You ask what to wear for an evening cricket match. Thought: need today’s temperature. Action: weather API. Observation: 34°C and humid. Final advice: light cotton, water bottle—not a random winter outfit from memory.",
+      "takeaway": "Tools ground the loop so answers track real data."
+    },
+    "chatGptLens": {
+      "setting": "You’re using ChatGPT with browsing or a calculator tool enabled.",
+      "userInput": "What’s 17% of ₹2,450, and is that under my ₹400 snack budget?",
+      "insideTheModel": "ReAct style: Thought (need exact math) → Action (calculator) → Observation (416.5) → final yes/no using that number, not a mental guess.",
+      "modelOutput": "Thought: compute 0.17×2450. Action: calculator. Observation: 416.5. Answer: ₹416.50 — over a ₹400 budget by ₹16.50."
     },
     "quiz": [
       {
@@ -1992,27 +2025,27 @@ export const concepts: Concept[] = [
       },
       {
         "id": "react-prompting-q3",
-        "prompt": "Observations are…",
+        "prompt": "What should the model do with an Observation?",
         "options": [
           {
             "id": "o0",
-            "text": "Tool results fed back"
+            "text": "Use the tool result in the next thought or answer"
           },
           {
             "id": "o1",
-            "text": "Ignored always"
+            "text": "Ignore it and invent a nicer number"
           },
           {
             "id": "o2",
-            "text": "CSS variables"
+            "text": "Delete the user’s question"
           },
           {
             "id": "o3",
-            "text": "DNS TXT records only"
+            "text": "Stop calling tools forever after one thought"
           }
         ],
         "correctOptionId": "o0",
-        "explanation": "Feedback."
+        "explanation": "Observations ground the next step."
       }
     ],
     "prevConceptId": "tree-of-thoughts",
@@ -2028,27 +2061,26 @@ export const concepts: Concept[] = [
     "prerequisites": [
       "react-prompting"
     ],
-    "laymanSummary": "Prompt chaining splits a complex task into stages where each prompt’s output feeds the next: extract, transform, verify, format. Smaller steps are easier to control, test, and cache than one mega-prompt.",
-    "analogy": "An assembly line: cut, assemble, paint, inspect—rather than one chaotic workshop moment.",
+    "laymanSummary": "Prompt chaining splits a big job into stages—extract, draft, check, format—where each ChatGPT reply feeds the next prompt. Smaller steps are easier to test and fix than one mega-prompt.",
+    "analogy": "An assembly line: cut, assemble, paint, inspect—not one chaotic “do everything at once” moment.",
     "explanation": [
-      "Decompose the workflow.",
-      "Define interfaces between steps.",
-      "Validate intermediate outputs.",
-      "Parallelize independent stages.",
-      "Easier debugging than monolith prompts."
+      "Break the workflow into clear stages with one job each.",
+      "Pass a clean intermediate output into the next prompt.",
+      "Validate between steps so bad drafts don’t silently continue.",
+      "Easier to debug and reuse than one giant prompt."
     ],
     "keyTerms": [
       {
         "term": "Chain",
-        "definition": "Sequence of prompt steps"
+        "definition": "A sequence of staged prompts"
       },
       {
         "term": "Intermediate artifact",
-        "definition": "Output passed downstream"
+        "definition": "Output passed to the next step"
       },
       {
         "term": "Validator step",
-        "definition": "Checks quality before continuing"
+        "definition": "A check before continuing the chain"
       }
     ],
     "visualization": {
@@ -2275,9 +2307,15 @@ export const concepts: Concept[] = [
       }
     },
     "realWorldExample": {
-      "title": "RFP response drafting",
-      "story": "Extract requirements, draft sections, compliance check, then polish.",
-      "takeaway": "Chains match real document workflows."
+      "title": "Lab report from messy notes",
+      "story": "Prompt 1 extracts facts from your lab scribbles. Prompt 2 drafts Methods and Results from that list. Prompt 3 checks units and missing steps. Prompt 4 formats the final report. Fixing a bad extract is easier than redoing one huge blob.",
+      "takeaway": "Chains mirror real document workflows and fail in smaller pieces."
+    },
+    "chatGptLens": {
+      "setting": "You’re turning lecture notes into a clean summary with ChatGPT in stages.",
+      "userInput": "Step 1 only: list 8 key facts from these notes (no essay). [paste notes]",
+      "insideTheModel": "Prompt chaining: this first call only extracts. You’ll paste that fact list into a second prompt to draft, then a third to check clarity—each stage has one job.",
+      "modelOutput": "1) … 2) … (eight facts). Next you send: “Using only these facts, write a 150-word summary.”"
     },
     "quiz": [
       {
@@ -2330,27 +2368,27 @@ export const concepts: Concept[] = [
       },
       {
         "id": "prompt-chaining-q3",
-        "prompt": "Interfaces between steps should be…",
+        "prompt": "What should pass between chain steps?",
         "options": [
           {
             "id": "o0",
-            "text": "Clear and validated"
+            "text": "A clear, checked intermediate output"
           },
           {
             "id": "o1",
-            "text": "Random"
+            "text": "Random unrelated text"
           },
           {
             "id": "o2",
-            "text": "Hidden forever"
+            "text": "Nothing—each step must start from zero"
           },
           {
             "id": "o3",
-            "text": "Only emojis"
+            "text": "Only emojis with no facts"
           }
         ],
         "correctOptionId": "o0",
-        "explanation": "Contracts."
+        "explanation": "Clean contracts between stages."
       }
     ],
     "prevConceptId": "react-prompting",
@@ -2366,26 +2404,26 @@ export const concepts: Concept[] = [
     "prerequisites": [
       "prompt-chaining"
     ],
-    "laymanSummary": "Structured outputs ask the model to return JSON, tables, or schema-valid objects so software can parse results reliably. Schemas, constrained decoding, and validators turn prose generators into API-friendly components.",
-    "analogy": "Fill a form with labeled fields instead of writing a free-form essay your parser cannot read.",
+    "laymanSummary": "Structured outputs make ChatGPT reply in JSON or another fixed shape your code can parse. A clear schema plus validation turns chat text into something an app can trust.",
+    "analogy": "Fill a labeled form instead of writing a free essay your spreadsheet can’t import.",
     "explanation": [
-      "Provide a schema or template.",
-      "Prefer constrained decoding when available.",
-      "Validate and retry on failure.",
-      "Keep schemas minimal and explicit."
+      "Give an exact schema or template (fields and types).",
+      "Ask for schema-only output—no extra chatter.",
+      "Validate the reply; retry or repair if it breaks.",
+      "Keep schemas small and explicit so compliance stays easy."
     ],
     "keyTerms": [
       {
         "term": "Schema",
-        "definition": "Expected fields and types"
+        "definition": "The expected fields and types"
       },
       {
         "term": "Constrained decoding",
-        "definition": "Limit tokens to valid structures"
+        "definition": "Forcing tokens to stay schema-valid"
       },
       {
         "term": "Validation",
-        "definition": "Check output against schema"
+        "definition": "Checking output against the schema"
       }
     ],
     "visualization": {
@@ -2612,9 +2650,15 @@ export const concepts: Concept[] = [
       }
     },
     "realWorldExample": {
-      "title": "Invoice field extraction",
-      "story": "Return vendor, date, total as JSON for accounting software.",
-      "takeaway": "Structure bridges LLMs and programs."
+      "title": "Receipt → expense app",
+      "story": "You photograph a café bill and ask ChatGPT for JSON with vendor, date, and total. Your expense sheet imports those fields automatically. A paragraph reply would force messy copy-paste.",
+      "takeaway": "Structure is the bridge between LLMs and programs."
+    },
+    "chatGptLens": {
+      "setting": "You’re feeding ChatGPT output into a spreadsheet or small script.",
+      "userInput": "From this receipt text, return ONLY JSON: {\"vendor\": string, \"date\": \"YYYY-MM-DD\", \"total\": number}. No markdown.",
+      "insideTheModel": "Structured-output instructions pin the reply shape. The model fills schema fields instead of writing a friendly paragraph your parser can’t read.",
+      "modelOutput": "{\"vendor\":\"Campus Café\",\"date\":\"2026-03-12\",\"total\":240}"
     },
     "quiz": [
       {
@@ -2667,27 +2711,27 @@ export const concepts: Concept[] = [
       },
       {
         "id": "structured-outputs-q3",
-        "prompt": "On invalid JSON you should…",
+        "prompt": "What should you do if the model returns invalid JSON?",
         "options": [
           {
             "id": "o0",
-            "text": "Validate and retry or repair"
+            "text": "Validate, then retry or repair"
           },
           {
             "id": "o1",
-            "text": "Trust it anyway"
+            "text": "Trust it and hope the app works"
           },
           {
             "id": "o2",
-            "text": "Delete the app"
+            "text": "Delete the schema forever"
           },
           {
             "id": "o3",
-            "text": "Raise temperature to 100"
+            "text": "Ask for longer prose instead"
           }
         ],
         "correctOptionId": "o0",
-        "explanation": "Validate."
+        "explanation": "Validate and recover."
       }
     ],
     "prevConceptId": "prompt-chaining",
@@ -2709,26 +2753,26 @@ export const concepts: Concept[] = [
     "prerequisites": [
       "structured-outputs"
     ],
-    "laymanSummary": "Role prompting assigns a persona (tutor, reviewer, SRE) while constraints specify hard rules: length limits, banned topics, citation requirements, or tool-only claims. Constraints matter more than theatrical personas.",
-    "analogy": "Costume plus safety rules: the costume sets tone; the rules keep the performance legal.",
+    "laymanSummary": "Role prompting sets a persona (tutor, reviewer, coach). Constraints are the hard rules—length, banned topics, must-cite facts. Style is nice; testable constraints keep the answer safe and useful.",
+    "analogy": "Costume plus safety rules: the costume sets the vibe; the rules keep the show legal.",
     "explanation": [
-      "Persona shapes style.",
-      "Constraints encode non-negotiables.",
-      "Prefer testable rules.",
-      "Conflicts between style and safety need priority order."
+      "Persona shapes tone and framing (how it talks).",
+      "Constraints state non-negotiables (what it must / must not do).",
+      "Write rules you can check: word limits, formats, bans.",
+      "If style and safety clash, safety should win."
     ],
     "keyTerms": [
       {
         "term": "Persona",
-        "definition": "Assumed role or style"
+        "definition": "The role or speaking style to use"
       },
       {
         "term": "Constraint",
-        "definition": "Hard requirement"
+        "definition": "A hard must / must-not rule"
       },
       {
         "term": "Priority",
-        "definition": "Which rule wins on conflict"
+        "definition": "Which rule wins when they conflict"
       }
     ],
     "visualization": {
@@ -2955,9 +2999,15 @@ export const concepts: Concept[] = [
       }
     },
     "realWorldExample": {
-      "title": "Exam-safe tutoring",
-      "story": "Tutor role with ban on full answer dumps.",
-      "takeaway": "Constraints protect academic integrity."
+      "title": "Exam-safe tutoring bot",
+      "story": "You set ChatGPT as a patient tutor but add: “Never paste full exam answers; give hints and one worked similar example.” When a friend asks for tomorrow’s quiz key, the bot refuses the dump and teaches the method instead.",
+      "takeaway": "Constraints protect integrity better than a cute persona alone."
+    },
+    "chatGptLens": {
+      "setting": "You’re configuring ChatGPT as a writing coach with hard limits.",
+      "userInput": "You are a concise career coach. Constraints: max 120 words; no fake company names; end with one action item. Critique my internship email: [paste].",
+      "insideTheModel": "Persona sets coach tone; constraints cap length and ban invented companies. Those rules steer the reply more than “be helpful” alone.",
+      "modelOutput": "Short critique under 120 words, real advice only, one clear next action—no invented “Acme Corp” offers."
     },
     "quiz": [
       {
@@ -3010,27 +3060,27 @@ export const concepts: Concept[] = [
       },
       {
         "id": "role-prompting-constraints-q3",
-        "prompt": "If persona conflicts with safety…",
+        "prompt": "If a fun persona conflicts with a safety constraint, what should win?",
         "options": [
           {
             "id": "o0",
-            "text": "Safety should win"
+            "text": "The safety constraint"
           },
           {
             "id": "o1",
-            "text": "Persona always wins"
+            "text": "The persona, always"
           },
           {
             "id": "o2",
-            "text": "Flip a coin"
+            "text": "Whichever is funnier"
           },
           {
             "id": "o3",
-            "text": "Delete both"
+            "text": "Neither—stop answering"
           }
         ],
         "correctOptionId": "o0",
-        "explanation": "Priorities."
+        "explanation": "Prioritize safety over style."
       }
     ],
     "prevConceptId": "structured-outputs",
@@ -3046,27 +3096,26 @@ export const concepts: Concept[] = [
     "prerequisites": [
       "role-prompting-constraints"
     ],
-    "laymanSummary": "Context engineering is the discipline of selecting, compressing, ordering, and refreshing what the model sees: instructions, tools, retrieved docs, memory, and user state. Prompts are only one ingredient; the whole window is the product.",
-    "analogy": "Packing a backpack for a hike: bring the map and snacks that matter, leave the encyclopedias.",
+    "laymanSummary": "Context engineering means carefully choosing what ChatGPT sees: rules, docs, chat history, and tools. The whole window is the product—not just one clever sentence.",
+    "analogy": "Packing a backpack for a hike: bring the map and snacks that matter; leave the encyclopedias at home.",
     "explanation": [
-      "Choose high-value tokens.",
-      "Order matters; put critical rules where models attend reliably.",
-      "Compress history with summaries.",
-      "Retrieve just-in-time facts.",
-      "Measure context ablations."
+      "Pick high-value tokens; drop noise that crowds the window.",
+      "Order matters—put critical rules where they’re easy to follow.",
+      "Summarize old chat; retrieve only the facts you need now.",
+      "Test by removing pieces (ablations) to see what actually helps."
     ],
     "keyTerms": [
       {
         "term": "Context budget",
-        "definition": "Limited token capacity"
+        "definition": "Limited token space the model can see"
       },
       {
         "term": "Memory",
-        "definition": "Persisted state outside raw chat"
+        "definition": "Saved state kept outside the raw chat"
       },
       {
         "term": "Ablation",
-        "definition": "Remove pieces to test impact"
+        "definition": "Removing a piece to test its impact"
       }
     ],
     "visualization": {
@@ -3293,9 +3342,15 @@ export const concepts: Concept[] = [
       }
     },
     "realWorldExample": {
-      "title": "IDE coding agents",
-      "story": "Rules files, open tabs, and retrieved chunks are curated into context.",
-      "takeaway": "Engineering the window beats prompt poetry alone."
+      "title": "Coding help in the IDE",
+      "story": "Your coding agent doesn’t paste the whole repo. It packs project rules, the open file, and a few retrieved snippets that match your bug. Extra unrelated folders stay out so the model focuses.",
+      "takeaway": "Curating the window beats fancy wording alone."
+    },
+    "chatGptLens": {
+      "setting": "You’re pasting course material into ChatGPT for exam revision.",
+      "userInput": "Using ONLY the notes below, quiz me on 5 MCQs. Notes: [2 pages of OS scheduling]. Ignore anything not in the notes.",
+      "insideTheModel": "Context engineering: you chose which notes enter the window and told the model to stay inside that budget—so answers track your syllabus, not the whole internet.",
+      "modelOutput": "Five MCQs grounded in those notes (e.g. round-robin vs priority)—not random OS trivia from elsewhere."
     },
     "quiz": [
       {
@@ -3348,27 +3403,27 @@ export const concepts: Concept[] = [
       },
       {
         "id": "context-engineering-q3",
-        "prompt": "Summaries help by…",
+        "prompt": "Why summarize long chat history before a new task?",
         "options": [
           {
             "id": "o0",
-            "text": "Compressing old history"
+            "text": "To compress old detail and free context space"
           },
           {
             "id": "o1",
-            "text": "Deleting the model"
+            "text": "To delete the model permanently"
           },
           {
             "id": "o2",
-            "text": "Banning tools"
+            "text": "To ban all tools forever"
           },
           {
             "id": "o3",
-            "text": "Raising loss"
+            "text": "To make every reply longer on purpose"
           }
         ],
         "correctOptionId": "o0",
-        "explanation": "Compression."
+        "explanation": "Summaries free budget for what matters now."
       }
     ],
     "prevConceptId": "role-prompting-constraints",
@@ -3384,18 +3439,18 @@ export const concepts: Concept[] = [
     "prerequisites": [
       "context-engineering"
     ],
-    "laymanSummary": "Prompts fail through ambiguity, conflicting instructions, missing constraints, format drift, jailbreak pressure, and overlong clutter. Treat prompts like code: test, version, and monitor regressions when models change.",
-    "analogy": "Vague homework instructions that get five different interpretations from five students.",
+    "laymanSummary": "Prompts fail when they’re vague, contradictory, cluttered, or untested. Treat them like code: make success measurable, version them, and re-check after model updates.",
+    "analogy": "Vague homework (“make it nice”) that five students interpret five different ways.",
     "explanation": [
-      "Ambiguity yields variance.",
-      "Conflicts create unstable behavior.",
-      "Missing evals hide breakage.",
-      "Model upgrades can invalidate prompt assumptions."
+      "Ambiguity makes outputs swing wildly between runs.",
+      "Conflicting rules create unstable or random-looking behavior.",
+      "Without tests, breakage stays invisible until users complain.",
+      "A new model version can break prompts that used to work."
     ],
     "keyTerms": [
       {
         "term": "Ambiguity",
-        "definition": "Unclear success criteria"
+        "definition": "Unclear what “good” output means"
       },
       {
         "term": "Instruction conflict",
@@ -3403,7 +3458,7 @@ export const concepts: Concept[] = [
       },
       {
         "term": "Prompt regression",
-        "definition": "Old prompt fails on new model"
+        "definition": "An old prompt fails on a new model"
       }
     ],
     "visualization": {
@@ -3630,9 +3685,15 @@ export const concepts: Concept[] = [
       }
     },
     "realWorldExample": {
-      "title": "Promo email generator",
-      "story": "“Make it pop” produced chaos until length, audience, and CTA were specified.",
-      "takeaway": "Specificity beats adjectives."
+      "title": "Fest promo email generator",
+      "story": "“Make it pop” gave wild, unusable drafts. After you specified audience (first-years), length (80 words), and one CTA (“Register by Friday”), quality stabilized across runs.",
+      "takeaway": "Measurable constraints beat vague adjectives."
+    },
+    "chatGptLens": {
+      "setting": "You’re drafting a club announcement and the first prompt failed.",
+      "userInput": "Bad version: “Write a cool email that pops.” Better: “80 words, audience first-years, one CTA: Register by Friday, friendly tone, no emojis.”",
+      "insideTheModel": "Failure modes: vague adjectives invite random style. Clear length, audience, and CTA shrink variance so replies match what you can ship.",
+      "modelOutput": "A steady ~80-word email with one Friday registration CTA—not a chaotic hype essay."
     },
     "quiz": [
       {
@@ -3685,27 +3746,27 @@ export const concepts: Concept[] = [
       },
       {
         "id": "prompt-failure-modes-q3",
-        "prompt": "Model upgrades can…",
+        "prompt": "Why re-test prompts after a model upgrade?",
         "options": [
           {
             "id": "o0",
-            "text": "Invalidate prompt assumptions"
+            "text": "Old assumptions can break on the new model"
           },
           {
             "id": "o1",
-            "text": "Never affect prompts"
+            "text": "Upgrades never change model behavior"
           },
           {
             "id": "o2",
-            "text": "Delete JSON forever"
+            "text": "JSON becomes illegal after upgrades"
           },
           {
             "id": "o3",
-            "text": "Ban evaluation"
+            "text": "Evals are banned on new models"
           }
         ],
         "correctOptionId": "o0",
-        "explanation": "Regressions happen."
+        "explanation": "Prompt regressions are real."
       }
     ],
     "prevConceptId": "context-engineering"

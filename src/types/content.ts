@@ -59,6 +59,16 @@ export type Concept = {
     notes: string;
   };
   realWorldExample: { title: string; story: string; takeaway: string };
+  /**
+   * Beginner-friendly ChatGPT-style walkthrough: what the user types,
+   what this concept does inside the model, and what comes back out.
+   */
+  chatGptLens?: {
+    setting: string;
+    userInput: string;
+    insideTheModel: string;
+    modelOutput: string;
+  };
   quiz: QuizQuestion[];
   nextConceptId?: string;
   prevConceptId?: string;

@@ -9,26 +9,26 @@ export const concepts: Concept[] = [
     "difficulty": "beginner",
     "estimatedMinutes": 6,
     "prerequisites": [],
-    "laymanSummary": "Artificial Intelligence (AI) is software that performs tasks associated with human judgment: recognizing patterns, predicting outcomes, understanding language, or generating content. It is not a digital mind—it is data, algorithms, and compute packaged into useful tools. Today’s popular “AI” usually means machine-learning systems trained for specific jobs, even when the chat interface feels general.",
-    "analogy": "Like a fast apprentice who studied millions of examples: great at patterns, still needing goals and oversight.",
+    "laymanSummary": "AI is software that handles judgment-like jobs—spotting spam, suggesting replies, or reading text in photos. It is not a digital mind; it learns patterns from data and turns them into a tool.",
+    "analogy": "Like a skilled campus intern who studied thousands of past helpdesk tickets: fast at patterns, still needs clear goals and a human check.",
     "explanation": [
-      "AI is an umbrella covering rule systems and learning systems.",
-      "Modern hype mostly points at machine learning and neural nets.",
-      "Mental model: Input → Model → Output, with parameters learned from data.",
-      "Useful AI is evaluated in a workflow with clear success metrics."
+      "AI is an umbrella: some systems use hand-written rules, others learn from examples.",
+      "Most products called “AI” today are machine-learning models built for one job.",
+      "Mental model: Input → Model → Output, with the model’s knobs learned from data.",
+      "Useful AI has a clear task and a way to measure right vs wrong answers."
     ],
     "keyTerms": [
       {
         "term": "Artificial Intelligence",
-        "definition": "Software performing tasks linked to human intelligence"
+        "definition": "Software that does judgment-like tasks"
       },
       {
         "term": "Model",
-        "definition": "Learned function mapping inputs to outputs"
+        "definition": "Program that maps inputs to outputs"
       },
       {
         "term": "Narrow AI",
-        "definition": "AI specialized for particular tasks"
+        "definition": "AI built for one specific kind of job"
       }
     ],
     "visualization": {
@@ -256,8 +256,14 @@ export const concepts: Concept[] = [
     },
     "realWorldExample": {
       "title": "Campus FAQ assistant",
-      "story": "A college wraps AI around library FAQs for midnight answers.",
-      "takeaway": "AI helps when the task is clear and measurable."
+      "story": "Your college launches a chatbot for library hours and Wi-Fi resets. Students type questions at midnight and get answers drawn from past FAQs and ticket logs. Staff still review odd cases and update the knowledge base weekly. The win is faster help on repeat questions, not a robot that “understands campus life.”",
+      "takeaway": "AI helps when the job is clear and you can check the answers."
+    },
+    "chatGptLens": {
+      "setting": "You’re chatting with ChatGPT about a college assignment.",
+      "userInput": "Summarize this lab report in 5 bullet points for my presentation.",
+      "insideTheModel": "AI here means a trained model taking your text as input and producing a useful summary as output—pattern matching from training, not a human mind reading the report.",
+      "modelOutput": "Five short bullets covering methods, results, and one limitation—ready for slides, still yours to fact-check."
     },
     "quiz": [
       {
@@ -310,27 +316,27 @@ export const concepts: Concept[] = [
       },
       {
         "id": "what-is-ai-q3",
-        "prompt": "In one line, What is AI? is mainly about…",
+        "prompt": "Which mental model best fits everyday AI tools?",
         "options": [
           {
             "id": "o0",
-            "text": "Artificial Intelligence (AI) is software that performs tasks associated with human judgment: recognizing patterns, predicting outcomes, understanding language, or generating content"
+            "text": "Input → Model → Output"
           },
           {
             "id": "o1",
-            "text": "Replacing all databases with CSS"
+            "text": "Database → CSS → Robot"
           },
           {
             "id": "o2",
-            "text": "Turning off networking permanently"
+            "text": "Hardware only, no software"
           },
           {
             "id": "o3",
-            "text": "Only hardware manufacturing"
+            "text": "A chat box with no model"
           }
         ],
         "correctOptionId": "o0",
-        "explanation": "Focus on the core teaching point of this concept."
+        "explanation": "AI tools take inputs, run a model, and return outputs."
       }
     ],
     "nextConceptId": "machine-learning"
@@ -345,26 +351,26 @@ export const concepts: Concept[] = [
     "prerequisites": [
       "what-is-ai"
     ],
-    "laymanSummary": "Machine Learning (ML) builds software by learning patterns from data instead of coding every rule. You supply examples and an objective; an algorithm adjusts a model to improve predictions. ML handles messy reality well, but it can also absorb bias and fail outside its training distribution.",
-    "analogy": "Classic code is a recipe you write. ML is flashcard teaching: enough examples, and the system invents internal rules.",
+    "laymanSummary": "Machine learning builds software by learning patterns from examples instead of writing every rule by hand. You give data and a goal; training adjusts the model so it predicts better on new cases.",
+    "analogy": "Classic code is a recipe you write. ML is flashcard drill: enough labeled examples, and the system invents its own internal rules.",
     "explanation": [
-      "Supervised learning uses labeled pairs (x → y).",
-      "Unsupervised learning finds structure without labels.",
-      "Reinforcement learning learns via rewards for actions.",
-      "Generalization—to unseen data—is the real goal."
+      "Supervised learning uses labeled pairs: input x and correct answer y.",
+      "Unsupervised learning finds groups or structure when labels are missing.",
+      "Reinforcement learning improves by trying actions and getting rewards.",
+      "The real goal is generalization—doing well on data the model never saw."
     ],
     "keyTerms": [
       {
         "term": "Supervised learning",
-        "definition": "Learning from labeled examples"
+        "definition": "Learning from input–label example pairs"
       },
       {
         "term": "Training",
-        "definition": "Updating parameters to reduce error"
+        "definition": "Updating the model to reduce errors"
       },
       {
         "term": "Generalization",
-        "definition": "Doing well on new examples"
+        "definition": "Performing well on new, unseen examples"
       }
     ],
     "visualization": {
@@ -591,9 +597,15 @@ export const concepts: Concept[] = [
       }
     },
     "realWorldExample": {
-      "title": "Fraud alerts",
-      "story": "Banks score transactions with models trained on historical fraud labels.",
-      "takeaway": "ML fits high-volume pattern recognition with feedback."
+      "title": "Gmail spam filter",
+      "story": "Gmail cannot hard-code every scam subject line students see. Instead it trains on millions of emails labeled spam or not. When a new internship “offer” lands in your inbox, the model scores it from learned patterns. False alarms still happen, so users can mark “Not spam” and feed the next round of training.",
+      "takeaway": "ML shines on high-volume pattern jobs where labeled feedback exists."
+    },
+    "chatGptLens": {
+      "setting": "You’re asking ChatGPT how Gmail-style filters learn.",
+      "userInput": "How does email spam filtering learn from past messages?",
+      "insideTheModel": "Machine learning is the idea behind the answer: past labeled emails train a model; your new email is scored as spam or not without hand-writing every rule.",
+      "modelOutput": "A short explanation: labeled examples → train a classifier → score new mail → improve from user corrections."
     },
     "quiz": [
       {
@@ -646,27 +658,27 @@ export const concepts: Concept[] = [
       },
       {
         "id": "machine-learning-q3",
-        "prompt": "In one line, Machine Learning is mainly about…",
+        "prompt": "How is machine learning different from classic if/else rules?",
         "options": [
           {
             "id": "o0",
-            "text": "Machine Learning (ML) builds software by learning patterns from data instead of coding every rule"
+            "text": "It learns patterns from examples"
           },
           {
             "id": "o1",
-            "text": "Replacing all databases with CSS"
+            "text": "It only runs on CSS files"
           },
           {
             "id": "o2",
-            "text": "Turning off networking permanently"
+            "text": "It never needs any data"
           },
           {
             "id": "o3",
-            "text": "Only hardware manufacturing"
+            "text": "It replaces the operating system"
           }
         ],
         "correctOptionId": "o0",
-        "explanation": "Focus on the core teaching point of this concept."
+        "explanation": "ML invents internal rules from data instead of hand-coding every case."
       }
     ],
     "prevConceptId": "what-is-ai",
@@ -688,26 +700,26 @@ export const concepts: Concept[] = [
     "prerequisites": [
       "machine-learning"
     ],
-    "laymanSummary": "Deep learning uses neural networks with many layers. Early layers often capture simple patterns; deeper layers compose them into richer concepts. GPUs and large datasets made deep stacks practical, powering modern vision and language systems.",
-    "analogy": "An assembly line of understanding: edges → parts → objects (or characters → words → intent).",
+    "laymanSummary": "Deep learning is machine learning with neural nets that have many layers. Early layers catch simple patterns; deeper layers combine them into richer ideas—like edges becoming objects, or words becoming intent.",
+    "analogy": "A phone-camera pipeline of understanding: edges → shapes → faces (or letters → words → meaning).",
     "explanation": [
-      "“Deep” means many stacked transformations.",
-      "Networks learn representations instead of only hand-built features.",
-      "Cost: data, compute, and harder interpretability.",
-      "Transformers are a deep architecture for sequences."
+      "“Deep” means stacking many transformation layers, not one shallow model.",
+      "The network learns its own features instead of only hand-built ones.",
+      "Tradeoff: you usually need more data and compute, and explanations get harder.",
+      "Modern chat and vision systems are deep nets; transformers are one deep design."
     ],
     "keyTerms": [
       {
         "term": "Layer",
-        "definition": "One transformation stage"
+        "definition": "One stage that transforms the data"
       },
       {
         "term": "Representation",
-        "definition": "Internal numeric features"
+        "definition": "Internal numbers that encode patterns"
       },
       {
         "term": "GPU",
-        "definition": "Hardware accelerating tensor math"
+        "definition": "Chip that speeds up neural-net math"
       }
     ],
     "visualization": {
@@ -934,9 +946,15 @@ export const concepts: Concept[] = [
       }
     },
     "realWorldExample": {
-      "title": "Phone dictation",
-      "story": "Deep acoustic models map sound to text better than older hand-tuned pipelines.",
-      "takeaway": "Depth helps on hierarchical raw signals."
+      "title": "Phone voice typing",
+      "story": "You dictate a WhatsApp message on the bus. Older systems needed hand-tuned audio features; deep models learn layers that turn sound waves into phonemes, then words. Accuracy jumped once phones and clouds had enough data and GPUs. You still correct names and slang, but the draft appears in seconds.",
+      "takeaway": "Depth helps when the raw signal has many levels of structure."
+    },
+    "chatGptLens": {
+      "setting": "You’re chatting with ChatGPT about how modern AI “sees” and “reads.”",
+      "userInput": "Why do ChatGPT and phone cameras need deep neural networks?",
+      "insideTheModel": "Deep learning is the stack of many layers: early layers pick simple cues; deeper layers build meaning so ChatGPT can turn your prompt into a coherent reply.",
+      "modelOutput": "A plain answer: many layers learn hierarchical features; big data and GPUs made that practical for language and vision."
     },
     "quiz": [
       {
@@ -989,27 +1007,27 @@ export const concepts: Concept[] = [
       },
       {
         "id": "deep-learning-q3",
-        "prompt": "In one line, Deep Learning is mainly about…",
+        "prompt": "What does “deep” mainly refer to?",
         "options": [
           {
             "id": "o0",
-            "text": "Deep learning uses neural networks with many layers"
+            "text": "Many stacked layers"
           },
           {
             "id": "o1",
-            "text": "Replacing all databases with CSS"
+            "text": "Darker UI themes"
           },
           {
             "id": "o2",
-            "text": "Turning off networking permanently"
+            "text": "Deeper ocean sensors only"
           },
           {
             "id": "o3",
-            "text": "Only hardware manufacturing"
+            "text": "More CSS nesting"
           }
         ],
         "correctOptionId": "o0",
-        "explanation": "Focus on the core teaching point of this concept."
+        "explanation": "Depth means many transformation layers in the network."
       }
     ],
     "prevConceptId": "machine-learning",
@@ -1025,26 +1043,26 @@ export const concepts: Concept[] = [
     "prerequisites": [
       "deep-learning"
     ],
-    "laymanSummary": "A neural network stacks simple units that mix inputs with learned weights, apply a nonlinearity, and pass signals forward. With enough capacity and data, nets approximate complex input–output maps—from pixels to labels to next-token probabilities.",
-    "analogy": "A giant board of knobs (weights). Training twists knobs until outputs match targets.",
+    "laymanSummary": "A neural network stacks simple units that mix inputs with learned weights, bend the signal with an activation, and pass it forward. With enough data and capacity, the net can map pixels to labels or text to next-word guesses.",
+    "analogy": "A giant mixer board of knobs (weights). Training twists the knobs until the output matches the target.",
     "explanation": [
-      "A neuron: weighted sum + bias + activation.",
-      "Layers compose into powerful function approximators.",
-      "Training uses loss and backpropagation.",
-      "Regularization and evaluation prevent hollow “perfect train scores.”"
+      "One unit does a weighted sum, adds a bias, then applies an activation.",
+      "Stacking layers lets the net approximate complex input→output maps.",
+      "Training measures error (loss) and adjusts weights with backpropagation.",
+      "Check held-out data so the net does not only memorize the training set."
     ],
     "keyTerms": [
       {
         "term": "Weight",
-        "definition": "Learnable connection strength"
+        "definition": "Learnable strength of a connection"
       },
       {
         "term": "Activation",
-        "definition": "Nonlinearity enabling complex functions"
+        "definition": "Nonlinear step that enables complex maps"
       },
       {
         "term": "Parameter",
-        "definition": "Any learnable number in the model"
+        "definition": "Any number the model learns"
       }
     ],
     "visualization": {
@@ -1271,9 +1289,15 @@ export const concepts: Concept[] = [
       }
     },
     "realWorldExample": {
-      "title": "Digit recognition",
-      "story": "Tiny nets classify handwritten digits by learning stroke patterns as weights.",
-      "takeaway": "Even small nets show learning from raw features."
+      "title": "Attendance sheet OCR",
+      "story": "Your club scans handwritten roll numbers into a spreadsheet. A small neural net turns ink strokes into digit classes by learning weights from many labeled samples. Early mistakes on messy 4s and 9s shrink as training continues. The app never stores “the idea of four”—it stores numbers that make the right digit more likely.",
+      "takeaway": "Even small nets learn useful maps from raw features to labels."
+    },
+    "chatGptLens": {
+      "setting": "You’re chatting with ChatGPT about what happens under the hood.",
+      "userInput": "When I type a prompt, what do the “neurons” and weights actually do?",
+      "insideTheModel": "Your text becomes numbers; layers of weighted units + activations transform those numbers until the model can pick the next token to show you.",
+      "modelOutput": "A friendly walkthrough: inputs → weighted mixes → activations → next-token scores → your reply text."
     },
     "quiz": [
       {
@@ -1326,27 +1350,27 @@ export const concepts: Concept[] = [
       },
       {
         "id": "neural-networks-q3",
-        "prompt": "In one line, Neural Networks is mainly about…",
+        "prompt": "What does training mainly adjust in a neural network?",
         "options": [
           {
             "id": "o0",
-            "text": "A neural network stacks simple units that mix inputs with learned weights, apply a nonlinearity, and pass signals forward"
+            "text": "The learnable weights"
           },
           {
             "id": "o1",
-            "text": "Replacing all databases with CSS"
+            "text": "Your laptop’s wallpaper"
           },
           {
             "id": "o2",
-            "text": "Turning off networking permanently"
+            "text": "The Wi-Fi password"
           },
           {
             "id": "o3",
-            "text": "Only hardware manufacturing"
+            "text": "The USB cable length"
           }
         ],
         "correctOptionId": "o0",
-        "explanation": "Focus on the core teaching point of this concept."
+        "explanation": "Training updates weights (and other parameters) to reduce error."
       }
     ],
     "prevConceptId": "deep-learning",
@@ -1368,26 +1392,26 @@ export const concepts: Concept[] = [
     "prerequisites": [
       "neural-networks"
     ],
-    "laymanSummary": "Generative AI creates new samples—text, images, audio, code—by learning patterns of a data distribution and sampling from them. New does not mean true: outputs can be fluent and wrong. These models excel at drafting and transformation when paired with verification.",
-    "analogy": "A musician improvising in a practiced genre: stylish, not automatically historically accurate.",
+    "laymanSummary": "Generative AI creates new content—text, images, audio, or code—by learning patterns from data and sampling new examples. Fluent does not mean true, so treat outputs as drafts you still check.",
+    "analogy": "A bandmate who can improvise in your genre: sounds right, not automatically fact-checked.",
     "explanation": [
-      "Generators model how data looks, then sample.",
-      "LLMs sample tokens; diffusion denoise images.",
-      "Use for ideation/drafting; verify facts and safety.",
-      "Different from classifiers that only output labels."
+      "Generators learn what typical data looks like, then create new samples.",
+      "ChatGPT samples next words; image tools often denoise step by step.",
+      "Best uses: drafts, rewrites, brainstorming—always verify facts and safety.",
+      "This differs from classifiers that only pick a label like spam/not spam."
     ],
     "keyTerms": [
       {
         "term": "Generation",
-        "definition": "Producing new samples"
+        "definition": "Creating new content samples"
       },
       {
         "term": "Sampling",
-        "definition": "Drawing outputs from model probabilities"
+        "definition": "Picking outputs from model probabilities"
       },
       {
         "term": "Distribution",
-        "definition": "Statistical shape of possible data"
+        "definition": "The pattern of what data looks like"
       }
     ],
     "visualization": {
@@ -1614,9 +1638,15 @@ export const concepts: Concept[] = [
       }
     },
     "realWorldExample": {
-      "title": "Code autocomplete",
-      "story": "IDEs draft next lines; developers accept or edit.",
-      "takeaway": "Generation accelerates drafting with human review."
+      "title": "Internship email draft",
+      "story": "Before a career fair, you ask ChatGPT to draft a short email to a recruiter. It invents a polite opening, your interest line, and a clear ask for next steps. You paste in your real project names and delete anything that sounds fake. The model sped up the blank page; you own the final send.",
+      "takeaway": "Generation accelerates drafting; humans verify and send."
+    },
+    "chatGptLens": {
+      "setting": "You’re chatting with ChatGPT to create something new for campus life.",
+      "userInput": "Write a 3-sentence email asking my professor for a project deadline extension.",
+      "insideTheModel": "Generative AI samples new text word-by-word from patterns it learned—producing a fresh email draft, not retrieving one fixed stored message.",
+      "modelOutput": "A polite three-sentence draft you can edit with your real reason and dates."
     },
     "quiz": [
       {
@@ -1669,27 +1699,27 @@ export const concepts: Concept[] = [
       },
       {
         "id": "what-is-generative-ai-q3",
-        "prompt": "In one line, What is Generative AI? is mainly about…",
+        "prompt": "Which task is generative AI best suited for?",
         "options": [
           {
             "id": "o0",
-            "text": "Generative AI creates new samples—text, images, audio, code—by learning patterns of a data distribution and sampling from them"
+            "text": "Drafting a new email"
           },
           {
             "id": "o1",
-            "text": "Replacing all databases with CSS"
+            "text": "Charging a phone battery"
           },
           {
             "id": "o2",
-            "text": "Turning off networking permanently"
+            "text": "Replacing the network cable"
           },
           {
             "id": "o3",
-            "text": "Only hardware manufacturing"
+            "text": "Formatting a hard drive"
           }
         ],
         "correctOptionId": "o0",
-        "explanation": "Focus on the core teaching point of this concept."
+        "explanation": "Generative AI creates new content such as text drafts."
       }
     ],
     "prevConceptId": "neural-networks",
@@ -1705,26 +1735,26 @@ export const concepts: Concept[] = [
     "prerequisites": [
       "what-is-generative-ai"
     ],
-    "laymanSummary": "Discriminative models learn p(y|x): decide the label given an input. Generative models learn enough about data to produce new samples (and often condition on prompts). Classifiers are typically discriminative; LLMs and diffusion models are generative. Products often combine both.",
-    "analogy": "Bouncer (discriminative) vs chef who can cook new dishes in-house style (generative).",
+    "laymanSummary": "Discriminative models answer “what label fits this input?” Generative models answer “what new sample could look like this?” Spam filters are usually discriminative; ChatGPT and image generators are generative—and apps often use both.",
+    "analogy": "A club bouncer (discriminative) vs a chef who can cook new dishes in the house style (generative).",
     "explanation": [
-      "Discriminative: decision boundaries / label probabilities.",
-      "Generative: model/samplers for new x (or sequences).",
-      "LLMs: generative next-token distributions.",
-      "Pick based on whether you need labels or creations."
+      "Discriminative models draw a boundary or score: spam vs not, cat vs dog.",
+      "Generative models learn how to create new text, images, or other samples.",
+      "ChatGPT is generative: it samples the next token given your prompt.",
+      "Choose labels when you need decisions; choose generation when you need creations."
     ],
     "keyTerms": [
       {
         "term": "Discriminative",
-        "definition": "Predict labels / separate classes"
+        "definition": "Predicts a label for an input"
       },
       {
         "term": "Generative",
-        "definition": "Model and produce data samples"
+        "definition": "Creates new data samples"
       },
       {
         "term": "Conditional generation",
-        "definition": "Generate given a prompt/constraints"
+        "definition": "Creates output guided by a prompt"
       }
     ],
     "visualization": {
@@ -1951,9 +1981,15 @@ export const concepts: Concept[] = [
       }
     },
     "realWorldExample": {
-      "title": "Moderate then rewrite",
-      "story": "Classifier flags toxicity; generator suggests a civil rewrite.",
-      "takeaway": "Hybrid pipelines are common."
+      "title": "Moderate, then rewrite",
+      "story": "A student Discord bot first runs a discriminative toxicity classifier on each message. If a message is flagged, a generative model suggests a calmer rewrite the user can send. Mods still review edge cases during rush weeks. Labeling and creating work as a pipeline, not rivals.",
+      "takeaway": "Real products often combine discriminative checks with generative drafts."
+    },
+    "chatGptLens": {
+      "setting": "You’re comparing two campus tools with ChatGPT.",
+      "userInput": "Is a spam filter the same kind of AI as ChatGPT writing my email?",
+      "insideTheModel": "Discriminative AI would label your mail spam/ham; generative AI (ChatGPT) creates new email text. Same “AI” umbrella, different jobs.",
+      "modelOutput": "A clear contrast: filter → label; ChatGPT → new sample—and many apps use both."
     },
     "quiz": [
       {
@@ -2006,27 +2042,27 @@ export const concepts: Concept[] = [
       },
       {
         "id": "discriminative-vs-generative-q3",
-        "prompt": "In one line, Discriminative vs Generative is mainly about…",
+        "prompt": "What question does a discriminative model mainly answer?",
         "options": [
           {
             "id": "o0",
-            "text": "Discriminative models learn p(y|x): decide the label given an input"
+            "text": "What label fits this input?"
           },
           {
             "id": "o1",
-            "text": "Replacing all databases with CSS"
+            "text": "How do I invent a new JPEG?"
           },
           {
             "id": "o2",
-            "text": "Turning off networking permanently"
+            "text": "Which CSS color is trendy?"
           },
           {
             "id": "o3",
-            "text": "Only hardware manufacturing"
+            "text": "How long is the USB cable?"
           }
         ],
         "correctOptionId": "o0",
-        "explanation": "Focus on the core teaching point of this concept."
+        "explanation": "Discriminative models predict labels for inputs."
       }
     ],
     "prevConceptId": "what-is-generative-ai",
@@ -2042,13 +2078,13 @@ export const concepts: Concept[] = [
     "prerequisites": [
       "discriminative-vs-generative"
     ],
-    "laymanSummary": "Transformers process sequences with attention so each token can selectively gather information from others. They parallelize better than many recurrent nets and scale well—hence their dominance in LLMs and many multimodal systems.",
-    "analogy": "In a group chat, attention is how each new message decides which prior messages matter now.",
+    "laymanSummary": "Transformers process text as tokens and use attention so each piece can pull useful context from the others. They train efficiently at scale, which is why they power ChatGPT-style models.",
+    "analogy": "In a group chat, attention is how each new message decides which earlier messages matter right now.",
     "explanation": [
-      "Self-attention mixes token information.",
-      "Multi-head attention tracks different relation types.",
-      "FFN + residual + norm complete a block.",
-      "Decoder-only models power most chat LLMs."
+      "Self-attention lets every token mix information from other tokens.",
+      "Multi-head attention tracks different kinds of relationships at once.",
+      "A transformer block also uses feed-forward layers, residuals, and normalization.",
+      "Most chat LLMs are decoder-only: they predict the next token from left context."
     ],
     "keyTerms": [
       {
@@ -2057,7 +2093,7 @@ export const concepts: Concept[] = [
       },
       {
         "term": "Token",
-        "definition": "Chunk of text the model reads/writes"
+        "definition": "Text chunk the model reads or writes"
       },
       {
         "term": "Decoder-only",
@@ -2288,9 +2324,15 @@ export const concepts: Concept[] = [
       }
     },
     "realWorldExample": {
-      "title": "Translation leap",
-      "story": "Attention transformers beat many older RNN translation stacks.",
-      "takeaway": "Architecture + scale changed practical quality."
+      "title": "Lecture notes across languages",
+      "story": "Your roommate records a Hindi lecture and wants English study notes. Older RNN translators struggled with long sentences and context. Transformer attention can link a late pronoun back to the right earlier noun. The notes are still imperfect on jargon, but far more usable for exam week.",
+      "takeaway": "Attention + scale made long-context language tools practical."
+    },
+    "chatGptLens": {
+      "setting": "You’re chatting with ChatGPT about a long assignment prompt.",
+      "userInput": "Using the rubric and my outline above, write the intro paragraph for my report.",
+      "insideTheModel": "A transformer uses attention so words in your rubric, outline, and request can influence each other; then it predicts the next tokens of the intro.",
+      "modelOutput": "An intro paragraph that reflects points from both the rubric and your outline."
     },
     "quiz": [
       {
@@ -2343,27 +2385,27 @@ export const concepts: Concept[] = [
       },
       {
         "id": "transformers-overview-q3",
-        "prompt": "In one line, Transformers (overview) is mainly about…",
+        "prompt": "What does attention let each token do?",
         "options": [
           {
             "id": "o0",
-            "text": "Transformers process sequences with attention so each token can selectively gather information from others"
+            "text": "Pull useful info from other tokens"
           },
           {
             "id": "o1",
-            "text": "Replacing all databases with CSS"
+            "text": "Delete the training dataset"
           },
           {
             "id": "o2",
-            "text": "Turning off networking permanently"
+            "text": "Replace the GPU with CSS"
           },
           {
             "id": "o3",
-            "text": "Only hardware manufacturing"
+            "text": "Skip tokenization entirely"
           }
         ],
         "correctOptionId": "o0",
-        "explanation": "Focus on the core teaching point of this concept."
+        "explanation": "Attention mixes information across tokens with learned weights."
       }
     ],
     "prevConceptId": "discriminative-vs-generative",
@@ -2379,26 +2421,26 @@ export const concepts: Concept[] = [
     "prerequisites": [
       "transformers-overview"
     ],
-    "laymanSummary": "Foundation models are large models trained on broad data and reused across many downstream tasks via prompting, retrieval, fine-tuning, or tools. Teams adapt one base instead of training from scratch each time—changing product speed and concentrating capability.",
-    "analogy": "A broadly educated graduate who later specializes—rather than training a newborn for each career.",
+    "laymanSummary": "Foundation models are large models trained on broad data, then reused for many jobs. Teams adapt one base with prompts, retrieval, or fine-tuning instead of training a new model from scratch each time.",
+    "analogy": "A broadly educated graduate who later specializes—cheaper than training a newborn for every career.",
     "explanation": [
-      "Broad pretraining creates transferable capabilities.",
-      "Adaptation: prompts, RAG, fine-tunes, agents.",
-      "Benefits: speed; risks: inherited bias and cost.",
-      "Right-sizing still matters; bigger is not always better."
+      "Broad pretraining builds skills that transfer to many tasks.",
+      "You adapt with prompts, document retrieval (RAG), fine-tunes, or tools.",
+      "Upside is speed to product; downside includes cost and inherited biases.",
+      "Pick the right size: bigger is not always better for a campus app."
     ],
     "keyTerms": [
       {
         "term": "Foundation model",
-        "definition": "Broad reusable base model"
+        "definition": "Broad, reusable base model"
       },
       {
         "term": "Adaptation",
-        "definition": "Specializing a base to a task"
+        "definition": "Specializing a base for a task"
       },
       {
         "term": "Transfer learning",
-        "definition": "Reuse knowledge across tasks"
+        "definition": "Reusing knowledge across tasks"
       }
     ],
     "visualization": {
@@ -2625,9 +2667,15 @@ export const concepts: Concept[] = [
       }
     },
     "realWorldExample": {
-      "title": "Enterprise copilots",
-      "story": "One approved base model powers many department assistants with shared security.",
-      "takeaway": "Foundations become platforms."
+      "title": "One campus model, many apps",
+      "story": "Your university licenses one approved foundation model. The library builds a FAQ helper with prompts and docs; career services fine-tunes a résumé coach; IT wraps the same base for ticket triage. Security and billing stay centralized. No team trains a giant model from zero for their small app.",
+      "takeaway": "Foundation models turn one broad base into many specialized tools."
+    },
+    "chatGptLens": {
+      "setting": "You’re chatting with ChatGPT—the same base model students use for many jobs.",
+      "userInput": "Help me debug this Python loop, then rewrite my LinkedIn About section.",
+      "insideTheModel": "One foundation model handles both tasks via different prompts—no separate “debug model” and “LinkedIn model” trained from scratch.",
+      "modelOutput": "A bug fix explanation for the loop, then a short LinkedIn About draft in a different tone."
     },
     "quiz": [
       {
@@ -2680,27 +2728,27 @@ export const concepts: Concept[] = [
       },
       {
         "id": "foundation-models-q3",
-        "prompt": "In one line, Foundation Models is mainly about…",
+        "prompt": "Why do teams reuse a foundation model?",
         "options": [
           {
             "id": "o0",
-            "text": "Foundation models are large models trained on broad data and reused across many downstream tasks via prompting, retrieval, fine-tuning, or tools"
+            "text": "Adapt one base to many tasks"
           },
           {
             "id": "o1",
-            "text": "Replacing all databases with CSS"
+            "text": "To avoid using any prompts"
           },
           {
             "id": "o2",
-            "text": "Turning off networking permanently"
+            "text": "Because CSS trains the model"
           },
           {
             "id": "o3",
-            "text": "Only hardware manufacturing"
+            "text": "To delete all evaluation"
           }
         ],
         "correctOptionId": "o0",
-        "explanation": "Focus on the core teaching point of this concept."
+        "explanation": "One broad base can be adapted instead of training from scratch."
       }
     ],
     "prevConceptId": "transformers-overview",
@@ -2716,26 +2764,26 @@ export const concepts: Concept[] = [
     "prerequisites": [
       "foundation-models"
     ],
-    "laymanSummary": "Large Language Models are neural nets trained to predict tokens at scale. From that objective emerge summarization, drafting, coding help, and dialogue. They model language patterns—they do not automatically ground claims in live reality without tools or retrieval.",
-    "analogy": "Extremely well-read autocomplete that can converse: eloquent, fallible on facts without grounding.",
+    "laymanSummary": "Large language models are neural nets trained to predict the next token at huge scale. That skill unlocks summarizing, drafting, coding help, and chat—but they still guess from patterns, not a live feed of truth.",
+    "analogy": "Super-charged Gmail autocomplete that can hold a conversation: fluent, still wrong without grounding.",
     "explanation": [
-      "Pretraining predicts tokens over huge corpora.",
-      "Instruction/preference tuning shapes helpful behavior.",
-      "Context length and decoding settings change outcomes.",
-      "Apps add RAG, tools, evals, and guardrails."
+      "Pretraining teaches next-token prediction on massive text.",
+      "Instruction and preference tuning make the model more helpful and safer.",
+      "Context window size and decoding settings change what you get back.",
+      "Real apps add retrieval, tools, evaluations, and guardrails around the LLM."
     ],
     "keyTerms": [
       {
         "term": "LLM",
-        "definition": "Large neural language model"
+        "definition": "Large neural net for language"
       },
       {
         "term": "Context window",
-        "definition": "Token capacity per request"
+        "definition": "How much text fits per request"
       },
       {
         "term": "Alignment",
-        "definition": "Steering behavior to preferences/policies"
+        "definition": "Steering the model toward preferred behavior"
       }
     ],
     "visualization": {
@@ -2962,9 +3010,15 @@ export const concepts: Concept[] = [
       }
     },
     "realWorldExample": {
-      "title": "Algorithms tutor",
-      "story": "Students get adaptive explanations that may invent citations if ungrounded.",
-      "takeaway": "Great for teaching drafts; verify critical claims."
+      "title": "DSA doubt clearing",
+      "story": "Before a coding test, you paste a recursion problem into ChatGPT and ask for a walkthrough. It explains the base case, draws a small call stack in text, and suggests a practice variant. Sometimes it invents a fake “standard theorem” name—so you check your textbook. The LLM is a tutor draft, not an official answer key.",
+      "takeaway": "LLMs are great study partners; verify claims that matter."
+    },
+    "chatGptLens": {
+      "setting": "You’re chatting with ChatGPT—the product people mean by “an LLM.”",
+      "userInput": "Explain binary search in simple words, then give one practice question.",
+      "insideTheModel": "The LLM tokenizes your request, runs a transformer, and repeatedly samples the next token until it finishes an explanation plus a question.",
+      "modelOutput": "A plain-language binary search explanation and one short practice problem."
     },
     "quiz": [
       {
@@ -3017,27 +3071,27 @@ export const concepts: Concept[] = [
       },
       {
         "id": "llms-q3",
-        "prompt": "In one line, LLMs is mainly about…",
+        "prompt": "What is an LLM’s core training objective?",
         "options": [
           {
             "id": "o0",
-            "text": "Large Language Models are neural nets trained to predict tokens at scale"
+            "text": "Predict the next token"
           },
           {
             "id": "o1",
-            "text": "Replacing all databases with CSS"
+            "text": "Compile C++ programs"
           },
           {
             "id": "o2",
-            "text": "Turning off networking permanently"
+            "text": "Charge phone batteries"
           },
           {
             "id": "o3",
-            "text": "Only hardware manufacturing"
+            "text": "Manage Wi-Fi routers"
           }
         ],
         "correctOptionId": "o0",
-        "explanation": "Focus on the core teaching point of this concept."
+        "explanation": "LLMs learn by predicting tokens at scale."
       }
     ],
     "prevConceptId": "foundation-models",
@@ -3053,26 +3107,26 @@ export const concepts: Concept[] = [
     "prerequisites": [
       "llms"
     ],
-    "laymanSummary": "Multimodal models handle more than one signal type—e.g., image+text in, text out. They relate pixels and words in a shared representational space, enabling captioning, visual Q&A, and document understanding.",
+    "laymanSummary": "Multimodal models work with more than one kind of input—like an image plus a question. They connect pixels and words so you can caption photos, ask visual questions, or read a worksheet from a camera shot.",
     "analogy": "A friend who can look at your whiteboard photo and answer your question about it.",
     "explanation": [
-      "Modalities: text, image, audio, video, sensors.",
-      "Encoders + fusion combine signals.",
-      "Images may become visual tokens for transformers.",
-      "Risks: mis-seeing details; eval is harder."
+      "Modalities include text, images, audio, video, and sensors.",
+      "Encoders turn each modality into features; fusion combines them.",
+      "Images are often split into visual tokens a transformer can attend over.",
+      "Risk: the model can “see” details that are not really there—always check."
     ],
     "keyTerms": [
       {
         "term": "Modality",
-        "definition": "A data type/signal kind"
+        "definition": "A kind of data or signal"
       },
       {
         "term": "Fusion",
-        "definition": "Combining modalities"
+        "definition": "Combining different modalities"
       },
       {
         "term": "Visual tokens",
-        "definition": "Image features as sequence units"
+        "definition": "Image pieces treated like sequence units"
       }
     ],
     "visualization": {
@@ -3299,9 +3353,15 @@ export const concepts: Concept[] = [
       }
     },
     "realWorldExample": {
-      "title": "Worksheet photos",
-      "story": "Students photograph homework; a tutor reads and guides.",
-      "takeaway": "Multimodality removes retyping friction."
+      "title": "Photo of a homework sheet",
+      "story": "You snap a phone photo of a printed circuit diagram and ask ChatGPT what R3 does. The model reads labels from the image and explains the resistor’s role in plain English. If glare hides a value, it may guess wrong—so you zoom and confirm. Multimodal input skipped typing every symbol by hand.",
+      "takeaway": "Image + text removes retyping friction; still verify what it “saw.”"
+    },
+    "chatGptLens": {
+      "setting": "You’re chatting with a multimodal ChatGPT that accepts image uploads.",
+      "userInput": "[uploads whiteboard photo] What are the three bullet points written on the board?",
+      "insideTheModel": "A vision encoder turns the photo into visual tokens; the language model fuses those with your question and generates a text answer.",
+      "modelOutput": "A short list of the three bullets it could read—plus a note if any text was unclear."
     },
     "quiz": [
       {
@@ -3354,27 +3414,27 @@ export const concepts: Concept[] = [
       },
       {
         "id": "multimodal-intro-q3",
-        "prompt": "In one line, Multimodal intro is mainly about…",
+        "prompt": "Which request needs a multimodal model?",
         "options": [
           {
             "id": "o0",
-            "text": "Multimodal models handle more than one signal type—e"
+            "text": "Explain this photo of my schematic"
           },
           {
             "id": "o1",
-            "text": "Replacing all databases with CSS"
+            "text": "Change my desktop wallpaper color"
           },
           {
             "id": "o2",
-            "text": "Turning off networking permanently"
+            "text": "Restart the campus Wi-Fi router"
           },
           {
             "id": "o3",
-            "text": "Only hardware manufacturing"
+            "text": "Format a blank USB drive"
           }
         ],
         "correctOptionId": "o0",
-        "explanation": "Focus on the core teaching point of this concept."
+        "explanation": "Image + question is a classic multimodal task."
       }
     ],
     "prevConceptId": "llms",
@@ -3390,26 +3450,26 @@ export const concepts: Concept[] = [
     "prerequisites": [
       "multimodal-intro"
     ],
-    "laymanSummary": "Diffusion models generate images by learning to reverse a noising process: start from noise and denoise step-by-step toward a prompt-conditioned picture. Latent diffusion runs this in a compressed space for speed.",
-    "analogy": "Reassembling a clear stained-glass picture out of static, guided by a caption.",
+    "laymanSummary": "Diffusion models make images by starting from random noise and cleaning it step by step until a prompt-matching picture appears. Latent diffusion does this in a compressed space so generation is faster.",
+    "analogy": "Clearing static from a TV until a picture appears, steered by the caption you typed.",
     "explanation": [
-      "Training: add noise to images; learn to remove it.",
-      "Sampling: iterative denoising from noise.",
-      "Text embeddings condition each step.",
-      "Tradeoffs: steps/latency, prompt brittleness, safety filters."
+      "Training teaches the model to remove noise that was added to real images.",
+      "Sampling starts from noise and denoises over many steps.",
+      "Your text prompt conditions each step toward the right content.",
+      "Tradeoffs: more steps can look better but take longer; prompts can be brittle."
     ],
     "keyTerms": [
       {
         "term": "Denoising",
-        "definition": "Removing estimated noise"
+        "definition": "Removing estimated noise from an image"
       },
       {
         "term": "Latent diffusion",
-        "definition": "Diffusion in compressed latent space"
+        "definition": "Running diffusion in a compressed space"
       },
       {
         "term": "Guidance",
-        "definition": "How hard the prompt steers sampling"
+        "definition": "How strongly the prompt steers sampling"
       }
     ],
     "visualization": {
@@ -3636,9 +3696,15 @@ export const concepts: Concept[] = [
       }
     },
     "realWorldExample": {
-      "title": "Concept art ideation",
-      "story": "Artists generate variations, then paint over winners.",
-      "takeaway": "Diffusion explores; humans finish."
+      "title": "Hackathon poster drafts",
+      "story": "Your team needs a poster by tonight. You type a prompt into an image tool and get four noisy-to-clear diffusion samples. You pick the best layout, regenerate with a tighter prompt, then edit titles in Canva. Diffusion explored styles quickly; humans fixed logos and spelling.",
+      "takeaway": "Diffusion is for ideation; humans finish brand-critical details."
+    },
+    "chatGptLens": {
+      "setting": "You’re using ChatGPT (or a sibling image tool) to create a picture from text.",
+      "userInput": "Generate a simple campus hackathon poster: dark blue background, bold title HACK NIGHT, no tiny unreadable text.",
+      "insideTheModel": "Diffusion starts from noise and denoises step by step, steered by your prompt embeddings, until an image appears (often in latent space for speed).",
+      "modelOutput": "A poster-like image with a dark blue field and a large HACK NIGHT title—still needing your logo and real event details."
     },
     "quiz": [
       {
@@ -3691,27 +3757,27 @@ export const concepts: Concept[] = [
       },
       {
         "id": "diffusion-intro-q3",
-        "prompt": "In one line, Diffusion intro is mainly about…",
+        "prompt": "How do diffusion models usually create an image?",
         "options": [
           {
             "id": "o0",
-            "text": "Diffusion models generate images by learning to reverse a noising process: start from noise and denoise step-by-step toward a prompt-conditioned picture"
+            "text": "Denoise step by step from noise"
           },
           {
             "id": "o1",
-            "text": "Replacing all databases with CSS"
+            "text": "Sort pixels with bubble sort"
           },
           {
             "id": "o2",
-            "text": "Turning off networking permanently"
+            "text": "Download one fixed stock photo"
           },
           {
             "id": "o3",
-            "text": "Only hardware manufacturing"
+            "text": "Compile CSS into a PNG"
           }
         ],
         "correctOptionId": "o0",
-        "explanation": "Focus on the core teaching point of this concept."
+        "explanation": "Diffusion iteratively denoises toward a prompt-conditioned image."
       }
     ],
     "prevConceptId": "multimodal-intro"

@@ -9,26 +9,26 @@ export const concepts: Concept[] = [
     "difficulty": "beginner",
     "estimatedMinutes": 7,
     "prerequisites": [],
-    "laymanSummary": "Datasets are collections of examples used to train or evaluate models. For LLMs this may be web text, books, code, instructions, or preference pairs. Data quality, licensing, diversity, and filters shape capabilities and harms more than most people expect.",
-    "analogy": "You are what you eat—models absorb the statistics of their data diet.",
+    "laymanSummary": "A dataset is the pile of examples ChatGPT-like models learn from—web text, books, code, or Q&A pairs. What goes in shapes what the model can say, refuse, or get wrong later.",
+    "analogy": "A chef only cooks with what is in the pantry—bad ingredients make bad meals no matter how fancy the stove.",
     "explanation": [
-      "Pretraining corpora are huge and noisy.",
-      "Fine-tune sets are smaller and task-focused.",
-      "Eval sets must not leak into training.",
-      "Governance covers consent, license, PII, and bias."
+      "Training reads many examples so the model copies useful patterns from them.",
+      "Huge pretraining sets build general language skill; smaller sets teach a specific job.",
+      "A held-out test set must stay unused during training, or scores look fake.",
+      "Licenses, privacy, and bias in the data become part of the product."
     ],
     "keyTerms": [
       {
         "term": "Corpus",
-        "definition": "Large text collection"
+        "definition": "A large collection of training text"
       },
       {
         "term": "Label",
-        "definition": "Desired output annotation"
+        "definition": "The desired answer attached to an example"
       },
       {
         "term": "Data leakage",
-        "definition": "Train/test contamination"
+        "definition": "Test examples sneaking into training"
       }
     ],
     "visualization": {
@@ -255,9 +255,15 @@ export const concepts: Concept[] = [
       }
     },
     "realWorldExample": {
-      "title": "Code models",
-      "story": "Training on repositories boosts coding help—and can memorize secrets if unfiltered.",
-      "takeaway": "Data policy is model policy."
+      "title": "Campus help desk chatbot",
+      "story": "A university trains a bot on FAQ pages, past tickets, and course catalogs. When secret student emails slip into the dump, the bot starts quoting private details. After they scrub PII and keep a clean eval set of new tickets, answers stay helpful without leaking.",
+      "takeaway": "Your data policy becomes the model's behavior."
+    },
+    "chatGptLens": {
+      "setting": "You ask ChatGPT a coding question. Its answer quality traces back to the code and docs it was trained on—not magic.",
+      "userInput": "Write a Python function that reverses a linked list.",
+      "insideTheModel": "Patterns from millions of code examples in the training datasets make “linked list + reverse” a familiar shape, so it can assemble a plausible solution.",
+      "modelOutput": "def reverse(head):\n    prev = None\n    while head:\n        nxt = head.next\n        head.next = prev\n        prev = head\n        head = nxt\n    return prev"
     },
     "quiz": [
       {
@@ -310,27 +316,27 @@ export const concepts: Concept[] = [
       },
       {
         "id": "datasets-q3",
-        "prompt": "Licensing matters because…",
+        "prompt": "Why keep evaluation data separate from training data?",
         "options": [
           {
             "id": "o0",
-            "text": "Fonts look nicer"
+            "text": "So the UI loads faster"
           },
           {
             "id": "o1",
-            "text": "Legal and ethical constraints bind training data"
+            "text": "To measure how well the model handles new examples"
           },
           {
             "id": "o2",
-            "text": "GPUs hate licenses"
+            "text": "Because GPUs require two folders"
           },
           {
             "id": "o3",
-            "text": "CSS requires it"
+            "text": "So loss can stay at zero forever"
           }
         ],
         "correctOptionId": "o1",
-        "explanation": "Compliance and ethics."
+        "explanation": "Held-out data shows real generalization, not memorization."
       }
     ],
     "nextConceptId": "preprocessing"
@@ -345,26 +351,26 @@ export const concepts: Concept[] = [
     "prerequisites": [
       "datasets"
     ],
-    "laymanSummary": "Preprocessing turns messy raw sources into trainable examples: cleaning, filtering toxicity and PII, language detection, deduplication, formatting dialogues, and packing sequences. Bad preprocessing silently poisons quality.",
-    "analogy": "Washing and measuring ingredients before cooking—the model only tastes what you prep.",
+    "laymanSummary": "Preprocessing cleans and formats raw text before training—removing junk, duplicates, secrets, and shaping chats into clear examples. Skip it and the model quietly learns noise and privacy leaks.",
+    "analogy": "Washing and chopping vegetables before cooking—the pan only tastes what you actually put in.",
     "explanation": [
-      "Normalize encodings and formats.",
-      "Filter harmful or private content.",
-      "Deduplicate near-copies.",
-      "Structure into tensors and batches."
+      "Raw crawls are messy: duplicates, spam, and broken HTML abound.",
+      "Filters strip toxic text, personal data, and unwanted languages.",
+      "Chat logs get turned into neat system/user/assistant turns.",
+      "Clean packing of sequences makes training faster and more stable."
     ],
     "keyTerms": [
       {
         "term": "Deduplication",
-        "definition": "Removing repeated near-identical samples"
+        "definition": "Removing repeated near-identical examples"
       },
       {
         "term": "PII",
-        "definition": "Personally identifiable information"
+        "definition": "Personal info like names, emails, IDs"
       },
       {
-        "term": "Packing",
-        "definition": "Combining short examples into sequences"
+        "term": "Filtering",
+        "definition": "Dropping or rewriting unwanted content"
       }
     ],
     "visualization": {
@@ -591,9 +597,15 @@ export const concepts: Concept[] = [
       }
     },
     "realWorldExample": {
-      "title": "Chat instruction formatting",
-      "story": "Messages labeled system/user/assistant become supervised samples.",
-      "takeaway": "Structure teaches roles."
+      "title": "Support-ticket fine-tune",
+      "story": "A startup dumps three years of Zendesk tickets into a fine-tune folder. Half the threads repeat the same refund script; many include phone numbers. After dedupe and PII scrubbing, the model stops parroting one script and stops inventing customer phone numbers.",
+      "takeaway": "Prep decides whether the model learns signal or spam."
+    },
+    "chatGptLens": {
+      "setting": "ChatGPT replies in a polite assistant style partly because training chats were cleaned and formatted that way.",
+      "userInput": "Summarize this messy email thread for my boss.",
+      "insideTheModel": "Preprocessing once turned noisy threads into clear instruction→summary pairs, so the model expects tidy roles and short, useful answers.",
+      "modelOutput": "Boss summary: Vendor delayed shipment by 5 days; customer approved partial refund; next step is warehouse restock by Friday."
     },
     "quiz": [
       {
@@ -646,27 +658,27 @@ export const concepts: Concept[] = [
       },
       {
         "id": "preprocessing-q3",
-        "prompt": "PII filtering aims to…",
+        "prompt": "What is a main goal of PII filtering before training?",
         "options": [
           {
             "id": "o0",
-            "text": "Increase secrets in models"
+            "text": "Make every sentence longer"
           },
           {
             "id": "o1",
-            "text": "Reduce private data memorization risk"
+            "text": "Lower the chance the model memorizes private details"
           },
           {
             "id": "o2",
-            "text": "Remove math"
+            "text": "Replace the loss function"
           },
           {
             "id": "o3",
-            "text": "Break tokenizers"
+            "text": "Force the model to use only emojis"
           }
         ],
         "correctOptionId": "o1",
-        "explanation": "Privacy hygiene."
+        "explanation": "Less private data in training means less risk of leaking it later."
       }
     ],
     "prevConceptId": "datasets",
@@ -682,26 +694,26 @@ export const concepts: Concept[] = [
     "prerequisites": [
       "preprocessing"
     ],
-    "laymanSummary": "From a training view, tokenization is a compression and inductive-bias choice: vocabulary size and special tokens affect sequence lengths, rare word handling, multilingual fairness, and throughput.",
-    "analogy": "Deciding whether your kitchen cuts veggies into cubes or ribbons—same ingredients, different cooking dynamics.",
+    "laymanSummary": "Tokenization splits text into the small pieces the model actually trains on. Vocabulary choices change cost, rare-word handling, and how well code or other languages fit.",
+    "analogy": "Deciding whether a recipe cuts carrots into cubes or ribbons—same food, different cooking time and texture.",
     "explanation": [
-      "Fit tokenizer on domain-relevant text.",
-      "Special tokens mark roles and boundaries.",
-      "Domain mismatch hurts efficiency.",
-      "Frozen tokenizers couple to embedding matrices."
+      "The model never sees raw characters; it sees token IDs.",
+      "A good tokenizer keeps common words whole and splits rare ones.",
+      "Special tokens mark roles like system, user, and end-of-turn.",
+      "A mismatch (e.g., code-heavy text on a chat tokenizer) wastes tokens."
     ],
     "keyTerms": [
       {
-        "term": "BPE",
-        "definition": "Byte Pair Encoding merges"
+        "term": "Vocabulary",
+        "definition": "The fixed list of known token pieces"
       },
       {
         "term": "Special token",
-        "definition": "Reserved symbol like EOS"
+        "definition": "A marker token for structure or control"
       },
       {
-        "term": "Vocab size",
-        "definition": "Number of distinct tokens"
+        "term": "Fragmentation",
+        "definition": "Splitting text into too many tiny tokens"
       }
     ],
     "visualization": {
@@ -928,9 +940,15 @@ export const concepts: Concept[] = [
       }
     },
     "realWorldExample": {
-      "title": "Multilingual fairness",
-      "story": "Tiny English-heavy vocab can over-fragment other languages.",
-      "takeaway": "Tokenization can encode inequity."
+      "title": "Medical abbreviation blow-up",
+      "story": "A clinic fine-tunes on notes full of abbreviations like “bid” and drug names. A general chat tokenizer chops them into many fragments, so sequences get long and training slows. Switching to a domain-aware tokenizer shortens sequences and improves accuracy.",
+      "takeaway": "Tokenizer fit is part of training efficiency."
+    },
+    "chatGptLens": {
+      "setting": "When you type a prompt, ChatGPT first breaks it into tokens before any prediction starts.",
+      "userInput": "Explain photosynthesis in two sentences.",
+      "insideTheModel": "Your sentence becomes a short list of token IDs. Training taught the model which token usually comes next in that kind of science explanation.",
+      "modelOutput": "Photosynthesis is how plants turn light, water, and CO2 into sugar. They release oxygen as a byproduct."
     },
     "quiz": [
       {
@@ -983,27 +1001,27 @@ export const concepts: Concept[] = [
       },
       {
         "id": "tokenization-training-q3",
-        "prompt": "Domain-mismatched tokenizers often…",
+        "prompt": "What often happens if a tokenizer is a poor fit for your domain?",
         "options": [
           {
             "id": "o0",
-            "text": "Help always"
+            "text": "Training always gets free GPUs"
           },
           {
             "id": "o1",
-            "text": "Over-fragment domain text"
+            "text": "Domain text is over-split into many tokens"
           },
           {
             "id": "o2",
-            "text": "Delete loss"
+            "text": "The loss function disappears"
           },
           {
             "id": "o3",
-            "text": "Ban batching"
+            "text": "Batches become illegal"
           }
         ],
         "correctOptionId": "o1",
-        "explanation": "Inefficient splits."
+        "explanation": "Mismatched tokenizers fragment domain text and waste context."
       }
     ],
     "prevConceptId": "preprocessing",
@@ -1019,26 +1037,26 @@ export const concepts: Concept[] = [
     "prerequisites": [
       "tokenization-training"
     ],
-    "laymanSummary": "A loss function measures how wrong predictions are. For LLMs, cross-entropy versus the true next token is standard. Training iteratively reduces loss—it does not directly maximize truth or safety.",
-    "analogy": "A coach scorecard: mistakes add penalty points; practice aims to lower the score.",
+    "laymanSummary": "The loss function scores how wrong the model’s next-token guess was. Training’s job is to push that score down—not to directly maximize truth or kindness.",
+    "analogy": "A coach’s penalty card: every bad guess adds points, and practice aims to lower the score.",
     "explanation": [
-      "Loss quantifies error for gradient updates.",
-      "Cross-entropy fits next-token prediction.",
-      "Low loss is a proxy, not a virtue metric.",
-      "Auxiliary losses can add constraints."
+      "For chat models, the usual loss is cross-entropy on the true next token.",
+      "Lower loss means the model assigns higher probability to training answers.",
+      "Loss is a training proxy; it is not the same as usefulness or safety.",
+      "Extra losses can nudge style, length, or other constraints."
     ],
     "keyTerms": [
       {
         "term": "Cross-entropy",
-        "definition": "Penalty for low probability on the true token"
+        "definition": "Penalty when the true token gets low probability"
       },
       {
         "term": "Objective",
-        "definition": "What optimization targets"
+        "definition": "The number training tries to minimize"
       },
       {
         "term": "Metric",
-        "definition": "Evaluation measure that may differ from loss"
+        "definition": "A score you report that may differ from loss"
       }
     ],
     "visualization": {
@@ -1265,9 +1283,15 @@ export const concepts: Concept[] = [
       }
     },
     "realWorldExample": {
-      "title": "Overconfident wrong answers",
-      "story": "Loss can look fine on frequent patterns while rare facts stay wrong.",
-      "takeaway": "Monitor task metrics beyond loss."
+      "title": "Homework tutor that sounds sure",
+      "story": "A tutoring model’s loss drops as it copies textbook solutions. On new word problems it still invents confident wrong steps because low loss on memorized answers ≠ correct reasoning. The team adds harder held-out metrics beyond loss.",
+      "takeaway": "Chasing loss alone can miss real quality."
+    },
+    "chatGptLens": {
+      "setting": "Imagine ChatGPT was still in training on “Capital of France?” → “Paris”.",
+      "userInput": "What is the capital of France?",
+      "insideTheModel": "It predicts token probabilities. If “Paris” is not near the top, cross-entropy loss is high and weights get a nudge toward preferring “Paris” next time.",
+      "modelOutput": "Paris."
     },
     "quiz": [
       {
@@ -1320,27 +1344,27 @@ export const concepts: Concept[] = [
       },
       {
         "id": "loss-function-q3",
-        "prompt": "Loss drives…",
+        "prompt": "What does the training loss mainly drive?",
         "options": [
           {
             "id": "o0",
-            "text": "Gradient updates"
+            "text": "Gradient updates that adjust model weights"
           },
           {
             "id": "o1",
-            "text": "Only UI themes"
+            "text": "Which CSS theme the chat UI uses"
           },
           {
             "id": "o2",
-            "text": "DNS TTLs"
+            "text": "DNS cache settings for the API"
           },
           {
             "id": "o3",
-            "text": "Fan noise only"
+            "text": "How loud the server fans spin"
           }
         ],
         "correctOptionId": "o0",
-        "explanation": "Training signal."
+        "explanation": "Loss provides the signal used to update parameters."
       }
     ],
     "prevConceptId": "tokenization-training",
@@ -1362,26 +1386,26 @@ export const concepts: Concept[] = [
     "prerequisites": [
       "loss-function"
     ],
-    "laymanSummary": "Gradient descent updates parameters in the direction that locally decreases loss. The gradient indicates downhill; learning rate controls step size. Deep learning uses stochastic mini-batch estimates.",
-    "analogy": "Hiking down a foggy mountain: feel the slope, take a step, repeat—avoid leaping into a ravine with a huge learning rate.",
+    "laymanSummary": "Gradient descent nudges model weights a little downhill on the loss surface after each batch. The learning rate is how big each step is—too big and training jumps off a cliff.",
+    "analogy": "Hiking down a foggy hill: feel the slope under your feet, take a careful step, repeat.",
     "explanation": [
-      "Compute gradient of loss versus parameters.",
-      "Step opposite the gradient.",
-      "Learning rate is critical.",
-      "Stochastic estimates come from batches."
+      "The gradient points toward steeper loss; we step the other way.",
+      "We estimate the slope from a mini-batch, not the whole internet at once.",
+      "Learning rate controls step size and training stability.",
+      "Many tiny steps over huge data slowly shape ChatGPT-like behavior."
     ],
     "keyTerms": [
       {
         "term": "Gradient",
-        "definition": "Local slope of loss"
+        "definition": "Direction of steepest loss increase"
       },
       {
         "term": "Learning rate",
-        "definition": "Step size"
+        "definition": "How large each weight update is"
       },
       {
-        "term": "Local minimum",
-        "definition": "Bowl the optimizer may settle in"
+        "term": "SGD",
+        "definition": "Updates from small random batches"
       }
     ],
     "visualization": {
@@ -1608,9 +1632,15 @@ export const concepts: Concept[] = [
       }
     },
     "realWorldExample": {
-      "title": "Training curves",
-      "story": "Smooth descending loss suggests healthy LR; explosions suggest trouble.",
-      "takeaway": "Plots diagnose optimization."
+      "title": "Fine-tune that “forgot” English",
+      "story": "A team fine-tunes with a huge learning rate so loss drops in minutes. Midway, English replies turn into gibberish. Lowering the rate and warming up steps brings stable, readable answers back.",
+      "takeaway": "Step size can make or break training."
+    },
+    "chatGptLens": {
+      "setting": "Behind the scenes of training (not while you chat), every batch is a tiny downhill step.",
+      "userInput": "Translate “good morning” to Spanish.",
+      "insideTheModel": "When the model guessed wrong during training, gradients showed which weights to nudge so “buenos días” becomes more likely next time.",
+      "modelOutput": "Buenos días."
     },
     "quiz": [
       {
@@ -1663,7 +1693,7 @@ export const concepts: Concept[] = [
       },
       {
         "id": "gradient-descent-q3",
-        "prompt": "SGD uses…",
+        "prompt": "What does SGD typically use to estimate the gradient?",
         "options": [
           {
             "id": "o0",
@@ -1671,19 +1701,19 @@ export const concepts: Concept[] = [
           },
           {
             "id": "o1",
-            "text": "Astrology"
+            "text": "A single astrology chart"
           },
           {
             "id": "o2",
-            "text": "One batch of all Earth data always"
+            "text": "The entire internet in one update always"
           },
           {
             "id": "o3",
-            "text": "HTML comments"
+            "text": "HTML comments in the UI"
           }
         ],
         "correctOptionId": "o0",
-        "explanation": "Stochastic batches."
+        "explanation": "Stochastic methods update from small batches for speed."
       }
     ],
     "prevConceptId": "loss-function",
@@ -1699,26 +1729,26 @@ export const concepts: Concept[] = [
     "prerequisites": [
       "gradient-descent"
     ],
-    "laymanSummary": "Backpropagation applies the chain rule to compute how each parameter affected the loss, reusing intermediate calculations. Forward pass computes predictions; backward pass propagates error signals.",
-    "analogy": "Tracing a cooking fail backward: salty soup, who added salt, which step, adjust that step next time.",
+    "laymanSummary": "Backpropagation figures out how much each weight contributed to the loss by sending error signals backward through the network. Forward pass predicts; backward pass assigns blame.",
+    "analogy": "Tracing a salty soup back through the recipe to see who added too much salt, then adjusting that step next time.",
     "explanation": [
-      "Forward computes outputs and loss.",
-      "Backward applies the chain rule.",
-      "Each weight gets a gradient.",
-      "Vanishing and exploding gradients challenged depth historically."
+      "A forward pass computes predictions and the loss.",
+      "A backward pass uses the chain rule to get gradients for every weight.",
+      "Frameworks do this automatically with autograd.",
+      "Without backprop, you would not know which knobs to turn."
     ],
     "keyTerms": [
       {
-        "term": "Autograd",
-        "definition": "Automatic differentiation"
-      },
-      {
-        "term": "Chain rule",
-        "definition": "Compose derivatives through layers"
+        "term": "Forward pass",
+        "definition": "Compute outputs from inputs through layers"
       },
       {
         "term": "Backward pass",
-        "definition": "Gradient propagation phase"
+        "definition": "Send error signals back to compute gradients"
+      },
+      {
+        "term": "Autograd",
+        "definition": "Automatic differentiation of the compute graph"
       }
     ],
     "visualization": {
@@ -1945,9 +1975,15 @@ export const concepts: Concept[] = [
       }
     },
     "realWorldExample": {
-      "title": "Framework training",
-      "story": "PyTorch and JAX compute grads via autograd graphs.",
-      "takeaway": "You design the graph; backprop fills gradients."
+      "title": "Bug in a custom attention layer",
+      "story": "A researcher adds a new attention variant; loss barely moves. The forward math looks fine, but the backward path is broken so gradients are near zero. Fixing the graph lets learning resume.",
+      "takeaway": "If gradients cannot flow, training stalls."
+    },
+    "chatGptLens": {
+      "setting": "You never see backprop in the chat UI—it happened while the model was trained.",
+      "userInput": "Fix the grammar: “She go to school.”",
+      "insideTheModel": "During training, when the model said “go” instead of “goes,” backprop told earlier layers how to adjust so “goes” wins next time.",
+      "modelOutput": "She goes to school."
     },
     "quiz": [
       {
@@ -2000,27 +2036,27 @@ export const concepts: Concept[] = [
       },
       {
         "id": "backpropagation-q3",
-        "prompt": "Autograd means…",
+        "prompt": "What does autograd do during training?",
         "options": [
           {
             "id": "o0",
-            "text": "Manual quill math always"
+            "text": "Forces you to differentiate every layer by hand"
           },
           {
             "id": "o1",
-            "text": "Automatic differentiation of the compute graph"
+            "text": "Automatically differentiates the compute graph"
           },
           {
             "id": "o2",
-            "text": "No training"
+            "text": "Turns training off completely"
           },
           {
             "id": "o3",
-            "text": "No batches"
+            "text": "Removes batches from the dataset"
           }
         ],
         "correctOptionId": "o1",
-        "explanation": "Auto diffs."
+        "explanation": "Autograd computes gradients from the forward compute graph."
       }
     ],
     "prevConceptId": "gradient-descent",
@@ -2036,26 +2072,26 @@ export const concepts: Concept[] = [
     "prerequisites": [
       "backpropagation"
     ],
-    "laymanSummary": "Optimizers decide how to turn gradients into parameter updates. SGD, Momentum, Adam, and AdamW add adaptive step sizes and regularization behaviors that affect speed, stability, and final quality.",
-    "analogy": "Not just walk downhill, but whether you use hiking poles or adapt stride to terrain.",
+    "laymanSummary": "Optimizers decide how gradients become weight updates—plain steps, momentum, or adaptive rates like Adam. The choice affects speed, stability, and final quality.",
+    "analogy": "Not just walking downhill, but whether you use hiking poles and change stride on rocky ground.",
     "explanation": [
-      "SGD is simple and sometimes sharp.",
-      "Momentum smooths updates.",
-      "Adam and AdamW adapt per-parameter rates.",
-      "Weight decay curbs parameter growth."
+      "SGD takes simple steps opposite the gradient.",
+      "Momentum remembers recent directions to smooth the path.",
+      "Adam/AdamW adapt step sizes per parameter and are common for LLMs.",
+      "Weight decay gently shrinks large weights to reduce overfitting."
     ],
     "keyTerms": [
       {
         "term": "AdamW",
-        "definition": "Adaptive optimizer with decoupled weight decay"
+        "definition": "Popular adaptive optimizer with weight decay"
       },
       {
         "term": "Momentum",
-        "definition": "Velocity carrying past gradients"
+        "definition": "Averaging recent gradients to smooth updates"
       },
       {
         "term": "Weight decay",
-        "definition": "Parameter magnitude penalty"
+        "definition": "Penalty that keeps weights from growing huge"
       }
     ],
     "visualization": {
@@ -2282,9 +2318,15 @@ export const concepts: Concept[] = [
       }
     },
     "realWorldExample": {
-      "title": "Stable pretraining runs",
-      "story": "Optimizer and schedule tweaks prevent costly divergences.",
-      "takeaway": "Optimization is part of the research."
+      "title": "Same data, different optimizer",
+      "story": "Two teams fine-tune the same customer-support model. Plain SGD needs careful LR tuning and converges slowly; AdamW with a short warmup reaches a helpful assistant style in fewer steps with fewer loss spikes.",
+      "takeaway": "The update rule is part of the training recipe."
+    },
+    "chatGptLens": {
+      "setting": "ChatGPT’s polished tone was shaped by many optimizer steps during training runs you never see.",
+      "userInput": "Rewrite this email to sound more professional.",
+      "insideTheModel": "Optimizers repeatedly applied gradient updates so “professional rewrite” patterns became reliable habits in the weights.",
+      "modelOutput": "Dear Jordan, Thank you for the update. I propose we finalize the timeline by Thursday and share the revised draft with the team."
     },
     "quiz": [
       {
@@ -2337,27 +2379,27 @@ export const concepts: Concept[] = [
       },
       {
         "id": "optimizers-q3",
-        "prompt": "Weight decay tends to…",
+        "prompt": "What does weight decay tend to do?",
         "options": [
           {
             "id": "o0",
-            "text": "Encourage huge weights"
+            "text": "Push weights to grow without limit"
           },
           {
             "id": "o1",
-            "text": "Penalize large weights"
+            "text": "Penalize large weights to encourage simpler solutions"
           },
           {
             "id": "o2",
-            "text": "Delete softmax"
+            "text": "Delete the softmax layer"
           },
           {
             "id": "o3",
-            "text": "Stop tokenization"
+            "text": "Stop tokenization entirely"
           }
         ],
         "correctOptionId": "o1",
-        "explanation": "Regularize magnitude."
+        "explanation": "Weight decay regularizes by shrinking large parameter magnitudes."
       }
     ],
     "prevConceptId": "backpropagation",
@@ -2373,26 +2415,26 @@ export const concepts: Concept[] = [
     "prerequisites": [
       "optimizers"
     ],
-    "laymanSummary": "Data is processed in batches. An epoch is one pass over the training set. Learning rate schedules change step size over time. For LLMs, tokens seen often matters more than epoch count.",
-    "analogy": "Gym plan: sets are batches, full routines are epochs, and weekly weight is the LR schedule.",
+    "laymanSummary": "Training walks through data in batches; an epoch is one full pass. Learning-rate schedules change step size over time—and for LLMs, tokens seen often matter more than epoch count.",
+    "analogy": "Gym plan: each set is a batch, a full routine is an epoch, and weekly weight on the bar is the learning-rate schedule.",
     "explanation": [
-      "Batch size trades noise versus compute.",
-      "Epochs measure progress through data.",
-      "LR schedules prevent early shocks.",
-      "Token budgets dominate LLM training talk."
+      "A batch is the group of examples used for one update.",
+      "An epoch means the trainer has seen the whole set once.",
+      "Warmup then decay of the learning rate often stabilizes LLM training.",
+      "With huge corpora, people track tokens processed more than epochs."
     ],
     "keyTerms": [
       {
         "term": "Batch",
-        "definition": "Group of examples per update"
+        "definition": "Examples processed together for one update"
       },
       {
         "term": "Epoch",
-        "definition": "Pass through dataset"
+        "definition": "One full pass through the training set"
       },
       {
         "term": "LR schedule",
-        "definition": "Plan for learning rate over time"
+        "definition": "How learning rate changes over steps"
       }
     ],
     "visualization": {
@@ -2619,9 +2661,15 @@ export const concepts: Concept[] = [
       }
     },
     "realWorldExample": {
-      "title": "Warmup saves runs",
-      "story": "Too-high early LR destabilizes; warmup ramps gently.",
-      "takeaway": "Schedules are practical engineering."
+      "title": "Overnight fine-tune budget",
+      "story": "A student has one night and 50k instruction examples. They pick batch size 32, two epochs, and a short LR warmup. Tracking tokens seen helps them stop before the model starts memorizing the same answers.",
+      "takeaway": "Schedule the run like a workout, not endless reps."
+    },
+    "chatGptLens": {
+      "setting": "Your chat happens after thousands of training steps with planned batch sizes and LR schedules.",
+      "userInput": "Give me three dinner ideas under 20 minutes.",
+      "insideTheModel": "During training, batches of similar “quick recipe” examples, seen across epochs with a decaying LR, carved in a habit of short, list-style answers.",
+      "modelOutput": "1) Garlic shrimp tacos\n2) Egg fried rice\n3) Caprese pasta with jarred sauce"
     },
     "quiz": [
       {
@@ -2674,27 +2722,27 @@ export const concepts: Concept[] = [
       },
       {
         "id": "epochs-batches-lr-q3",
-        "prompt": "For LLMs people often track…",
+        "prompt": "For large language models, teams often track which quantity?",
         "options": [
           {
             "id": "o0",
-            "text": "Tokens processed"
+            "text": "Tokens processed during training"
           },
           {
             "id": "o1",
-            "text": "Only wallpaper"
+            "text": "Desktop wallpaper brightness"
           },
           {
             "id": "o2",
-            "text": "Only fan RPM"
+            "text": "Server fan RPM only"
           },
           {
             "id": "o3",
-            "text": "Only commit emojis"
+            "text": "Number of commit emojis"
           }
         ],
         "correctOptionId": "o0",
-        "explanation": "Token budgets."
+        "explanation": "Token budgets describe how much text the model has seen."
       }
     ],
     "prevConceptId": "optimizers",
@@ -2710,26 +2758,26 @@ export const concepts: Concept[] = [
     "prerequisites": [
       "epochs-batches-lr"
     ],
-    "laymanSummary": "Pretraining teaches general patterns from massive data. Fine-tuning continues training on narrower data to specialize behavior. Most products adapt a pretrained base because pretraining is extremely expensive.",
-    "analogy": "Learn general literacy first, then take a professional short course.",
+    "laymanSummary": "Pretraining teaches general language from massive data; fine-tuning continues on narrower data to specialize. Products usually adapt a pretrained base because pretraining is extremely expensive.",
+    "analogy": "Learn to read and write broadly first, then take a short professional course for your job.",
     "explanation": [
-      "Pretrain is expensive and broad.",
-      "Fine-tune is cheaper adaptation.",
-      "Catastrophic forgetting is a risk.",
-      "Parameter-efficient methods often beat full fine-tunes."
+      "Pretraining predicts text at internet scale to build a base model.",
+      "Fine-tuning updates that base on task- or brand-specific examples.",
+      "Most apps start from a pretrained checkpoint, not from random weights.",
+      "Heavy fine-tuning can erase old skills if you are not careful."
     ],
     "keyTerms": [
       {
         "term": "Pretraining",
-        "definition": "Large-scale general training"
+        "definition": "Large-scale training for general skills"
       },
       {
         "term": "Fine-tuning",
-        "definition": "Task or domain adaptation"
+        "definition": "Extra training to specialize a base model"
       },
       {
         "term": "Catastrophic forgetting",
-        "definition": "Losing old skills while learning new"
+        "definition": "New training wiping older abilities"
       }
     ],
     "visualization": {
@@ -2956,9 +3004,15 @@ export const concepts: Concept[] = [
       }
     },
     "realWorldExample": {
-      "title": "Hospital note summarizer",
-      "story": "Start from a general LLM; fine-tune on de-identified note styles.",
-      "takeaway": "Do not pretrain from scratch for every app."
+      "title": "Retail FAQ specialist",
+      "story": "A store starts from a strong pretrained chat model, then fine-tunes on return policies and product SKUs. General English stays intact, but answers now cite the store’s rules. Over-training only on returns made it forget casual small talk until they mixed some general data back in.",
+      "takeaway": "Specialize the base—don’t rebuild literacy from scratch."
+    },
+    "chatGptLens": {
+      "setting": "ChatGPT feels broadly capable because of pretraining, then more helpful because of later fine-tuning.",
+      "userInput": "Draft a polite refund request for a late package.",
+      "insideTheModel": "Pretraining taught fluent English; fine-tuning taught assistant-style letters that follow instructions and stay polite.",
+      "modelOutput": "Hello, my order #18422 arrived five days late. Could you please process a refund per your shipping guarantee? Thank you."
     },
     "quiz": [
       {
@@ -3011,27 +3065,27 @@ export const concepts: Concept[] = [
       },
       {
         "id": "pretraining-vs-finetuning-q3",
-        "prompt": "Forgetting risk means…",
+        "prompt": "What does catastrophic forgetting risk mean?",
         "options": [
           {
             "id": "o0",
-            "text": "New training can erode old skills"
+            "text": "New training can weaken skills the model already had"
           },
           {
             "id": "o1",
-            "text": "GPUs forget math"
+            "text": "GPUs suddenly forget arithmetic hardware"
           },
           {
             "id": "o2",
-            "text": "Tokens vanish from Unicode"
+            "text": "Unicode deletes tokens overnight"
           },
           {
             "id": "o3",
-            "text": "Logs delete themselves"
+            "text": "Log files erase themselves each midnight"
           }
         ],
         "correctOptionId": "o0",
-        "explanation": "Catastrophic forgetting."
+        "explanation": "Narrow fine-tuning can overwrite earlier general abilities."
       }
     ],
     "prevConceptId": "epochs-batches-lr",
@@ -3047,26 +3101,26 @@ export const concepts: Concept[] = [
     "prerequisites": [
       "pretraining-vs-finetuning"
     ],
-    "laymanSummary": "Supervised Fine-Tuning trains the model on high-quality prompt-response examples so it follows instructions in a desired style. It turns a base completion model into a more helpful assistant before preference optimization.",
-    "analogy": "Script rehearsal: show ideal dialogues until the actor hits the right tone and structure.",
+    "laymanSummary": "Supervised Fine-Tuning (SFT) shows the model high-quality prompt→response examples so it follows instructions in a desired style. It turns a raw completer into a more helpful assistant.",
+    "analogy": "Script rehearsal: the actor practices ideal dialogues until tone and structure stick.",
     "explanation": [
-      "Curate instruction datasets.",
-      "Minimize loss on target responses.",
-      "Quality beats sheer quantity.",
-      "SFT alone may still hallucinate."
+      "You train on curated (prompt, ideal answer) pairs.",
+      "The model learns to continue like a helpful assistant, not random web text.",
+      "SFT usually comes before preference methods like RLHF or DPO.",
+      "Demo quality matters more than dumping millions of mediocre pairs."
     ],
     "keyTerms": [
       {
-        "term": "Instruction tuning",
-        "definition": "Fine-tuning to follow instructions"
+        "term": "SFT",
+        "definition": "Supervised fine-tuning on ideal responses"
       },
       {
-        "term": "Gold response",
-        "definition": "Target answer text"
+        "term": "Instruction data",
+        "definition": "Prompts paired with target answers"
       },
       {
-        "term": "Demonstration data",
-        "definition": "Example dialogues"
+        "term": "Base model",
+        "definition": "Pretrained model before assistant tuning"
       }
     ],
     "visualization": {
@@ -3293,9 +3347,15 @@ export const concepts: Concept[] = [
       }
     },
     "realWorldExample": {
-      "title": "Company tone of voice",
-      "story": "SFT on approved templates yields on-brand support drafts.",
-      "takeaway": "Demonstrations teach manners and format."
+      "title": "HR policy assistant",
+      "story": "HR writes 2,000 gold answers for leave, benefits, and escalation rules. After SFT, the bot stops rambling like a wiki dump and answers in the company’s short, linked style. Bad demos that were sarcastic taught sarcasm—so they rewrote those examples.",
+      "takeaway": "The model copies the demos you show it."
+    },
+    "chatGptLens": {
+      "setting": "When ChatGPT follows your instruction cleanly, SFT-style training is a big reason.",
+      "userInput": "List three tips to sleep better. Keep each tip under 10 words.",
+      "insideTheModel": "SFT examples taught it to obey format constraints and give concise, helpful lists instead of free-associating blog text.",
+      "modelOutput": "1) Keep a fixed bedtime.\n2) Avoid screens late.\n3) Cut caffeine after noon."
     },
     "quiz": [
       {
@@ -3348,27 +3408,27 @@ export const concepts: Concept[] = [
       },
       {
         "id": "sft-q3",
-        "prompt": "Quality of demos…",
+        "prompt": "How much does demo quality matter for SFT?",
         "options": [
           {
             "id": "o0",
-            "text": "Barely matters"
+            "text": "It barely matters if you have any text at all"
           },
           {
             "id": "o1",
-            "text": "Strongly drives behavior"
+            "text": "It strongly shapes the model’s later behavior"
           },
           {
             "id": "o2",
-            "text": "Deletes GPUs"
+            "text": "It deletes GPU memory as a side effect"
           },
           {
             "id": "o3",
-            "text": "Fixes networking"
+            "text": "It only fixes networking bugs"
           }
         ],
         "correctOptionId": "o1",
-        "explanation": "Quality over quantity."
+        "explanation": "SFT behavior tracks the quality of the demonstration data."
       }
     ],
     "prevConceptId": "pretraining-vs-finetuning",
@@ -3384,26 +3444,26 @@ export const concepts: Concept[] = [
     "prerequisites": [
       "sft"
     ],
-    "laymanSummary": "LoRA freezes most base weights and trains tiny low-rank adapter matrices, cutting memory and storage. QLoRA quantizes the base model while training adapters, enabling fine-tuning on smaller GPUs.",
-    "analogy": "Instead of rewriting an entire textbook, stick removable sticky notes you can swap per subject.",
+    "laymanSummary": "LoRA freezes most base weights and trains tiny adapter matrices, saving memory and storage. QLoRA also quantizes the base model so you can fine-tune on smaller GPUs.",
+    "analogy": "Instead of rewriting a whole textbook, you add sticky notes you can swap per subject.",
     "explanation": [
-      "Inject low-rank updates into layers.",
-      "Train adapters; freeze base.",
-      "QLoRA uses a quantized base plus adapters.",
-      "Swap adapters per task or tenant."
+      "Base weights stay frozen; small low-rank adapters learn the task.",
+      "Adapter files are tiny compared with a full model copy.",
+      "QLoRA keeps the base in low-bit form while training adapters.",
+      "You can ship different adapters for different teams or topics."
     ],
     "keyTerms": [
       {
         "term": "LoRA",
-        "definition": "Low-Rank Adaptation"
+        "definition": "Low-rank adapters trained on a frozen base"
       },
       {
         "term": "Quantization",
-        "definition": "Store weights with fewer bits"
+        "definition": "Storing weights with fewer bits"
       },
       {
         "term": "Adapter",
-        "definition": "Small trainable module"
+        "definition": "Small trainable module plugged into layers"
       }
     ],
     "visualization": {
@@ -3630,9 +3690,15 @@ export const concepts: Concept[] = [
       }
     },
     "realWorldExample": {
-      "title": "Multi-tenant customization",
-      "story": "One base plus many per-customer adapters.",
-      "takeaway": "Efficient specialization at scale."
+      "title": "Three brand voices, one base",
+      "story": "A marketing team hosts one 7B base model and three LoRA adapters: playful, formal, and legal-safe. Swapping adapters changes tone without storing three full fine-tunes. QLoRA let them train each adapter on a single consumer GPU.",
+      "takeaway": "Adapters make specialization cheap and swappable."
+    },
+    "chatGptLens": {
+      "setting": "Product teams often customize a ChatGPT-like model with LoRA instead of retraining everything.",
+      "userInput": "Describe our refund policy in one friendly paragraph.",
+      "insideTheModel": "A LoRA adapter trained on the company’s FAQ shifts a few pathways so answers match brand tone while the frozen base keeps general English.",
+      "modelOutput": "No worries—if your order isn’t right, start a return in the app within 30 days and we’ll refund to your original payment once we receive the item."
     },
     "quiz": [
       {
@@ -3685,27 +3751,27 @@ export const concepts: Concept[] = [
       },
       {
         "id": "lora-qlora-q3",
-        "prompt": "Adapters are useful because…",
+        "prompt": "Why are LoRA adapters often useful in practice?",
         "options": [
           {
             "id": "o0",
-            "text": "They are swappable and small"
+            "text": "They are small, trainable, and easy to swap"
           },
           {
             "id": "o1",
-            "text": "They erase bases always"
+            "text": "They always erase the base model forever"
           },
           {
             "id": "o2",
-            "text": "They forbid evals"
+            "text": "They forbid running any evaluation"
           },
           {
             "id": "o3",
-            "text": "They replace tokenizers"
+            "text": "They replace the need for a tokenizer"
           }
         ],
         "correctOptionId": "o0",
-        "explanation": "Modularity."
+        "explanation": "Adapters add modular specialization without full retraining."
       }
     ],
     "prevConceptId": "sft",
@@ -3727,26 +3793,26 @@ export const concepts: Concept[] = [
     "prerequisites": [
       "lora-qlora"
     ],
-    "laymanSummary": "Reinforcement Learning from Human Feedback fits a reward model on human preference comparisons, then optimizes the LLM policy to score higher while staying close to a reference model. It can improve helpfulness but is complex and can over-optimize quirks.",
-    "analogy": "A comedy writer tries jokes, audience ranks them, coach trains for crowd-pleasers without wandering off-character.",
+    "laymanSummary": "RLHF trains a reward model from human preference rankings, then steers the chatbot to score higher while staying close to a reference model. It can boost helpfulness but is complex and can over-optimize quirks.",
+    "analogy": "A comedy writer tries jokes, the audience ranks them, and a coach trains for crowd-pleasers without going off-character.",
     "explanation": [
-      "Collect pairwise human preferences.",
-      "Train a reward model.",
-      "Optimize policy with RL plus KL penalty.",
-      "Expensive and sensitive to preference data."
+      "Humans compare answers: A is better than B for the same prompt.",
+      "A reward model learns to predict those preferences.",
+      "The policy (chat model) is optimized to earn higher reward.",
+      "A KL penalty keeps it from drifting too far from the SFT model."
     ],
     "keyTerms": [
       {
         "term": "Reward model",
-        "definition": "Model predicting preference scores"
+        "definition": "Model that scores how preferred an answer is"
       },
       {
         "term": "Policy",
-        "definition": "The generating LLM being optimized"
+        "definition": "The chat model being optimized"
       },
       {
         "term": "KL penalty",
-        "definition": "Keep policy near reference"
+        "definition": "Brake that limits drift from a reference"
       }
     ],
     "visualization": {
@@ -3973,9 +4039,15 @@ export const concepts: Concept[] = [
       }
     },
     "realWorldExample": {
-      "title": "Assistant helpfulness jumps",
-      "story": "Chat models became more instruction-following after preference tuning eras.",
-      "takeaway": "Human preferences shape product feel."
+      "title": "Less lecturing, more answering",
+      "story": "Raters prefer short direct answers over long lectures. After RLHF, the assistant opens with the answer first. Pushed too hard, it became overly agreeable—even when users were wrong—so the team rebalanced the reward data.",
+      "takeaway": "You optimize what raters reward, quirks included."
+    },
+    "chatGptLens": {
+      "setting": "ChatGPT’s “helpful and careful” feel often comes from preference training like RLHF after SFT.",
+      "userInput": "Is it okay to copy a classmate’s homework?",
+      "insideTheModel": "Preference training rewarded honest, constructive refusals over “sure, here’s how to cheat,” while staying close to the helpful SFT style.",
+      "modelOutput": "I can’t help you copy someone’s work. I can help you understand the assignment or study the topic so you can do it yourself."
     },
     "quiz": [
       {
@@ -4028,27 +4100,27 @@ export const concepts: Concept[] = [
       },
       {
         "id": "rlhf-q3",
-        "prompt": "RLHF is…",
+        "prompt": "Which statement best describes RLHF?",
         "options": [
           {
             "id": "o0",
-            "text": "Simple regex"
+            "text": "It is only a simple regex filter on outputs"
           },
           {
             "id": "o1",
-            "text": "Complex but influential alignment method"
+            "text": "It is a complex but influential alignment method"
           },
           {
             "id": "o2",
-            "text": "A font"
+            "text": "It is a font used in chat apps"
           },
           {
             "id": "o3",
-            "text": "A cable"
+            "text": "It is a hardware cable between GPUs"
           }
         ],
         "correctOptionId": "o1",
-        "explanation": "Powerful and heavy."
+        "explanation": "RLHF is powerful for alignment and operationally heavy."
       }
     ],
     "prevConceptId": "lora-qlora",
@@ -4064,26 +4136,26 @@ export const concepts: Concept[] = [
     "prerequisites": [
       "rlhf"
     ],
-    "laymanSummary": "Direct Preference Optimization fine-tunes on preferred versus rejected responses using a classification-style objective that avoids a separate RL loop. It is often simpler operationally than classic RLHF.",
-    "analogy": "Show good versus bad answers and teach prefer this over that, without a separate scoreboard coach in an RL loop.",
+    "laymanSummary": "Direct Preference Optimization (DPO) trains on preferred vs rejected answers with a classification-style loss—no separate RL loop. It is often simpler to run than classic RLHF.",
+    "analogy": "Show good vs bad answers and teach “prefer this over that,” without a separate scoreboard coach in an RL loop.",
     "explanation": [
-      "Dataset holds prompt, chosen, rejected.",
-      "Optimize a closed-form preference loss.",
-      "No explicit reward-model RL loop required.",
-      "Still depends on preference data quality."
+      "Each example has a prompt, a chosen reply, and a rejected reply.",
+      "The loss raises the chance of the chosen reply over the rejected one.",
+      "You skip training a separate reward model and running RL.",
+      "Bad preference labels still produce bad habits."
     ],
     "keyTerms": [
       {
-        "term": "Chosen",
-        "definition": "Preferred response"
+        "term": "Preference pair",
+        "definition": "Chosen answer vs rejected answer for one prompt"
       },
       {
-        "term": "Rejected",
-        "definition": "Dispreferred response"
+        "term": "DPO",
+        "definition": "Preference tuning without a separate RL loop"
       },
       {
         "term": "Reference model",
-        "definition": "Anchor for implicit regularization"
+        "definition": "Frozen baseline the update stays relative to"
       }
     ],
     "visualization": {
@@ -4310,9 +4382,15 @@ export const concepts: Concept[] = [
       }
     },
     "realWorldExample": {
-      "title": "Safer refusal style",
-      "story": "Teams use DPO to nudge refusals without heavy RL ops.",
-      "takeaway": "Operational simplicity matters."
+      "title": "Tone cleanup without RL infra",
+      "story": "A small team lacks RL tooling. They collect 5,000 pairs where raters pick the clearer answer. DPO training makes the bot prefer crisp replies over waffle—until a batch of noisy labels taught it to refuse harmless questions, which they fixed by cleaning the pairs.",
+      "takeaway": "DPO is simpler ops; data quality still rules."
+    },
+    "chatGptLens": {
+      "setting": "Some ChatGPT-like assistants use DPO-style preference data instead of a full RLHF stack.",
+      "userInput": "Explain recursion to a 10-year-old.",
+      "insideTheModel": "Preference pairs favored a simple analogy over a dense CS lecture, so DPO boosted the friendly explanation style.",
+      "modelOutput": "Recursion is like looking up a word that sends you to another word, until you finally reach a definition you understand."
     },
     "quiz": [
       {
@@ -4365,27 +4443,27 @@ export const concepts: Concept[] = [
       },
       {
         "id": "dpo-q3",
-        "prompt": "Bad preference data yields…",
+        "prompt": "What happens if preference data for DPO is poor?",
         "options": [
           {
             "id": "o0",
-            "text": "Magic safety"
+            "text": "The model becomes magically safe forever"
           },
           {
             "id": "o1",
-            "text": "Misaligned behavior"
+            "text": "The model can learn misaligned behavior"
           },
           {
             "id": "o2",
-            "text": "Free GPUs"
+            "text": "Training suddenly grants free GPUs"
           },
           {
             "id": "o3",
-            "text": "Perfect truth"
+            "text": "The model always tells perfect truth"
           }
         ],
         "correctOptionId": "o1",
-        "explanation": "Garbage in, garbage out."
+        "explanation": "Garbage preference labels produce garbage preferences."
       }
     ],
     "prevConceptId": "rlhf",
@@ -4407,26 +4485,26 @@ export const concepts: Concept[] = [
     "prerequisites": [
       "dpo"
     ],
-    "laymanSummary": "Underfitting means the model is too simple or under-trained. Overfitting means it memorizes training quirks and fails to generalize. Watch train versus validation metrics for gaps.",
-    "analogy": "Underfit: studying only chapter titles. Overfit: memorizing answer keys, then freezing on a new question.",
+    "laymanSummary": "Underfitting means the model is too weak or under-trained to capture the pattern. Overfitting means it memorizes training quirks and fails on new prompts.",
+    "analogy": "Underfit: only reading chapter titles. Overfit: memorizing the answer key, then freezing on a new question.",
     "explanation": [
-      "Train and val curves diagnose fit.",
-      "Regularization and more data fight overfit.",
-      "More capacity or training can fix underfit.",
-      "LLMs can memorize; privacy and eval design matter."
+      "Watch train vs validation metrics; a big gap often means overfitting.",
+      "Underfit models stay wrong on both train and validation.",
+      "More diverse data, regularization, and early stopping fight overfit.",
+      "For chatbots, overfit looks like parroting training FAQs that don’t match the user’s case."
     ],
     "keyTerms": [
       {
         "term": "Overfitting",
-        "definition": "Great train, poor generalization"
+        "definition": "Memorizing train quirks; weak on new data"
       },
       {
         "term": "Underfitting",
-        "definition": "Poor train and poor generalization"
+        "definition": "Too simple or undertrained to learn the pattern"
       },
       {
-        "term": "Regularization",
-        "definition": "Techniques limiting memorization"
+        "term": "Validation set",
+        "definition": "Held-out data used to check generalization"
       }
     ],
     "visualization": {
@@ -4653,9 +4731,15 @@ export const concepts: Concept[] = [
       }
     },
     "realWorldExample": {
-      "title": "Leaderboard leakage",
-      "story": "Tuning to a public test set overfits the leaderboard.",
-      "takeaway": "Hold out truly unseen tests."
+      "title": "FAQ bot that only knows last year’s promos",
+      "story": "A shop bot trained too long on last year’s coupon FAQ scores perfectly on that file but fails on this year’s policy. Early stopping plus fresher examples closed the train/validation gap and fixed live chats.",
+      "takeaway": "Perfect train score can still mean a bad product."
+    },
+    "chatGptLens": {
+      "setting": "A well-tuned ChatGPT-like model balances fitting training chats without memorizing them word-for-word.",
+      "userInput": "What is your return window for headphones bought today?",
+      "insideTheModel": "If overfit, it might quote last year’s “14 days” from memorized FAQs. Proper fit uses current policy patterns and stays useful on new wording.",
+      "modelOutput": "For headphones bought today, you have 30 days from delivery to start a return in unused condition."
     },
     "quiz": [
       {
@@ -4708,27 +4792,27 @@ export const concepts: Concept[] = [
       },
       {
         "id": "overfit-underfit-q3",
-        "prompt": "A remedy for overfit…",
+        "prompt": "Which approach best helps reduce overfitting?",
         "options": [
           {
             "id": "o0",
-            "text": "More diverse data and regularization"
+            "text": "Use more diverse data and regularization"
           },
           {
             "id": "o1",
-            "text": "Delete validation"
+            "text": "Delete the validation set so gaps disappear"
           },
           {
             "id": "o2",
-            "text": "Max LR chaos always"
+            "text": "Always use the maximum chaotic learning rate"
           },
           {
             "id": "o3",
-            "text": "Ignore metrics"
+            "text": "Ignore metrics and train forever"
           }
         ],
         "correctOptionId": "o0",
-        "explanation": "Generalization tools."
+        "explanation": "Diversity and regularization improve generalization."
       }
     ],
     "prevConceptId": "dpo"

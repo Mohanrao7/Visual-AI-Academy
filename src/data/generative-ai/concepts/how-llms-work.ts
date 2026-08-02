@@ -9,26 +9,26 @@ export const concepts: Concept[] = [
     "difficulty": "beginner",
     "estimatedMinutes": 8,
     "prerequisites": [],
-    "laymanSummary": "Tokenization converts text into tokens—integer IDs the model understands. Tokens may be words, subwords, or characters depending on the tokenizer. Everything an LLM reads or writes is mediated by this segmentation, which affects cost, context limits, and awkward splits of rare words.",
-    "analogy": "Like cutting a paragraph into LEGO bricks before a machine rebuilds meaning from brick IDs.",
+    "laymanSummary": "ChatGPT never reads raw letters—it first chops your message into tokens (chunks with numeric IDs). Those IDs are what the model actually processes.",
+    "analogy": "Like cutting a sentence into LEGO bricks and labeling each brick with a number before assembly.",
     "explanation": [
-      "Tokenizers map text to token ID sequences and back.",
-      "Subword schemes balance vocabulary size and coverage.",
-      "Token counts drive context usage and pricing.",
-      "Weird splits can hurt reasoning on codes, names, or math."
+      "Your ChatGPT message is split into tokens—often whole words, sometimes pieces like “ing”.",
+      "Each token maps to an ID from a fixed list the model was trained with.",
+      "Token count drives context limits and (on APIs) billing—not always word count.",
+      "Rare names, code, or math can split awkwardly and confuse the model."
     ],
     "keyTerms": [
       {
         "term": "Token",
-        "definition": "Atomic text unit for the model"
+        "definition": "Text chunk the model reads as one unit"
       },
       {
         "term": "Tokenizer",
-        "definition": "Algorithm mapping text to token IDs"
+        "definition": "Tool that turns text into token IDs"
       },
       {
         "term": "Subword",
-        "definition": "Fragment smaller than a full word"
+        "definition": "Piece of a word used as a token"
       }
     ],
     "visualization": {
@@ -246,9 +246,15 @@ export const concepts: Concept[] = [
       }
     },
     "realWorldExample": {
-      "title": "API billing by tokens",
-      "story": "A verbose prompt costs more even if word count looks modest.",
-      "takeaway": "Measure tokens, not only words."
+      "title": "Why a short ChatGPT prompt still “costs” tokens",
+      "story": "You paste a code snippet into ChatGPT asking for a bug fix. It looks like 40 words, but the tokenizer splits symbols and names into many tokens. The reply also uses tokens, so a “short” chat can still fill the window fast.",
+      "takeaway": "Count tokens, not just words, when chatting or calling an API."
+    },
+    "chatGptLens": {
+      "setting": "You open ChatGPT and type a normal homework question.",
+      "userInput": "Explain recursion with a Python example.",
+      "insideTheModel": "Tokenization splits that sentence into IDs (maybe “Explain”, “ recursion”, “ with”, …) before any understanding step runs.",
+      "modelOutput": "A short recursion explanation and a small function—assembled from tokens chosen one after another."
     },
     "quiz": [
       {
@@ -301,27 +307,27 @@ export const concepts: Concept[] = [
       },
       {
         "id": "tokenization-q3",
-        "prompt": "Token count affects…",
+        "prompt": "Why might “ChatGPT” and a rare last name use different numbers of tokens?",
         "options": [
           {
             "id": "o0",
-            "text": "Only wallpaper"
+            "text": "Tokenizers ignore English"
           },
           {
             "id": "o1",
-            "text": "Context limits and often pricing"
+            "text": "Common chunks share IDs; rare text splits into more pieces"
           },
           {
             "id": "o2",
-            "text": "Ocean tides"
+            "text": "Names are never tokenized"
           },
           {
             "id": "o3",
-            "text": "Mouse DPI"
+            "text": "Tokens only exist for numbers"
           }
         ],
         "correctOptionId": "o1",
-        "explanation": "Context and cost."
+        "explanation": "Rare strings often need several subword tokens."
       }
     ],
     "nextConceptId": "vocabulary-context-window"
@@ -336,26 +342,26 @@ export const concepts: Concept[] = [
     "prerequisites": [
       "tokenization"
     ],
-    "laymanSummary": "Vocabulary is the finite set of tokens a model knows IDs for. The context window is how many tokens of prompt, history, and generation the model can consider at once. If information falls outside the window, the model cannot directly use it unless you retrieve or summarize it back in.",
-    "analogy": "Vocabulary is the dictionary of bricks; context window is the size of the table you can build on.",
+    "laymanSummary": "Vocabulary is the set of token IDs ChatGPT knows. The context window is how many tokens of chat history plus reply it can see at once.",
+    "analogy": "Vocabulary is the dictionary of allowed LEGO bricks; the context window is the size of the table you can build on.",
     "explanation": [
-      "Finite vocab plus subword strategies cover open text.",
-      "Context window is a hard capacity constraint.",
-      "Long context helps but is not perfect memory.",
-      "Attention cost scales with context length."
+      "Every ChatGPT token must come from its vocabulary (or be built from subwords in that vocab).",
+      "The context window includes system text, your messages, prior turns, and the reply so far.",
+      "Text pushed outside the window is invisible—ChatGPT cannot “remember” it unless you paste it again.",
+      "Longer windows help, but they are not perfect memory of every detail."
     ],
     "keyTerms": [
       {
         "term": "Vocabulary",
-        "definition": "Set of known tokens"
+        "definition": "Finite set of tokens the model knows"
       },
       {
         "term": "Context window",
-        "definition": "Max tokens per model pass"
+        "definition": "Max tokens visible in one pass"
       },
       {
         "term": "Truncation",
-        "definition": "Dropping overflow tokens"
+        "definition": "Dropping older text that exceeds the limit"
       }
     ],
     "visualization": {
@@ -582,9 +588,15 @@ export const concepts: Concept[] = [
       }
     },
     "realWorldExample": {
-      "title": "Support chat resets",
-      "story": "Agents summarize old turns to stay inside context.",
-      "takeaway": "Long conversations need memory strategies."
+      "title": "Long ChatGPT thread “forgets” the brief",
+      "story": "In a long project chat you pasted requirements on day one. By day three the thread is huge; early details fall out of the context window. ChatGPT answers as if those constraints never existed.",
+      "takeaway": "Re-paste key facts or summarize—don’t assume infinite chat memory."
+    },
+    "chatGptLens": {
+      "setting": "A long ChatGPT conversation about a semester project.",
+      "userInput": "Use the API format we agreed on yesterday.",
+      "insideTheModel": "Only tokens still inside the context window count. If yesterday’s format scrolled out, the model never sees it for this turn.",
+      "modelOutput": "A reply that may invent a plausible format—or ask again—because the real agreement is no longer in view."
     },
     "quiz": [
       {
@@ -637,27 +649,27 @@ export const concepts: Concept[] = [
       },
       {
         "id": "vocabulary-context-window-q3",
-        "prompt": "Longer context always means perfect recall.",
+        "prompt": "In ChatGPT, what mainly fills the context window?",
         "options": [
           {
             "id": "o0",
-            "text": "True"
+            "text": "Only the last word you typed"
           },
           {
             "id": "o1",
-            "text": "False"
+            "text": "Prompt, history, and generated tokens so far"
           },
           {
             "id": "o2",
-            "text": "Only at night"
+            "text": "Your entire hard drive"
           },
           {
             "id": "o3",
-            "text": "Only in Python"
+            "text": "Only punctuation marks"
           }
         ],
         "correctOptionId": "o1",
-        "explanation": "Capacity is not perfect memory."
+        "explanation": "The window holds the visible conversation state for that pass."
       }
     ],
     "prevConceptId": "tokenization",
@@ -673,26 +685,26 @@ export const concepts: Concept[] = [
     "prerequisites": [
       "vocabulary-context-window"
     ],
-    "laymanSummary": "Embeddings are numeric vectors representing tokens, sentences, or documents so similar meanings land nearby geometrically. Models use embeddings internally; retrieval systems also embed queries and docs to find neighbors. Distances become a proxy for semantic relatedness.",
-    "analogy": "A city map for meaning: doctor sits nearer nurse than screwdriver.",
+    "laymanSummary": "Embeddings turn tokens (or whole snippets) into lists of numbers so similar meanings sit near each other. ChatGPT uses them inside the network; search tools use them to find related text.",
+    "analogy": "A map of meaning: “doctor” lands nearer “nurse” than “screwdriver.”",
     "explanation": [
-      "Embedding layer maps token IDs to vectors.",
-      "Training places related items closer.",
-      "Cosine similarity is a common closeness measure.",
-      "Dimensionality and data shape the geometry."
+      "After tokenization, each token ID becomes a vector—the embedding.",
+      "Nearby vectors usually mean related meanings or roles in language.",
+      "ChatGPT stacks many layers that keep refining these vectors with context.",
+      "Apps also embed docs and queries to retrieve neighbors for RAG-style chat."
     ],
     "keyTerms": [
       {
         "term": "Embedding",
-        "definition": "Vector representing meaning"
+        "definition": "Number vector representing meaning"
       },
       {
         "term": "Vector space",
-        "definition": "Coordinate world for similarity"
+        "definition": "Map where distance means similarity"
       },
       {
         "term": "Cosine similarity",
-        "definition": "Angle-based closeness score"
+        "definition": "Angle-based relatedness score"
       }
     ],
     "visualization": {
@@ -942,9 +954,15 @@ export const concepts: Concept[] = [
       }
     },
     "realWorldExample": {
-      "title": "Duplicate question detection",
-      "story": "Forums embed posts to find near-duplicate asks.",
-      "takeaway": "Vectors power semantic matching."
+      "title": "ChatGPT-style FAQ search before answering",
+      "story": "A campus bot embeds your question “Wi-Fi dead in hostel B?” and finds FAQ chunks whose embeddings are nearby. ChatGPT (or a similar model) then answers using those chunks instead of guessing from thin air.",
+      "takeaway": "Embeddings power “find related text,” not just pretty geometry."
+    },
+    "chatGptLens": {
+      "setting": "You ask ChatGPT to rewrite a sentence in a friendlier tone.",
+      "userInput": "Make this email sound less harsh: “Submit the report by Friday.”",
+      "insideTheModel": "Token IDs become embedding vectors; later layers move those vectors so “harsh” and “friendly” tones are distinguished in the math.",
+      "modelOutput": "A softer email like “Could you please submit the report by Friday?”"
     },
     "quiz": [
       {
@@ -997,27 +1015,27 @@ export const concepts: Concept[] = [
       },
       {
         "id": "embeddings-q3",
-        "prompt": "Cosine similarity measures…",
+        "prompt": "Why convert ChatGPT tokens into embeddings?",
         "options": [
           {
             "id": "o0",
-            "text": "Exact string equality only"
+            "text": "So the model can do math on meaning-like vectors"
           },
           {
             "id": "o1",
-            "text": "Directional closeness of vectors"
+            "text": "To delete the vocabulary"
           },
           {
             "id": "o2",
-            "text": "CPU temperature"
+            "text": "Only for drawing charts for users"
           },
           {
             "id": "o3",
-            "text": "Packet loss"
+            "text": "To skip tokenization forever"
           }
         ],
-        "correctOptionId": "o1",
-        "explanation": "Common semantic metric."
+        "correctOptionId": "o0",
+        "explanation": "Vectors let the network mix and compare meanings."
       }
     ],
     "prevConceptId": "vocabulary-context-window",
@@ -1033,26 +1051,26 @@ export const concepts: Concept[] = [
     "prerequisites": [
       "embeddings"
     ],
-    "laymanSummary": "Self-attention alone does not inherently know order. Positional encodings (sinusoidal, learned, RoPE, ALiBi, and others) inject order so “dog bites man” differs from “man bites dog.”",
-    "analogy": "Like page numbers in a shuffled manuscript—bricks need positions to rebuild the plot.",
+    "laymanSummary": "Attention mixes tokens but needs a signal for order. Positional encoding tells ChatGPT which token came first so “dog bites man” ≠ “man bites dog.”",
+    "analogy": "Page numbers in a shuffled manuscript—bricks need positions to rebuild the plot.",
     "explanation": [
-      "Attention mixes tokens; positions disambiguate order.",
-      "Absolute and relative schemes exist.",
-      "Modern LLMs often use rotary embeddings (RoPE).",
-      "Length generalization depends on the scheme."
+      "Without position info, a bag of tokens loses word order.",
+      "Encodings (learned, sinusoidal, RoPE, ALiBi, etc.) inject order into vectors.",
+      "ChatGPT uses this so pronouns and arguments line up with the right words.",
+      "Order is meaning: swapping words can flip who did what."
     ],
     "keyTerms": [
       {
         "term": "Positional encoding",
-        "definition": "Signal carrying sequence order"
+        "definition": "Signal that marks token order"
       },
       {
         "term": "RoPE",
-        "definition": "Rotary position embedding used in many LLMs"
+        "definition": "Rotary method for encoding positions"
       },
       {
-        "term": "Relative position",
-        "definition": "Encoding distances between tokens"
+        "term": "Word order",
+        "definition": "Sequence that changes sentence meaning"
       }
     ],
     "visualization": {
@@ -1279,9 +1297,15 @@ export const concepts: Concept[] = [
       }
     },
     "realWorldExample": {
-      "title": "Code completion sensitivity",
-      "story": "Swapping two args changes meaning; positions preserve that.",
-      "takeaway": "Order is semantics in language and code."
+      "title": "ChatGPT follows steps in the right order",
+      "story": "You ask: “First summarize, then list risks, then give a fix.” Position signals help the model treat “first/then” as sequence, not a random pile of instructions.",
+      "takeaway": "Order cues in your prompt matter because the model tracks positions."
+    },
+    "chatGptLens": {
+      "setting": "You paste two nearly identical sentences into ChatGPT.",
+      "userInput": "Which is worse: “student fails exam” or “exam fails student”?",
+      "insideTheModel": "Same words, different positions. Positional encoding makes those sequences look different to attention.",
+      "modelOutput": "An explanation that the first blames the student, while the second is odd or metaphorical."
     },
     "quiz": [
       {
@@ -1334,27 +1358,27 @@ export const concepts: Concept[] = [
       },
       {
         "id": "positional-encoding-q3",
-        "prompt": "Dog bites man vs man bites dog shows…",
+        "prompt": "What problem does positional encoding solve for ChatGPT-like models?",
         "options": [
           {
             "id": "o0",
-            "text": "Positions do not matter"
+            "text": "Billing by the minute"
           },
           {
             "id": "o1",
-            "text": "Order changes meaning"
+            "text": "Telling the model which token came in which order"
           },
           {
             "id": "o2",
-            "text": "Tokens are pixels"
+            "text": "Downloading more GPUs"
           },
           {
             "id": "o3",
-            "text": "Models ignore verbs"
+            "text": "Removing the vocabulary"
           }
         ],
         "correctOptionId": "o1",
-        "explanation": "Order encodes meaning."
+        "explanation": "Order must be injected; attention alone is permutation-weak."
       }
     ],
     "prevConceptId": "embeddings",
@@ -1370,27 +1394,26 @@ export const concepts: Concept[] = [
     "prerequisites": [
       "positional-encoding"
     ],
-    "laymanSummary": "Self-attention lets every token build a new representation by taking a weighted mix of other tokens information. Weights come from compatibility between queries and keys; values carry the content mixed in. This is how context disambiguates words like bank.",
-    "analogy": "In a meeting, you glance more at people relevant to your current sentence—not equally at everyone forever.",
+    "laymanSummary": "Self-attention lets each token look at others and pull in the useful ones. That is how ChatGPT uses “bank” with “river” vs “loan” to pick the right sense.",
+    "analogy": "In a group project meeting, you glance more at the person relevant to your current sentence—not equally at everyone forever.",
     "explanation": [
-      "Query, Key, Value projections create attention scores.",
-      "Softmax turns scores into weights.",
-      "Weighted values form the output.",
-      "Causal masks prevent looking ahead in decoders.",
-      "Attention is powerful but quadratic in sequence length."
+      "Each token makes a query; others offer keys and values.",
+      "High query–key match → higher attention weight on that value.",
+      "The new vector is a weighted mix of other tokens’ information.",
+      "In chat models, causal masking blocks peeking at future tokens while writing."
     ],
     "keyTerms": [
       {
-        "term": "Query",
-        "definition": "What I am looking for"
+        "term": "Query / Key / Value",
+        "definition": "Triple used to score and mix tokens"
       },
       {
-        "term": "Key",
-        "definition": "What I contain for matching"
+        "term": "Attention weight",
+        "definition": "How much one token uses another"
       },
       {
-        "term": "Value",
-        "definition": "Information I contribute when selected"
+        "term": "Causal mask",
+        "definition": "Rule: cannot look ahead while generating"
       }
     ],
     "visualization": {
@@ -1615,9 +1638,15 @@ export const concepts: Concept[] = [
       }
     },
     "realWorldExample": {
-      "title": "Pronoun resolution",
-      "story": "Attention helps bind pronouns to the right noun.",
-      "takeaway": "Context selection is core to understanding."
+      "title": "ChatGPT resolves “it” in your question",
+      "story": "You write: “I built a Flask API. It returns 500 on /login.” Self-attention links “It” to “Flask API,” not to some earlier noun in the thread.",
+      "takeaway": "Attention is how context disambiguates pronouns and jargon."
+    },
+    "chatGptLens": {
+      "setting": "A short ChatGPT clarification about ambiguous wording.",
+      "userInput": "I deposited money at the bank by the river. What does bank mean here?",
+      "insideTheModel": "Self-attention lets “bank” weight “river” heavily, pulling river-side meaning instead of finance.",
+      "modelOutput": "“Bank” here means the land beside the river, not a financial institution."
     },
     "quiz": [
       {
@@ -1670,27 +1699,27 @@ export const concepts: Concept[] = [
       },
       {
         "id": "self-attention-q3",
-        "prompt": "Causal masking stops…",
+        "prompt": "In ChatGPT-style decoding, why use a causal mask in self-attention?",
         "options": [
           {
             "id": "o0",
-            "text": "All learning"
+            "text": "To stop the model peeking at future tokens while writing"
           },
           {
             "id": "o1",
-            "text": "Looking at future tokens while decoding"
+            "text": "To delete embeddings"
           },
           {
             "id": "o2",
-            "text": "Using GPUs"
+            "text": "To double the vocabulary size"
           },
           {
             "id": "o3",
-            "text": "Saving logs"
+            "text": "To turn off temperature"
           }
         ],
-        "correctOptionId": "o1",
-        "explanation": "No peeking ahead."
+        "correctOptionId": "o0",
+        "explanation": "Generation must only condition on the past."
       }
     ],
     "prevConceptId": "positional-encoding",
@@ -1706,27 +1735,26 @@ export const concepts: Concept[] = [
     "prerequisites": [
       "self-attention"
     ],
-    "laymanSummary": "Multi-head attention runs several attention operations in parallel, each potentially specializing in different relationship types, then concatenates results. More heads increase expressive capacity at a compute cost.",
-    "analogy": "Multiple specialists reading the same paragraph: one tracks subjects, one tracks numbers, one tracks quotes.",
+    "laymanSummary": "Multi-head attention runs several attention “views” in parallel on the same tokens. ChatGPT can track grammar, numbers, and quotes at once, then merge the results.",
+    "analogy": "Several specialists reading one paragraph: one tracks subjects, one tracks numbers, one tracks quoted text.",
     "explanation": [
-      "Split Q/K/V into heads.",
-      "Each head attends independently.",
-      "Concatenate head outputs.",
-      "Project back to model dimension.",
-      "Heads can specialize but are not guaranteed interpretable."
+      "One head is one attention pass with its own projections.",
+      "Many heads run in parallel on the same token sequence.",
+      "Outputs are concatenated (then projected) into one richer vector.",
+      "More heads add capacity and cost; specializations are learned, not guaranteed labels."
     ],
     "keyTerms": [
       {
         "term": "Attention head",
-        "definition": "One parallel attention subspace"
+        "definition": "One parallel attention pathway"
       },
       {
-        "term": "Model dimension",
-        "definition": "Width of token vectors"
+        "term": "Multi-head",
+        "definition": "Several heads combined for richer context"
       },
       {
         "term": "Concatenation",
-        "definition": "Joining head outputs"
+        "definition": "Joining head outputs into one vector"
       }
     ],
     "visualization": {
@@ -1953,9 +1981,15 @@ export const concepts: Concept[] = [
       }
     },
     "realWorldExample": {
-      "title": "Translation alignments",
-      "story": "Different heads may track different alignment patterns.",
-      "takeaway": "Parallel perspectives enrich representations."
+      "title": "ChatGPT edits code and comments together",
+      "story": "You ask ChatGPT to rename a variable and update the docstring. Different heads can emphasize identifier links vs surrounding comment words, then merge into one coherent edit.",
+      "takeaway": "Multiple views help mixed tasks (code + prose) in one reply."
+    },
+    "chatGptLens": {
+      "setting": "You paste a messy meeting note into ChatGPT.",
+      "userInput": "Extract action items, owners, and deadlines from this note.",
+      "insideTheModel": "Multi-head attention lets separate heads focus on verbs, names, and dates, then combine those signals.",
+      "modelOutput": "A clean bullet list: task → owner → due date."
     },
     "quiz": [
       {
@@ -2008,27 +2042,27 @@ export const concepts: Concept[] = [
       },
       {
         "id": "multi-head-attention-q3",
-        "prompt": "Outputs of heads are typically…",
+        "prompt": "What do multi-head attention layers typically do with head outputs?",
         "options": [
           {
             "id": "o0",
-            "text": "Deleted"
+            "text": "Throw away all but one head"
           },
           {
             "id": "o1",
-            "text": "Concatenated and projected"
+            "text": "Concatenate (then project) them into one representation"
           },
           {
             "id": "o2",
-            "text": "Converted to MP3"
+            "text": "Send each head to a different user"
           },
           {
             "id": "o3",
-            "text": "Emailed"
+            "text": "Convert them into raw text immediately"
           }
         ],
         "correctOptionId": "o1",
-        "explanation": "Merge then continue."
+        "explanation": "Heads merge so later layers see a combined signal."
       }
     ],
     "prevConceptId": "self-attention",
@@ -2044,26 +2078,26 @@ export const concepts: Concept[] = [
     "prerequisites": [
       "multi-head-attention"
     ],
-    "laymanSummary": "After attention mixes information across tokens, a position-wise feed-forward network transforms each token vector independently. Intuitively, attention is communication; the FFN is private computation.",
-    "analogy": "Group discussion (attention) then each person quietly rewrites their notes (FFN).",
+    "laymanSummary": "After attention shares info across tokens, a feed-forward network (FFN) transforms each token’s vector on its own. Attention is the group chat; the FFN is private thinking.",
+    "analogy": "Group discussion (attention), then each person quietly rewrites their notes (FFN).",
     "explanation": [
-      "FFN applies the same MLP at each position.",
-      "Usually expand, nonlinearity, project back.",
-      "Pairs with attention inside each block.",
-      "Holds substantial parameter count in LLMs."
+      "The FFN runs the same small MLP at every position, independently.",
+      "It usually expands the vector, applies a nonlinearity, then shrinks it back.",
+      "This step stores and applies lots of learned “patterns” after mixing context.",
+      "In ChatGPT’s stack, attention and FFN alternate inside each layer."
     ],
     "keyTerms": [
       {
         "term": "FFN / MLP",
-        "definition": "Position-wise feed-forward layers"
+        "definition": "Per-token neural net after attention"
       },
       {
-        "term": "GeLU/ReLU",
-        "definition": "Common nonlinearities"
+        "term": "Position-wise",
+        "definition": "Same FFN applied at each token alone"
       },
       {
-        "term": "Block",
-        "definition": "Attention plus FFN unit with residuals/norms"
+        "term": "Nonlinearity",
+        "definition": "Activation that enables richer transforms"
       }
     ],
     "visualization": {
@@ -2290,9 +2324,15 @@ export const concepts: Concept[] = [
       }
     },
     "realWorldExample": {
-      "title": "Factual association research",
-      "story": "Studies suggest FFNs play a large role in storing associations.",
-      "takeaway": "Attention routes; FFNs often compute and store."
+      "title": "ChatGPT turns mixed context into a crisp label",
+      "story": "Attention gathers clues that your paste is a stack trace. The FFN helps each token’s vector become more “error-diagnosis shaped,” so the next layers write a fix instead of a poem.",
+      "takeaway": "FFN is the private compute after the context mix."
+    },
+    "chatGptLens": {
+      "setting": "You ask ChatGPT to classify a support ticket.",
+      "userInput": "Tag this: “App crashes when I upload a PDF larger than 10MB.”",
+      "insideTheModel": "Attention mixes “crashes,” “upload,” and “PDF”; the FFN then transforms each token vector toward a useful category decision.",
+      "modelOutput": "Something like: Category = file upload / size limit bug."
     },
     "quiz": [
       {
@@ -2345,27 +2385,27 @@ export const concepts: Concept[] = [
       },
       {
         "id": "feed-forward-network-q3",
-        "prompt": "FFNs usually…",
+        "prompt": "How does the FFN differ from self-attention in a Transformer block?",
         "options": [
           {
             "id": "o0",
-            "text": "Shrink then disappear"
+            "text": "FFN mixes all tokens together; attention never does"
           },
           {
             "id": "o1",
-            "text": "Expand then project back"
+            "text": "Attention mixes across tokens; FFN transforms each token alone"
           },
           {
             "id": "o2",
-            "text": "Ban softmax"
+            "text": "FFN only runs at training time"
           },
           {
             "id": "o3",
-            "text": "Delete residuals"
+            "text": "They are identical operations"
           }
         ],
         "correctOptionId": "o1",
-        "explanation": "Expand-contract pattern."
+        "explanation": "Communicate (attention) vs compute per position (FFN)."
       }
     ],
     "prevConceptId": "multi-head-attention",
@@ -2381,26 +2421,26 @@ export const concepts: Concept[] = [
     "prerequisites": [
       "feed-forward-network"
     ],
-    "laymanSummary": "Residual connections add a block input to its output so layers learn residual updates rather than whole transformations from scratch. This stabilizes deep stacks and improves gradient flow.",
-    "analogy": "Editing with track changes: keep the original and add a delta instead of rewriting the whole essay each time.",
+    "laymanSummary": "A residual connection adds a layer’s input back to its output. Deep ChatGPT stacks can tweak representations instead of rewriting them from scratch each time.",
+    "analogy": "Track-changes editing: keep the original paragraph and add a delta, instead of rewriting the whole essay every pass.",
     "explanation": [
-      "Output is roughly input plus layer(input).",
-      "Helps train very deep nets.",
-      "Used around attention and FFN sublayers.",
-      "Works with normalization for stability."
+      "Pattern: output = x + Layer(x).",
+      "Layers learn refinements; the original signal can still flow forward.",
+      "Residuals help gradients train very deep Transformers stably.",
+      "ChatGPT-style models use residuals around attention and FFN blocks."
     ],
     "keyTerms": [
       {
-        "term": "Residual",
-        "definition": "Skip connection adding input to output"
+        "term": "Residual / skip",
+        "definition": "Add block input to block output"
       },
       {
         "term": "Gradient flow",
-        "definition": "How error signals propagate backward"
+        "definition": "How learning signals reach early layers"
       },
       {
-        "term": "Sublayer",
-        "definition": "Attention or FFN unit inside a block"
+        "term": "Identity path",
+        "definition": "Route that preserves the input signal"
       }
     ],
     "visualization": {
@@ -2627,9 +2667,15 @@ export const concepts: Concept[] = [
       }
     },
     "realWorldExample": {
-      "title": "Deeper models, fewer crashes",
-      "story": "Residuals were key to training very deep nets.",
-      "takeaway": "Architecture details unlock depth."
+      "title": "Why a 50+ layer chat model can still train",
+      "story": "Without residuals, stacking dozens of attention/FFN blocks often collapses training. Residuals let each block make a small useful update so ChatGPT-scale depth is trainable.",
+      "takeaway": "Skip connections make deep chat models practical."
+    },
+    "chatGptLens": {
+      "setting": "ChatGPT is mid-reply refining a rough draft inside its layers.",
+      "userInput": "Tighten this paragraph without changing the facts.",
+      "insideTheModel": "Each block proposes a change, then adds it to the incoming vector so core meaning isn’t wiped every layer.",
+      "modelOutput": "A tighter paragraph that still keeps the original facts."
     },
     "quiz": [
       {
@@ -2682,27 +2728,27 @@ export const concepts: Concept[] = [
       },
       {
         "id": "residual-connections-q3",
-        "prompt": "Transformers use residuals…",
+        "prompt": "What is the usual residual pattern around a Transformer block?",
         "options": [
           {
             "id": "o0",
-            "text": "Never"
+            "text": "output = Layer(x) only, input discarded"
           },
           {
             "id": "o1",
-            "text": "Around major sublayers"
+            "text": "output = x + Layer(x)"
           },
           {
             "id": "o2",
-            "text": "Only in CSS"
+            "text": "output = x − vocabulary size"
           },
           {
             "id": "o3",
-            "text": "Only offline"
+            "text": "output = temperature × top-p"
           }
         ],
         "correctOptionId": "o1",
-        "explanation": "Standard pattern."
+        "explanation": "Add the update to the original input."
       }
     ],
     "prevConceptId": "feed-forward-network",
@@ -2718,26 +2764,26 @@ export const concepts: Concept[] = [
     "prerequisites": [
       "residual-connections"
     ],
-    "laymanSummary": "Layer normalization rescales activations across features for each token so values stay well-behaved through deep stacks. Combined with residuals, it stabilizes training. Placement (pre-norm vs post-norm) varies by architecture.",
-    "analogy": "Auto-adjusting microphone gain so each singer sits in a healthy volume range before the next effect pedal.",
+    "laymanSummary": "Layer normalization rescales each token’s features so activations stay well-behaved through deep stacks. Together with residuals, it keeps ChatGPT-like training and inference stable.",
+    "analogy": "Auto-gain on a mic: keep each singer in a healthy volume range before the next effect pedal.",
     "explanation": [
-      "Normalize mean and variance across features.",
-      "Learned scale and bias restore flexibility.",
-      "Pre-norm is common in modern LLMs.",
-      "Stabilizes deep residual pipelines."
+      "For each token, LayerNorm recenters/rescales across its feature dimensions.",
+      "This reduces wild activation scales as depth grows.",
+      "Pre-norm vs post-norm changes where norm sits relative to the residual block.",
+      "Modern chat models almost always pair norms with residuals."
     ],
     "keyTerms": [
       {
         "term": "LayerNorm",
-        "definition": "Per-token feature normalization"
+        "definition": "Per-token feature rescaling for stability"
       },
       {
         "term": "Pre-norm",
-        "definition": "Normalize before sublayer"
+        "definition": "Normalize before the sub-layer"
       },
       {
-        "term": "Activation scale",
-        "definition": "Magnitude of neuron outputs"
+        "term": "Activation",
+        "definition": "Internal numbers flowing through layers"
       }
     ],
     "visualization": {
@@ -2964,9 +3010,15 @@ export const concepts: Concept[] = [
       }
     },
     "realWorldExample": {
-      "title": "Training deep chat models",
-      "story": "Norm choices affect convergence speed and stability.",
-      "takeaway": "Small engineering choices, large training impact."
+      "title": "Long ChatGPT answers don’t “blow up” numerically",
+      "story": "Generating a long solution involves many layer passes. LayerNorm keeps internal scales in a sane range so later tokens don’t become numerical garbage.",
+      "takeaway": "Norm is plumbing for stable deep generation."
+    },
+    "chatGptLens": {
+      "setting": "You ask ChatGPT for a multi-step derivation.",
+      "userInput": "Walk through solving this recurrence step by step.",
+      "insideTheModel": "As vectors pass many residual blocks, LayerNorm keeps each token’s features scaled so the next attention/FFN can work reliably.",
+      "modelOutput": "A coherent step-by-step solution instead of a collapsed or exploding mess of tokens."
     },
     "quiz": [
       {
@@ -3019,27 +3071,27 @@ export const concepts: Concept[] = [
       },
       {
         "id": "layer-normalization-q3",
-        "prompt": "Norm works with residuals to…",
+        "prompt": "What is LayerNorm mainly for in Transformer chat models?",
         "options": [
           {
             "id": "o0",
-            "text": "Make depth trainable"
+            "text": "Choosing the next emoji"
           },
           {
             "id": "o1",
-            "text": "Remove datasets"
+            "text": "Stabilizing activation scales through deep layers"
           },
           {
             "id": "o2",
-            "text": "Ban GPUs"
+            "text": "Downloading fresh web pages"
           },
           {
             "id": "o3",
-            "text": "Replace loss"
+            "text": "Setting the UI theme"
           }
         ],
-        "correctOptionId": "o0",
-        "explanation": "Stability pair."
+        "correctOptionId": "o1",
+        "explanation": "It keeps internal values well-behaved with depth."
       }
     ],
     "prevConceptId": "residual-connections",
@@ -3055,26 +3107,26 @@ export const concepts: Concept[] = [
     "prerequisites": [
       "layer-normalization"
     ],
-    "laymanSummary": "Transformer families differ by attention layout. Encoder-only models bidirectional-encode inputs. Decoder-only models causally generate left-to-right. Encoder-decoder models encode a source then decode a target.",
-    "analogy": "Encoder is reading comprehension; decoder is writing with only past drafts visible; encoder-decoder is read then write.",
+    "laymanSummary": "Transformers come in three common layouts: encoder-only, decoder-only, and encoder–decoder. ChatGPT-style chatbots are typically decoder-only models that write left to right.",
+    "analogy": "Encoder = reading comprehension; decoder = writing with only past drafts visible; encoder–decoder = read the source, then write the target.",
     "explanation": [
-      "Encoder: bidirectional context.",
-      "Decoder: causal mask for generation.",
-      "Encoder-decoder: conditional generation.",
-      "Choose by task: understand, generate, or transform."
+      "Encoder-only (e.g., BERT-style): bidirectional view of the input for understanding tasks.",
+      "Decoder-only (ChatGPT-style): causal generation—each new token sees only the past.",
+      "Encoder–decoder: encode a source, then decode a target (classic translation).",
+      "Product choice follows the job: classify text vs chat vs translate."
     ],
     "keyTerms": [
       {
-        "term": "Causal mask",
-        "definition": "Block attending to future tokens"
+        "term": "Encoder-only",
+        "definition": "Bidirectional model for understanding inputs"
       },
       {
-        "term": "Bidirectional",
-        "definition": "See left and right context"
+        "term": "Decoder-only",
+        "definition": "Causal left-to-right generator (chat style)"
       },
       {
-        "term": "Seq2seq",
-        "definition": "Map an input sequence to an output sequence"
+        "term": "Encoder–decoder",
+        "definition": "Encode source, then generate target"
       }
     ],
     "visualization": {
@@ -3301,9 +3353,15 @@ export const concepts: Concept[] = [
       }
     },
     "realWorldExample": {
-      "title": "T5-style unification",
-      "story": "Many NLP tasks cast as text-to-text with encoder-decoder models.",
-      "takeaway": "Layout follows the information flow you need."
+      "title": "Why ChatGPT streams a reply",
+      "story": "Chat products use decoder-only Transformers. They generate token by token, so the UI can stream words. A BERT-like encoder alone wouldn’t naturally write that open-ended chat reply.",
+      "takeaway": "Architecture choice matches chat vs classify vs translate."
+    },
+    "chatGptLens": {
+      "setting": "You compare tools: a classifier vs ChatGPT vs a translator.",
+      "userInput": "Translate this Hindi sentence to English, then explain it casually.",
+      "insideTheModel": "A classic translator may use encoder–decoder; ChatGPT does both jobs inside a decoder-only generate-from-prompt setup.",
+      "modelOutput": "An English translation plus a friendly explanation in one streamed reply."
     },
     "quiz": [
       {
@@ -3356,27 +3414,27 @@ export const concepts: Concept[] = [
       },
       {
         "id": "encoder-decoder-types-q3",
-        "prompt": "Translation classic fit…",
+        "prompt": "Which Transformer type is ChatGPT most like?",
         "options": [
           {
             "id": "o0",
-            "text": "Encoder-decoder"
+            "text": "Encoder-only only"
           },
           {
             "id": "o1",
-            "text": "No neural nets"
+            "text": "Decoder-only (causal) generator"
           },
           {
             "id": "o2",
-            "text": "Only regex"
+            "text": "A pure rules engine with no neural net"
           },
           {
             "id": "o3",
-            "text": "Only FTP"
+            "text": "An image CNN with no language head"
           }
         ],
-        "correctOptionId": "o0",
-        "explanation": "Seq2seq."
+        "correctOptionId": "o1",
+        "explanation": "Chat models generate left-to-right under a causal mask."
       }
     ],
     "prevConceptId": "layer-normalization",
@@ -3392,26 +3450,26 @@ export const concepts: Concept[] = [
     "prerequisites": [
       "encoder-decoder-types"
     ],
-    "laymanSummary": "Autoregressive decoding produces tokens one by one, each conditioned on previously generated tokens and the prompt. That is why chat models stream words and why early mistakes can cascade.",
-    "analogy": "Writing a sentence aloud without erasing: each new word must fit what you already said.",
+    "laymanSummary": "Autoregressive decoding means ChatGPT writes one token at a time, and each new token depends on everything already written. That is why replies stream—and why early mistakes can snowball.",
+    "analogy": "Speaking a sentence aloud without a backspace: each new word must fit what you already said.",
     "explanation": [
-      "Predict token t given tokens before t.",
-      "Append sample and repeat.",
-      "Streaming UX matches this loop.",
-      "Errors compound; decoding strategy matters."
+      "Start from the prompt tokens; predict the next token.",
+      "Append it; repeat until a stop condition.",
+      "Streaming UIs show tokens as soon as they are chosen.",
+      "A wrong early token becomes part of the context for later ones."
     ],
     "keyTerms": [
       {
         "term": "Autoregressive",
-        "definition": "Left-to-right sequential generation"
+        "definition": "Each step conditions on prior outputs"
       },
       {
-        "term": "Prefix",
-        "definition": "Tokens already fixed"
+        "term": "Decoding",
+        "definition": "Turning model scores into chosen tokens"
       },
       {
-        "term": "Stop condition",
-        "definition": "EOS token or max length"
+        "term": "Error cascade",
+        "definition": "Early mistakes steer later tokens wrong"
       }
     ],
     "visualization": {
@@ -3638,9 +3696,15 @@ export const concepts: Concept[] = [
       }
     },
     "realWorldExample": {
-      "title": "Live token streaming",
-      "story": "UIs show partial answers as tokens arrive.",
-      "takeaway": "AR decoding enables incremental UX."
+      "title": "ChatGPT starts a wrong JSON key and keeps going",
+      "story": "You ask for strict JSON. The model emits `\"nam\"` instead of `\"name\"`. Later fields still try to look consistent with that broken start, so the whole object fails validation.",
+      "takeaway": "Autoregression makes prefixes sticky—constrain or regenerate early errors."
+    },
+    "chatGptLens": {
+      "setting": "You watch ChatGPT stream a bullet list live.",
+      "userInput": "List 4 revision tips for my OS midterm.",
+      "insideTheModel": "Token 1 is chosen from the prompt; token 2 sees prompt+token1; and so on—classic autoregressive decoding.",
+      "modelOutput": "Bullets appear word-by-word until the list completes or a stop rule hits."
     },
     "quiz": [
       {
@@ -3693,27 +3757,27 @@ export const concepts: Concept[] = [
       },
       {
         "id": "autoregressive-decoding-q3",
-        "prompt": "Streaming is natural because…",
+        "prompt": "Why can an early wrong token ruin a later ChatGPT answer?",
         "options": [
           {
             "id": "o0",
-            "text": "Tokens arrive one after another"
+            "text": "Because later tokens condition on everything already generated"
           },
           {
             "id": "o1",
-            "text": "Browsers forbid text"
+            "text": "Because embeddings are deleted after one token"
           },
           {
             "id": "o2",
-            "text": "GPUs hate math"
+            "text": "Because temperature always becomes zero"
           },
           {
             "id": "o3",
-            "text": "CSS forbids words"
+            "text": "Because the vocabulary shrinks each step"
           }
         ],
         "correctOptionId": "o0",
-        "explanation": "Sequential emission."
+        "explanation": "Autoregression feeds past outputs back in."
       }
     ],
     "prevConceptId": "encoder-decoder-types",
@@ -3729,26 +3793,26 @@ export const concepts: Concept[] = [
     "prerequisites": [
       "autoregressive-decoding"
     ],
-    "laymanSummary": "Next-token prediction asks: given previous tokens, what is the probability distribution over the next token? Pretraining minimizes error on this task at scale; inference samples from it. Rich behaviors emerge without guaranteeing truth.",
-    "analogy": "A fill-in-the-next-word game played billions of times until the player becomes an expert stylist of continuations.",
+    "laymanSummary": "Under the hood, ChatGPT’s core job is: given the tokens so far, score every possible next token. Training taught those scores; chatting samples from them.",
+    "analogy": "A fill-in-the-next-word game played billions of times until the player becomes expert at plausible continuations.",
     "explanation": [
-      "Loss compares predicted distribution vs actual next token.",
-      "Inference samples from the distribution.",
-      "Capabilities emerge from objective plus data.",
-      "Calibration and factuality still need extra systems."
+      "The model outputs logits (raw scores) for the vocabulary.",
+      "Softmax turns scores into a probability distribution over next tokens.",
+      "Pretraining minimizes wrong next-token guesses on huge text.",
+      "Fluent next tokens ≠ verified facts—plausibility is the direct goal."
     ],
     "keyTerms": [
       {
         "term": "Logits",
-        "definition": "Raw scores before softmax"
+        "definition": "Raw next-token scores before softmax"
       },
       {
         "term": "Softmax",
-        "definition": "Convert scores to probabilities"
+        "definition": "Turns scores into probabilities"
       },
       {
-        "term": "Teacher forcing",
-        "definition": "Train on true prefixes"
+        "term": "Next-token prediction",
+        "definition": "Guess the following token from the past"
       }
     ],
     "visualization": {
@@ -3983,9 +4047,15 @@ export const concepts: Concept[] = [
       }
     },
     "realWorldExample": {
-      "title": "Email subject autocomplete",
-      "story": "Productive continuation without understanding your whole company.",
-      "takeaway": "Prediction is not verified knowledge."
+      "title": "Subject-line autocomplete feels “smart”",
+      "story": "Gmail-style or ChatGPT continuation suggests “meeting tomorrow at…” because those tokens were likely after similar prefixes in training—not because it checked your calendar.",
+      "takeaway": "Next-token skill is pattern completion, not a truth database."
+    },
+    "chatGptLens": {
+      "setting": "Mid-sentence, ChatGPT is about to pick the next word.",
+      "userInput": "Complete: “The compiler reported an unused…”",
+      "insideTheModel": "Next-token prediction scores candidates like “variable”, “import”, “parameter”; sampling picks one.",
+      "modelOutput": "“…variable” (or similar), then continues from that choice."
     },
     "quiz": [
       {
@@ -4038,27 +4108,27 @@ export const concepts: Concept[] = [
       },
       {
         "id": "next-token-prediction-q3",
-        "prompt": "Fluent next tokens imply true facts.",
+        "prompt": "If ChatGPT’s next tokens sound fluent, does that guarantee the facts are true?",
         "options": [
           {
             "id": "o0",
-            "text": "Always"
+            "text": "Yes—fluency means verified knowledge"
           },
           {
             "id": "o1",
-            "text": "Not necessarily"
+            "text": "No—fluency is about likely text, not guaranteed truth"
           },
           {
             "id": "o2",
-            "text": "Never useful"
+            "text": "Only when temperature is high"
           },
           {
             "id": "o3",
-            "text": "Only in Latin"
+            "text": "Only for code, never for English"
           }
         ],
         "correctOptionId": "o1",
-        "explanation": "Fluency is not truth."
+        "explanation": "The objective is plausible continuation, not proof."
       }
     ],
     "prevConceptId": "autoregressive-decoding",
@@ -4074,26 +4144,26 @@ export const concepts: Concept[] = [
     "prerequisites": [
       "next-token-prediction"
     ],
-    "laymanSummary": "Decoding strategies reshape the next-token distribution. Temperature softens or sharpens probabilities. Top-k keeps only k highest tokens; top-p keeps the smallest set whose cumulative probability exceeds p. These knobs trade creativity versus stability.",
-    "analogy": "Temperature is spice level; top-k and top-p cut off absurd ingredients.",
+    "laymanSummary": "After ChatGPT scores next tokens, sampling knobs reshape the odds. Temperature, top-k, and top-p trade safer, repetitive answers for more variety—or the reverse.",
+    "analogy": "Temperature is spice level; top-k and top-p cut off absurd ingredients before tasting.",
     "explanation": [
-      "Temperature divides logits before softmax.",
-      "Low temp is peaky; high temp is flatter.",
-      "Top-k and top-p truncate the tail.",
-      "Task-dependent tuning beats dogma."
+      "Temperature scales logits: low → peaky/safe; high → flatter/more random.",
+      "Top-k keeps only the k highest-scoring tokens.",
+      "Top-p (nucleus) keeps the smallest set whose probabilities sum to at least p.",
+      "For JSON or exams, prefer low randomness; for brainstorming, raise it carefully."
     ],
     "keyTerms": [
       {
         "term": "Temperature",
-        "definition": "Softmax sharpness control"
+        "definition": "Controls how sharp the next-token odds are"
       },
       {
         "term": "Top-k",
-        "definition": "Keep k best tokens"
+        "definition": "Keep only the k best token choices"
       },
       {
-        "term": "Top-p / nucleus",
-        "definition": "Keep probability mass at least p"
+        "term": "Top-p",
+        "definition": "Keep a probability-mass “nucleus” of options"
       }
     ],
     "visualization": {
@@ -4323,9 +4393,15 @@ export const concepts: Concept[] = [
       }
     },
     "realWorldExample": {
-      "title": "Creative copy vs legal boilerplate",
-      "story": "Marketing wants higher temperature; contracts want near-greedy decoding.",
-      "takeaway": "Match sampler to risk tolerance."
+      "title": "Same prompt, two ChatGPT personalities",
+      "story": "Marketing drafts a slogan at higher temperature and gets wild variants. Legal regenerates a clause near-greedy (low temperature) so wording stays stable and less surprising.",
+      "takeaway": "Match sampling knobs to risk: creative vs precise."
+    },
+    "chatGptLens": {
+      "setting": "You regenerate a ChatGPT answer for a creative vs strict task.",
+      "userInput": "Give me a team name for our hackathon project.",
+      "insideTheModel": "Higher temperature / wider nucleus lets lower-ranked fun names compete; a low-temp setting would stick to safer top choices.",
+      "modelOutput": "Varied names on creative settings; more repetitive, “obvious” names when sampling is tight."
     },
     "quiz": [
       {
@@ -4378,27 +4454,27 @@ export const concepts: Concept[] = [
       },
       {
         "id": "temperature-top-k-top-p-q3",
-        "prompt": "For strict formatting, prefer…",
+        "prompt": "You need ChatGPT to output strict JSON. Which sampling bias helps most?",
         "options": [
           {
             "id": "o0",
-            "text": "Maximum chaos"
+            "text": "Maximum temperature for more commas"
           },
           {
             "id": "o1",
-            "text": "Lower temperature or constrained decoding"
+            "text": "Lower temperature (and/or constrained decoding)"
           },
           {
             "id": "o2",
-            "text": "Infinite temperature"
+            "text": "Disable the vocabulary"
           },
           {
             "id": "o3",
-            "text": "No evaluation"
+            "text": "Always pick a random Unicode emoji"
           }
         ],
         "correctOptionId": "o1",
-        "explanation": "Stability first."
+        "explanation": "Less randomness stabilizes structured formats."
       }
     ],
     "prevConceptId": "next-token-prediction",
@@ -4414,27 +4490,26 @@ export const concepts: Concept[] = [
     "prerequisites": [
       "temperature-top-k-top-p"
     ],
-    "laymanSummary": "The generation loop tokenizes the prompt, repeatedly samples a next token under the decoding policy, appends it, and stops on end-of-sequence, max length, or a stop string. Tool-using apps insert actions inside or around this loop.",
-    "analogy": "A typewriter that guesses the next character, types it, then guesses again until it stops.",
+    "laymanSummary": "ChatGPT’s reply is a loop: tokenize the prompt, sample a next token, append it, repeat, then detokenize. Streaming is just showing the loop as it runs.",
+    "analogy": "A typewriter that guesses the next piece, types it, then guesses again until it stops.",
     "explanation": [
-      "Encode prompt.",
-      "Decode step-by-step.",
-      "Apply stop rules.",
-      "Detokenize to text.",
-      "Optionally stream partial results."
+      "Encode/tokenize the user (and system) prompt once to start.",
+      "Each step: score → sample under decoding rules → append.",
+      "Stop on EOS, max tokens, or a stop string.",
+      "Detokenize IDs to readable text; UIs often stream partial text."
     ],
     "keyTerms": [
       {
         "term": "EOS",
-        "definition": "End-of-sequence token"
+        "definition": "End-of-sequence stop token"
       },
       {
         "term": "Max tokens",
-        "definition": "Hard length cap"
+        "definition": "Hard cap on generated length"
       },
       {
         "term": "Stop sequence",
-        "definition": "String that halts generation"
+        "definition": "Text pattern that halts generation"
       }
     ],
     "visualization": {
@@ -4661,9 +4736,15 @@ export const concepts: Concept[] = [
       }
     },
     "realWorldExample": {
-      "title": "Chat UX streaming",
-      "story": "Tokens appear as the loop runs for perceived speed.",
-      "takeaway": "Loop mechanics shape product feel."
+      "title": "Why ChatGPT stops mid-code at max length",
+      "story": "You ask for a full app. The loop hits the max-token cap mid-function. The UI looks “cut off” because the stop rule fired, not because the model finished the design.",
+      "takeaway": "Loop stop rules shape what you see as a complete answer."
+    },
+    "chatGptLens": {
+      "setting": "You click Send and watch tokens appear in the ChatGPT bubble.",
+      "userInput": "Write a 6-line Python function that reverses a string.",
+      "insideTheModel": "The generation loop samples and appends tokens until EOS or another stop; each partial string is detokenized for the stream.",
+      "modelOutput": "A short function appearing line by line, then stopping cleanly."
     },
     "quiz": [
       {
@@ -4716,27 +4797,27 @@ export const concepts: Concept[] = [
       },
       {
         "id": "text-generation-loop-q3",
-        "prompt": "Detokenization converts…",
+        "prompt": "What does the text-generation loop do after sampling a token?",
         "options": [
           {
             "id": "o0",
-            "text": "IDs back to text"
+            "text": "Appends it to the prefix and predicts again (unless stopping)"
           },
           {
             "id": "o1",
-            "text": "Text to electricity"
+            "text": "Deletes the prompt and starts over every time"
           },
           {
             "id": "o2",
-            "text": "Pods to fonts"
+            "text": "Converts the GPU into a tokenizer"
           },
           {
             "id": "o3",
-            "text": "JSON to rain"
+            "text": "Ends training permanently"
           }
         ],
         "correctOptionId": "o0",
-        "explanation": "Readable output."
+        "explanation": "Append-and-continue is the core loop."
       }
     ],
     "prevConceptId": "temperature-top-k-top-p",
@@ -4752,13 +4833,13 @@ export const concepts: Concept[] = [
     "prerequisites": [
       "text-generation-loop"
     ],
-    "laymanSummary": "Hallucinations happen because models optimize for plausible continuations, not verified world state. When context is missing or conflicting, the model still produces confident-sounding text. Decoding randomness, outdated data, and prompts that forbid uncertainty amplify the issue.",
-    "analogy": "A skilled improv actor who never says I do not know unless trained to—and invents details to keep the scene going.",
+    "laymanSummary": "ChatGPT can sound sure while being wrong because it predicts likely text, not a checked database. Missing context and “must answer” prompts make confident guesses more common.",
+    "analogy": "A skilled improv actor who keeps the scene going—inventing details unless trained and allowed to say “I don’t know.”",
     "explanation": [
-      "Objective is plausible tokens, not database lookup.",
-      "Gaps get filled with likely-sounding content.",
-      "Prompts can demand answers without uncertainty.",
-      "Mitigations include retrieval, tools, citations, refusals, and evals."
+      "The trained goal is plausible next tokens, not verified world lookup.",
+      "Gaps get filled with what usually appears in similar text.",
+      "Prompts that forbid uncertainty push fluent guesses.",
+      "Mitigate with sources, tools, retrieval, and human checks."
     ],
     "keyTerms": [
       {
@@ -4771,7 +4852,7 @@ export const concepts: Concept[] = [
       },
       {
         "term": "Calibration",
-        "definition": "Matching confidence to correctness"
+        "definition": "Matching confidence to actual correctness"
       }
     ],
     "visualization": {
@@ -4998,9 +5079,15 @@ export const concepts: Concept[] = [
       }
     },
     "realWorldExample": {
-      "title": "Fake case citations",
-      "story": "Legal tools invented case law that looked real.",
-      "takeaway": "High-stakes domains need grounding and verification."
+      "title": "Fake paper citations in a ChatGPT essay",
+      "story": "A student asks for sources on a niche topic. ChatGPT invents realistic author names and titles. They look academic but don’t exist—because fluent citation patterns ≠ a library lookup.",
+      "takeaway": "Verify high-stakes claims; fluency is not evidence."
+    },
+    "chatGptLens": {
+      "setting": "You ask ChatGPT for a specific fact it may not know.",
+      "userInput": "What grade did I get on last week’s hidden quiz?",
+      "insideTheModel": "No grounded grade is in context. Next-token prediction still can emit a confident-looking number unless refusal/grounding stops it.",
+      "modelOutput": "Either a refusal—“I don’t have that data”—or a hallucinated score if pushed to invent."
     },
     "quiz": [
       {
@@ -5053,27 +5140,27 @@ export const concepts: Concept[] = [
       },
       {
         "id": "why-hallucinations-happen-q3",
-        "prompt": "Fluency guarantees truth.",
+        "prompt": "Why can a fluent ChatGPT answer still be wrong?",
         "options": [
           {
             "id": "o0",
-            "text": "Yes"
+            "text": "Because the model optimizes plausible text, not guaranteed truth"
           },
           {
             "id": "o1",
-            "text": "No"
+            "text": "Because tokenization always deletes nouns"
           },
           {
             "id": "o2",
-            "text": "Only in poetry"
+            "text": "Because residuals forbid correct answers"
           },
           {
             "id": "o3",
-            "text": "Only offline"
+            "text": "Because LayerNorm invents facts on purpose"
           }
         ],
-        "correctOptionId": "o1",
-        "explanation": "No."
+        "correctOptionId": "o0",
+        "explanation": "Plausibility ≠ verified knowledge."
       }
     ],
     "prevConceptId": "text-generation-loop"

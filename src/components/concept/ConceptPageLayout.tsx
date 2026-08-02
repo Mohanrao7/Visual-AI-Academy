@@ -28,6 +28,7 @@ export function ConceptPageLayout({
   resolveCategoryId,
 }: Props) {
   const scene = useScene(concept.categoryId, concept.id);
+  const lens = concept.chatGptLens;
 
   return (
     <div className="section">
@@ -76,6 +77,7 @@ export function ConceptPageLayout({
         <nav className="concept-jump" aria-label="Jump to section">
           <span className="concept-jump-label">On this page</span>
           <a href="#plain-english">Plain English</a>
+          <a href="#chatgpt-lens">ChatGPT example</a>
           <a href="#how-it-works">How it works</a>
           <a href="#key-terms">Key terms</a>
           <a href="#try-it">Try it yourself</a>
@@ -92,15 +94,34 @@ export function ConceptPageLayout({
           </p>
         </section>
 
+        {lens ? (
+          <section className="panel chatgpt-lens" id="chatgpt-lens">
+            <h2>See it in ChatGPT</h2>
+            <p className="muted">{lens.setting}</p>
+            <div className="chatgpt-lens-grid">
+              <div className="chatgpt-lens-step">
+                <span className="chatgpt-lens-label">1. User input</span>
+                <p className="chatgpt-lens-box chatgpt-lens-input">“{lens.userInput}”</p>
+              </div>
+              <div className="chatgpt-lens-step">
+                <span className="chatgpt-lens-label">2. What this concept does</span>
+                <p className="chatgpt-lens-box">{lens.insideTheModel}</p>
+              </div>
+              <div className="chatgpt-lens-step">
+                <span className="chatgpt-lens-label">3. Model output</span>
+                <p className="chatgpt-lens-box chatgpt-lens-output">“{lens.modelOutput}”</p>
+              </div>
+            </div>
+          </section>
+        ) : null}
+
         <section className="panel" id="how-it-works">
           <h2>How it works</h2>
-          <ul>
-            {concept.explanation.map((para) => (
-              <li key={para.slice(0, 24)} style={{ marginBottom: '0.55rem' }}>
-                {para}
-              </li>
+          <ol className="how-it-works-list">
+            {concept.explanation.map((para, i) => (
+              <li key={`${concept.id}-step-${i}`}>{para}</li>
             ))}
-          </ul>
+          </ol>
         </section>
 
         <KeyTerms terms={concept.keyTerms} />
@@ -118,12 +139,27 @@ export function ConceptPageLayout({
           </p>
         </section>
 
-        <Quiz questions={concept.quiz} onComplete={onQuizComplete} />
+        <Quiz
+          key={concept.id}
+          conceptId={concept.id}
+          questions={concept.quiz}
+          onComplete={onQuizComplete}
+        />
 
         <div className="panel" style={{ display: 'flex', flexWrap: 'wrap', gap: '0.75rem', alignItems: 'center' }}>
-          <button type="button" className="btn btn-secondary" onClick={onMarkUnderstood}>
-            Mark understood
+          <button
+            type="button"
+            className={completed ? 'btn btn-primary' : 'btn btn-secondary'}
+            onClick={onMarkUnderstood}
+            aria-pressed={completed}
+          >
+            {completed ? 'Understood ✓' : 'Mark understood'}
           </button>
+          {completed ? (
+            <span className="muted">Saved on this device — shows as Done on the category page.</span>
+          ) : (
+            <span className="muted">Marks this concept complete on this device.</span>
+          )}
           {concept.prevConceptId ? (
             <Link className="btn btn-ghost" to={`/generative-ai/${category.id}/${concept.prevConceptId}`}>
               ← Previous
