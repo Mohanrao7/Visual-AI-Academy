@@ -22,12 +22,15 @@ npm run preview
 
 ## Deploy (static hosting)
 
-Deploy the `dist/` folder to any static host:
+Deploy the `dist/` folder to any static host — there is no backend, no database, and no environment variables.
 
+- **Cloudflare Pages**: build command `npm run build`, output directory `dist`
 - **Vercel / Netlify**: import the repo; build command `npm run build`, output `dist`
 - **GitHub Pages**: publish `dist` (set Vite `base` if serving from a subpath)
 
-Client-side routes are used (`/`, `/generative-ai/...`). Configure the host for SPA fallback to `index.html`.
+Client-side routes are used (`/`, `/generative-ai/...`), so the host needs an SPA fallback to `index.html`. `public/_redirects` already provides it (`/* /index.html 200`) for Cloudflare Pages and Netlify; Vercel uses `vercel.json`.
+
+The build needs Node 20+. `.nvmrc` pins Node 22, which Cloudflare Pages, Netlify, and Vercel all honour. On Cloudflare Pages you can instead set a `NODE_VERSION=22` environment variable.
 
 ## Route map
 
